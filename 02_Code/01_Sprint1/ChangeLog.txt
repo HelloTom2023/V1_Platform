@@ -1,4 +1,11 @@
-﻿
+﻿/***********************************************************/
+Version : V0.0.1
+ChangeLog :
+1.modify .gitignore file,untracked *.mtud files.
+2.rename start.sbak and core_ram.sbak to start.s and core_ram.s
+3.the project can compiler success.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.09.24
 /***********************************************************/
 Version : V0.0.0
 ChangeLog :
