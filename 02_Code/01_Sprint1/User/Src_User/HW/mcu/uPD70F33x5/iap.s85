@@ -1,0 +1,310 @@
+/*===========================================================================*/
+/* Project      = Selfprogramming Library Single Voltage Flash               */
+/* Module       = SelfLibAsm.s85                                             */
+/* Version      = 1.2.1                                                      */
+/* Date         = 21.01.2008                                                 */
+/*===========================================================================*/
+/*                                  COPYRIGHT                                */
+/*===========================================================================*/
+/* Copyright (c) 2007 by NEC Electronics (Europe) GmbH. All rights reserved. */
+/*===========================================================================*/
+/* Purpose:                                                                  */
+/*              - Misc basic assembler functions required for the selfLib    */
+/*              - Device firmware interface (Trap entry )                    */
+/*===========================================================================*/
+/* Environment:                                                              */
+/*              Devices:        V850E(S) Single Voltage SST (MF2) Flash      */
+/*              IDE's:          IAR V2.3, IAR V3.10                          */
+/*===========================================================================*/
+#define PSW_NMI_INT_DISABLE         0x00A0    /* NMI Flag=1, ID=1 */
+#define PSW_REGISTER_NUMBER         0x05
+#define ASID_REGISTER_NUMBER        0x17
+#define TRAP_SELFPROGRAMMING        0x1f
+#define FIRMWAREENTRY               0x3FC0
+
+/*===========================================================================*/
+/* Function name:   iap_NMI_dint                             */
+/* IN:              -                                                        */
+/* OUT:             old PSW                                                  */
+/* Describtion:     disable INT and NMI and return original PSW value for    */
+/*                  later restore                                            */
+/*===========================================================================*/
+    RSEG    IAP_ROM2RAM:CODE
+    PUBLIC  iap_NMI_dint
+
+    iap_NMI_dint:
+
+        /* get current PSW into return register */
+        stsr    PSW_REGISTER_NUMBER, r1
+
+        /* Disable NMI and Interrupt */
+        movea   PSW_NMI_INT_DISABLE, zero, r5
+        ldsr    r5, PSW_REGISTER_NUMBER
+
+        jmp     [lp]
+
+/*===========================================================================*/
+/* Function name:   iap_PSW_restore                                */
+/* IN:              old saved PSW (r1)                                       */
+/* OUT:             -                                                        */
+/* Describtion:     restore PSW using the passed parameter                   */
+/*===========================================================================*/
+    RSEG    IAP_ROM2RAM:CODE
+    PUBLIC  iap_PSW_restore
+
+    iap_PSW_restore:
+
+        /* restore old PSW */
+        ldsr    r1, PSW_REGISTER_NUMBER
+        jmp     [lp]
+
+
+/*===========================================================================*/
+/* Function name:   iap_SEC_setreg                               */
+/* IN:              Dest. Register      (r1)                                 */
+/*                  Security Register   (r5)                                 */
+/*                  Value               (r6)                                 */
+/* OUT:             -                                                        */
+/* Describtion:     Write sfr, that is secured by a special sequence         */
+/*===========================================================================*/
+    RSEG    IAP_ROM2RAM:CODE
+    PUBLIC  iap_SEC_setreg
+
+    iap_SEC_setreg:
+        add     -8, sp
+        st.w    r20, 0[sp]
+        st.w    r21, 4[sp]
+
+        not     r6, r20
+        movea   0xa5, zero, r21
+
+        st.b    r21, 0[r5]
+        st.b    r6, 0[r1]
+        st.b    r20, 0[r1]
+        st.b    r6, 0[r1]
+
+        ld.w    0[sp], r20
+        ld.w    4[sp], r21
+        add     8, sp
+
+        jmp     [lp]
+
+
+/*===========================================================================*/
+/* Function name:   iap_ASID_setreg                                 */
+/* IN:              Value (r1)                                               */
+/* OUT:             -                                                        */
+/* Describtion:     Write ASID system register                               */
+/*===========================================================================*/
+    RSEG    IAP_ROM2RAM:CODE
+    PUBLIC  iap_ASID_setreg
+
+    iap_ASID_setreg:
+
+// TODO
+//        ldsr    r1, 23
+        jmp     [lp]
+
+
+
+/*===========================================================================*/
+/* Function name:   iap_FSSQ_check                                 */
+/* IN:              FSSQ Address (r1)                                        */
+/* OUT:             -                                                        */
+/* Describtion:     Read FSSQ and return value                               */
+/*===========================================================================*/
+    RSEG    IAP_ROM2RAM:CODE
+    PUBLIC  iap_FSSQ_check
+    PUBLIC  _iap_FSSQ_check
+    
+    iap_FSSQ_check:
+    _iap_FSSQ_check:
+    
+	    ld.b    0[r1], r1
+	    jmp     [lp]
+
+
+/*===========================================================================*/
+/* Function name:   iap_FSAST_check                                */
+/* IN:              FSSQ Address (r1)                                        */
+/* OUT:             -                                                        */
+/* Describtion:     Read FSAST and return value                              */
+/*===========================================================================*/
+    RSEG    IAP_ROM2RAM:CODE
+    PUBLIC  iap_FSAST_check
+    PUBLIC  _iap_FSAST_check
+
+    iap_FSAST_check:
+    _iap_FSAST_check:
+
+	    ld.b    0[r1], r1
+	    jmp     [lp]
+
+
+
+
+/*===========================================================================*/
+/* Function name:   iap_TrapEntry                                 */
+/* IN:              Parameter 1~4 passed to the firmware in registers r6~r9  */
+/*                  Parameter 5 passed to the firmware in ep                 */
+/* OUT:             Result of the trap function (no result in case of        */
+/*                  ..._void                                                 */
+/* Describtion:     Device firmware interface, using a TRAP                  */
+/*===========================================================================*/
+    RSEG    IAP_ROM2RAM:CODE
+    PUBLIC  iap_fw_start
+    PUBLIC  iap_vfw_start
+
+    iap_fw_start:
+    iap_vfw_start:
+
+        addi    -32, sp, sp
+        st.w    r2,    0[sp]
+        st.w    r10,   4[sp]
+        st.w    r11,   8[sp]
+        st.w    r12,  12[sp]
+        st.w    r13,  16[sp]
+        st.w    r14,  20[sp]
+    	st.w	ep,   24[sp]			/* save current ep */
+    	st.w	lp,   28[sp]			/* save current lp */
+
+        /* Set ep new, 5th parameter */
+        mov     r8, ep
+
+        /* Redirect call parameters from IAR to GHS */
+        /*   GHS Call   -    IAR Call */
+        /*    r6-r9     -    r1,r5-r8 */
+        mov     r6, r8
+        mov     r7, r9
+        mov     r1, r6
+        mov     r5, r7
+
+        /* write Firmware entry address to r10 */
+        mov     FIRMWAREENTRY, r10
+
+        /* perform a jump to label to get the current execution address */
+        jarl    iap_fw_start_label1, lp
+        /* Add offset to get the address of instruction after FW entry */
+    iap_fw_start_label1:
+        addi    6,lp,lp
+
+        /* Call the BROM functions with parameter in r6,r7,r8,r9 */
+        jmp     [r10]
+
+        mov     r10, r1     /* restore return value*/
+
+        /* Restore regs from stack */
+        ld.w      0[sp],  r2
+        ld.w      4[sp], r10
+        ld.w      8[sp], r11
+        ld.w     12[sp], r12
+        ld.w     16[sp], r13
+        ld.w     20[sp], r14
+        ld.w     24[sp], ep
+        ld.w     28[sp], lp
+        addi     32, sp, sp
+
+        jmp     [lp]
+
+
+/*===========================================================================*/
+/* Function name:   iap_exe_offset                                 */
+/* IN:              -                                                        */
+/* OUT:             Execution offset in Bytes                                */
+/* Describtion:     Calculate offset between SelfLib execution address and   */
+/*                  link address                                             */
+/*===========================================================================*/
+    RSEG    IAP_ROM:CODE
+    PUBLIC  iap_exe_offset
+
+    iap_exe_offset:
+        jarl    L0, r1				/*store exe address of 'L0' to r1 */
+	L0:	
+	    movea 	LW1(L0), zero, r5	/*store link address of 'L0' to r5 */
+		movhi	HI1(L0), r5, r5
+		sub		r5, r1			    /*build offset and store it to r1 */
+
+        jmp     [lp]
+
+
+
+/*===========================================================================*/
+/* Function name:   iap_SectionAdd_...                            */
+/* IN:              -                                                        */
+/* OUT:             secStart:   Start address of the section                 */
+/*                  secSize:    Size of the section                          */
+/* Describtion:     The initialisation routine requires section addresses.   */
+/*                  Getting this information is different on all compilers.  */
+/*===========================================================================*/
+
+    /*RSEG    IAP_ROM2RAM_USRINT:CODE*/
+    /*RSEG    IAP_ROM2RAM_USR:CODE*/
+    RSEG    IAP_ROM2RAM:CODE
+    RSEG    IAP_ROM_OR_RAM:CODE
+
+    RSEG    IAP_ROM:CODE
+
+    /*PUBLIC  iap_getadd_usrint */
+    /*PUBLIC  iap_getadd_usr */
+    PUBLIC  iap_getadd_run_ram
+    /*PUBLIC  iap_getadd_rom_or_ram*/
+
+    /* Parameter: u32 *secStart, u32 *secSize */
+#if 0
+    iap_getadd_usrint:
+        /* Generate section start */
+        movhi   HI1 (SFB (IAP_ROM2RAM_USRINT)), zero, r7
+        movea   LW1 (SFB (IAP_ROM2RAM_USRINT)), r7, r7
+        /* Generate section end */
+        movhi   HI1 (SFE (IAP_ROM2RAM_USRINT)), zero, r8
+        movea   LW1 (SFE (IAP_ROM2RAM_USRINT)), r8, r8
+        br iap_getadd_exit
+
+    iap_getadd_usr:
+        /* Generate section start */
+        movhi   HI1 (SFB (IAP_ROM2RAM_USR)), zero, r7
+        movea   LW1 (SFB (IAP_ROM2RAM_USR)), r7, r7
+        /* Generate section end */
+        movhi   HI1 (SFE (IAP_ROM2RAM_USR)), zero, r8
+        movea   LW1 (SFE (IAP_ROM2RAM_USR)), r8, r8
+        br iap_getadd_exit
+#else
+    iap_getadd_run_ram:
+        /* Generate section start */
+        movhi   HI1 (SFB (IAP_ROM2RAM)), zero, r7
+        movea   LW1 (SFB (IAP_ROM2RAM)), r7, r7
+        /* Generate section end */
+        movhi   HI1 (SFE (IAP_ROM2RAM)), zero, r8
+        movea   LW1 (SFE (IAP_ROM2RAM)), r8, r8
+        br iap_getadd_exit
+#if 0
+    iap_getadd_rom_or_ram:
+        /* Generate section start */
+        movhi   HI1 (SFB (IAP_ROM_OR_RAM)), zero, r7
+        movea   LW1 (SFB (IAP_ROM_OR_RAM)), r7, r7
+        /* Generate section end */
+        movhi   HI1 (SFE (IAP_ROM_OR_RAM)), zero, r8
+        movea   LW1 (SFE (IAP_ROM_OR_RAM)), r8, r8
+        br iap_getadd_exit
+#endif
+    iap_getadd_exit:
+        st.w    r7, 0[r1]
+        sub     r7, r8
+        st.w    r8, 0[r5]
+
+        jmp     [lp]
+
+
+
+    PUBLIC      ?Springboard_R8
+    RSEG        IAP_ROM:CODE:ROOT
+
+?Springboard_R8:
+        JMP         [R8]
+
+    PUBLIC      ?Springboard_R29
+    RSEG        IAP_ROM:CODE:ROOT
+?Springboard_R29:
+        JMP         [R29]
+
+    END

@@ -1,0 +1,15 @@
+The file describes tools information that may be used in this projcet:
+
+1.view code: eclipse-committers-2018-09-win32-x86_64 and eclipse-cpp-2018-09-win32-x86_64
+    The eclipse-committers have git plugin.
+	The eclipse-cpp can view C language code.
+	Install method: extract the two .zip files to one folder. 
+    If you use the eclips-cpp,you must be install jdk.
+
+2.Develop version control:
+    The project uses git for bersion management. And the remmote respository local github.
+	
+2.compiler:
+	Sprint1:
+	   CS+: V850 IDE compiler
+	Sprint2:

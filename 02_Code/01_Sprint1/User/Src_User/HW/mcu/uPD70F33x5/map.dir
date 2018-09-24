@@ -1,0 +1,121 @@
+#/*
+#******************************************************************************
+#*
+#*  This device driver was created by Applilet2 for V850ES/Sx3
+#*  32-Bit Single-Chip Microcontrollers
+#*
+#*  Copyright(C) NEC Electronics Corporation 2002 - 2013
+#*  All rights reserved by NEC Electronics Corporation.
+#*
+#*  This program should be used on your own responsibility.
+#*  NEC Electronics Corporation assumes no responsibility for any losses
+#*  incurred by customers or third parties arising from the use of this file.
+#*
+#*   Filename :     850.dir
+#*  Abstract :    This is the link file.
+#*  APIlib :    Applilet2 for V850ES/Sx3 V2.41 [28 Apr. 2008]
+#*
+#*  Device :    uPD70F3355
+#*
+#*  Compiler :    CA850
+#*
+#*  Creation date:    2013-3-27
+#*  
+#******************************************************************************
+#*/
+
+
+IAP_REBOOT_TEXT : !LOAD ?RX V0x2F00 {
+    iap_reboot_text.text = $PROGBITS ?AX iap_reboot_text.text;
+};
+
+IAP_VER_CONST   : !LOAD ?R V0x2FF0{
+    iap_ver_const.const = $PROGBITS ?A iap_ver_const.const;
+};
+
+APP_FLAG_CONST  : !LOAD ?R V0x4000 {
+    app_flag.const = $PROGBITS ?A app_flag.const;
+};
+
+
+
+#/*
+#*****************************************************************************
+#* 因为中断向量表被锁定不能更改，故向量表中的所有函数入口也必须固定
+#* 此两区域中，isrtable放入中断函数的入口，必须使每个函数的入口地址为固定值
+#* 同理，MAIN函数的入口地址也必须是固定值。
+#******************************************************************************
+#*/
+
+
+ISR_ENTRY   : !LOAD ?RX V0x4008{
+    isr_text.text = $PROGBITS ?AX isr_text.text;
+};
+
+MAIN_ENTRY   : !LOAD ?RX V0x7000{
+    app_text.text = $PROGBITS ?AX app_text.text;
+    .pro_epi_runtime = $PROGBITS ?AX .pro_epi_runtime;
+};
+
+#/*
+#*****************************************************************************
+#******************************************************************************
+#*/
+
+SCONST    : !LOAD ?R {
+    .sconst = $PROGBITS ?A .sconst;
+};
+CONST    : !LOAD ?R {
+    .const = $PROGBITS ?A .const;
+};    
+    
+
+
+TEXT    : !LOAD ?RX {
+    .text = $PROGBITS ?AX .text;
+    
+};
+
+
+
+SIDATA    : !LOAD ?RW V0x03FF5000 {
+    .tidata.byte = $PROGBITS ?AW .tidata.byte;
+    .tibss.byte = $NOBITS ?AW .tibss.byte;
+    .tidata.word = $PROGBITS ?AW .tidata.word;
+    .tibss.word = $NOBITS ?AW .tibss.word;
+    .tidata = $PROGBITS ?AW .tidata;
+    .tibss = $NOBITS ?AW .tibss;
+    .sidata = $PROGBITS ?AW .sidata;
+    .sibss = $NOBITS ?AW .sibss;
+};
+DATA    : !LOAD ?RW V0x03FF5100 {
+    .data = $PROGBITS ?AW .data;
+    .sdata = $PROGBITS ?AWG .sdata;
+    .sbss = $NOBITS ?AWG .sbss;
+    .bss = $NOBITS ?AW .bss;
+};
+
+# No Initialize Ram Section Deifnition....
+NO_INIT_RAM_SECTION   : !LOAD ?RW V0x3FFA200 {
+    no_init.bss = $NOBITS ?AW no_init.bss;    #//将.bss区域放前
+    no_init.data = $PROGBITS ?AW no_init.data;
+};
+
+RAM_CHKSUN_SECTION    : !LOAD ?RW  {
+    ram_chk.bss = $NOBITS ?AW ram_chk.bss;    #//将.bss区域放前
+    ram_chk.data = $PROGBITS ?AW ram_chk.data;
+};
+
+
+IAP_SHEAR_RAM_SECTION   : !LOAD ?RW V0x3FFCFF0 {
+        iap_share_ram.data           = $PROGBITS     ?AW  iap_share_ram.data;
+        iap_share_ram.bss            = $NOBITS       ?AW  iap_share_ram.bss;
+};
+STACK    : !LOAD ?RW V0x03FFE800 {
+    .stack = $NOBITS ?AW .stack;
+};
+
+
+__tp_TEXT @ %TP_SYMBOL{TEXT APP_FLAG_CONST MAIN_ENTRY ISR_TEXT};
+__gp_DATA @ %GP_SYMBOL &__tp_TEXT{DATA NO_INIT_RAM_SECTION IAP_RAM_SECTION RAM_CHKSUN_SECTION IAP_SHEAR_RAM_SECTION STACK};
+__ep_DATA @ %EP_SYMBOL;

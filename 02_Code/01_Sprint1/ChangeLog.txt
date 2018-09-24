@@ -1,0 +1,14 @@
+﻿
+/***********************************************************/
+Version : V0.0.0
+ChangeLog :
+1.create files structure in repository.
+2.create fist version.
+3.create GitHubCommitRules and DevelopToolsRefer files.
+4.This project is a C-based learning project.You must not use it for commercial product development. 
+  If you use it for commercial product development, i am not responsible for any unauthorized use and disputes.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.09.24
+/***********************************************************/
+	
+	

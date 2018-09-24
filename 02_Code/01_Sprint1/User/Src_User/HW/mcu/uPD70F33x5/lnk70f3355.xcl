@@ -1,0 +1,200 @@
+//-------------------------------------------------------------------------
+//      XLINK command file template for V850E microcontroller uPD70F3355.
+//
+//      This file can be used to link object files from the V850E
+//      Assembler, AV850, and the C/C++ compiler ICCV850.
+//
+//          This file is generated from the device file:
+//          DF3355.800
+//          Copyright (C) NEC Corporation 2007
+//          Format version 2.18, File version 1.10 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+//      The following segments are defined in this template link file:
+//
+//      INTVEC      -- Interrupt vectors.
+//      TRAPVEC     -- Trap vector.
+//      CLTVEC      -- Calltable vectors.
+//      CSTART      -- The C/C++ startup code.
+//      RCODE       -- Code used by C/C++ run-time library.
+//      ICODE       -- Code used by interrupt functions.
+//      CLTCODE     -- Code of calltable functions.
+//      CODE        -- Program code.
+//      DIFUNCT     -- Dynamic initialization vector used by C++
+//      CSTACK      -- The stack used by C/C++ programs.
+//      HEAP        -- The heap used for malloc and free
+//      SADDR7_x    -- Variables used by __saddr (128 byte offset).
+//      SADDR8_x    -- Variables used by __saddr (256 byte offset).
+//      NEAR_x      -- Variables used by __near (must be +- 32KB from address 0).
+//      BREL_x      -- Variables used by __brel.
+//      HUGE_x      -- Variables used by __huge.
+//
+//      Where _x could be one of:
+//
+//      _BASE   -- An empty placeholder segment that should be placed
+//                 in front of the other segments (SADDR and BREL).
+//      _CBASE  -- An empty placeholder segment that should be placed
+//                 in front of the other segments (BREL_C).
+//      _Z      -- Initialized data (initvalue = 0 or without init value).
+//      _I      -- Initialized data (initvalue != 0).
+//      _ID     -- The inial values of _I.
+//      _N      -- Uninitialized data, used by __no_init.
+//      _C      -- Constants.
+//
+//      NOTE:   Be sure to use end values for the defined addresses.
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+//      Define CPU
+//-------------------------------------------------------------------------
+-cv850
+
+//-------------------------------------------------------------------------
+//      Size of the stack.
+//      Remove comment and modify number if used from command line.
+//-------------------------------------------------------------------------
+//-D_CSTACK_SIZE=400
+
+//-------------------------------------------------------------------------
+//      Size of the heap.
+//      Remove comment and modify number if used from command line.
+//-------------------------------------------------------------------------
+//-D_HEAP_SIZE=400
+
+//-------------------------------------------------------------------------
+//      Define the format functions used by printf/scanf.
+//      Default is full formatting.
+//      Remove appropriate comment(s) to get reduced formatting
+//      if used from command line.
+//-------------------------------------------------------------------------
+//-e_PrintfTiny=_Printf
+//-e_PrintfSmall=_Printf
+//-e_PrintfLarge=_Printf
+
+//-e_ScanfSmall=_Scanf
+//-e_ScanfLarge=_Scanf
+
+//-------------------------------------------------------------------------
+//      Define if row buffering should be used by terminal output.
+//      Default is no buffering.
+//      Remove comment to get buffered terminal output if used from command line.
+//-------------------------------------------------------------------------
+//-e__write_buffered=__write
+
+///////////////////////////////////////////////////////////////////////////
+//      Allocate the read only segments that are mapped to ROM.
+///////////////////////////////////////////////////////////////////////////
+
+-Z(CODE)INTVEC=00000000-0000054F
+-Z(CONST)SECUID=00000070-00000079
+
+//-------------------------------------------------------------------------
+//      BREL_CBASE is an empty placeholer segment, it should be placed in
+//      front of the BREL_C segments holding constant data.
+//-------------------------------------------------------------------------
+//My application setting
+
+//BOOTLOADER_EARE------------------------------------------------
+//HOLD start code
+-Z(CODE)CSTART=00000550-0007FFFB
+//Hold iap code
+-Z(CODE)IAP_ROM2RAM_USRINT=550-7F7FF
+-Z(CODE)IAP_ROM2RAM_USR=550-7F7FF
+-Z(CODE)IAP_ROM2RAM=550-7FFFB
+-Z(CODE)IAP_ROM_OR_RAM=550-7F7FF
+-Z(CODE)IAP_ROM=550-7F7FF
+//user can reflash this earas below 
+-Z(CONST)FLAG_SRC=1FF8-2000       //IAP erasing src flag plased the start eara
+//user can reflash this earas below 
+//user can reflash this earas below 
+
+//CONST EARA
+-Z(CONST)FLAG_BOOT=3FF8-4000       //IAP erasing flag plased the the start of boot swap eara
+-Z(CONST)FLAG_APP=4000-4008       //IAP erasing flag plased the start of all app-flash
+-Z(CONST)BREL_CBASE,BREL_C=4008-4FFF
+
+
+//interrupt function eara.
+-Z(CODE)ICODE,TRAPVEC,DIFUNCT=4008-7F7FF
+//Hold CALLT code. DATA_MODE_TINY and SMAL is not use it
+-Z(CONST)CLTVEC=4008-7F7FF
+-Z(CODE)CLTCODE=4008-7FFFB
+//hold the main entry
+-Z(CODE)MAIN_TEXT=4008-7F7FF
+-Z(CONST)NEAR_C=4008-7FFF     //CODE NORMAL,NEAR_C must placed in 0-7fff(32K)
+
+
+
+-Z(CONST)HUGE_C=4008-7F7FF
+-Z(CONST)SADDR7_ID,SADDR8_ID,NEAR_ID,BREL_ID,HUGE_ID=2000-7F7FF
+//RCODE --lib code in hear
+-Z(CODE)RCODE=4008-7F7FF
+//USER PROGRAM EARA
+-Z(CODE)CODE=4008-7F7FF
+
+//-------------------------------------------------------------------------
+//       Reserved ROM areas for Minicube Firmware.
+//-------------------------------------------------------------------------
+-Z(CODE)ONCIROM=0007F800-0007FFFB
+//-------------------------------------------------------------------------
+//      The CHECKSUM segment must be defined when ROM checksum should
+//      be generated.
+//-------------------------------------------------------------------------
+-Z(CONST)CHECKSUM=0007FFFC-0007FFFF
+
+///////////////////////////////////////////////////////////////////////////
+//      Allocate the read/write segments that are mapped to RAM.
+///////////////////////////////////////////////////////////////////////////
+
+//-------------------------------------------------------------------------
+//      Short loads relative from EP with 7 and 8 bit offset.
+//
+//      SADDR_BASE is an empty segment that mark the beginning of the saddr
+//      data segments.
+//-------------------------------------------------------------------------
+-Z(DATA)IAP_RUN=FFFF5000-FFFF5200
+-Z(DATA)SADDR_BASE=FFFF5200
+-Z(DATA)SADDR7_I,SADDR7_Z,SADDR7_N=FFFF5200-FFFF527F
+-Z(DATA)SADDR8_I,SADDR8_Z,SADDR8_N=FFFF5200-FFFF52FF
+-Z(DATA)TNUSE=FFFF5300-FFFF7FFF
+//-------------------------------------------------------------------------
+//      16-bit access from GP.
+//      BREL_BASE is an empty placeholer segment, it should be placed in
+//      front of the DATA (i.e. RAM) BREL segments.
+//-------------------------------------------------------------------------
+-Z(DATA)BREL_BASE,BREL_I,BREL_Z,BREL_N=FFFF5000-FFFFEFFF
+
+//-------------------------------------------------------------------------
+//      Global and 32-bit offset from GP.
+//      The rest of the external memory (all external memory not used
+//      by BREL segment variables) is addressed with HUGE memory model.
+//-------------------------------------------------------------------------
+-Z(DATA)HUGE_I,HUGE_Z,HUGE_N=FFFF4FFC-FFFF4FFC  // No memory availabale
+
+//-------------------------------------------------------------------------
+//      Data relative from zero with 16 bit offset.
+//      This segment is for TINY data model. All internal memory, SFR,
+//      and CONST variables in area 0000-7FFF may be accessed.
+//-------------------------------------------------------------------------
+// TINY_DATA_MODE must start at FFFF8000
+-Z(DATA)NEAR_Z,NEAR_I=FFFF8000-FFFF9FFF   //The ram user can used and init by start up code is 8K
+-Z(DATA)NEAR_N=FFFFA000-FFFFCFEF          //__no_init ram is 12k
+
+
+
+//-------------------------------------------------------------------------
+//       Reserved RAM areas for Minicube Firmware.
+//-------------------------------------------------------------------------
+-Z(DATA)ONCIRAM=FFFFCFE0-FFFFCFEF
+
+
+//-------------------------------------------------------------------------
+//      The stack and the heap.
+-Z(DATA)IAP_SHARE_RAM=FFFFCFF0-FFFFCFF8   //iap share ram 
+-Z(DATA)IAP_RAM=FFFFCFF9-FFFFCFFF         //iap ram 
+-Z(DATA)CSTACK+_CSTACK_SIZE,HEAP+_HEAP_SIZE=FFFFD800-FFFFEFFF
+
+//-------------------------------------------------------------------------
+//      End of File
+//-------------------------------------------------------------------------
