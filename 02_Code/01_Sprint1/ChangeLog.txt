@@ -1,4 +1,11 @@
-﻿/***********************************************************/
+﻿/*********************************************************************************************************************/
+Version : V0.0.2
+ChangeLog :
+1.Create CanIf,CanTp,DiagE,DiagM,DiagS,Common modules source,head, VFB and user configuration files.
+2.add some code.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.10.14
+/*********************************************************************************************************************/
 Version : V0.0.1
 ChangeLog :
 1.modify .gitignore file,untracked *.mtud files.
@@ -6,16 +13,16 @@ ChangeLog :
 3.the project can compiler success.
 Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
 Data  : 2018.09.24
-/***********************************************************/
+/*********************************************************************************************************************/
 Version : V0.0.0
 ChangeLog :
 1.create files structure in repository.
-2.create fist version.
+2.create first version.
 3.create GitHubCommitRules and DevelopToolsRefer files.
 4.This project is a C-based learning project.You must not use it for commercial product development. 
   If you use it for commercial product development, i am not responsible for any unauthorized use and disputes.
 Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
 Data  : 2018.09.24
-/***********************************************************/
+/*********************************************************************************************************************/
 	
 	

@@ -4,7 +4,7 @@ Commit rules：
 1.you must not commit code or documents to master branch.
 2.you must not merge branch in GitHub.
 3.if you commit code or documents,you shall create new branch and commit to the new branch.
-4.the new branch name shall Sprint+Number_UserName. eg.Sprint1_mingfen
+4.the new branch name shall Sprint+Number_ModuesName_UserName. eg.Sprint1_CanIf_mingfen
 5.if you commit code or documents,you shall add commit comments,and you shall add change log to ChangeLog.txt.
 
 If you commit code or documents to reprository,you shall follow this rules.

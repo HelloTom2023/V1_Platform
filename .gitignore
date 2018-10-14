@@ -1,10 +1,20 @@
-# eclipse temporary files
+# Ignore eclipse temporary files
 *.project
 *.cproject
 /02_Code/01_Sprint1/.settings
 /02_Code/01_Sprint1/Release
 
-# compiler temporary file
+# Ignore compiler temporary file
 /02_Code/01_Sprint1/out/build
 /02_Code/01_Sprint1/out/link
 /02_Code/01_Sprint1/User/Project/User/*.mtud
+
+# Ignore Develop process Draft Documents
+*.docx
+*.doc
+*.vsdx
+*.vsd
+*.~docx
+*.~doc
+*.~vsdx
+*.~vsd
