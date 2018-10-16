@@ -45,8 +45,12 @@
 #define CANIF_CANCONTROLLERCHANNELNUMBER					1
 /*The parameters define can receive buffer number in can interface layer*/
 #define CANIF_RECEIVEBUFFERNUMBER							50
-/*The can controller support hardware receive buffer max number*/
+/*The can controller support max hardware number*/
 #define CANIF_CONTROLLERHWBUFFERNUMBER						31
+/*The can controller is used for send message max hardware buffer number*/
+#define CANIF_CONTROLLERHWBUFFERNUMBER_TX					10
+/*The can controller is used for receive message max hardware buffer number*/
+#define CANIF_CONTROLLERHWBUFFERNUMBER_RX					(CANIF_CONTROLLERHWBUFFERNUMBER - CANIF_CONTROLLERHWBUFFERNUMBER_TX)
 /*The can controller support can bus type.*/
 #define CANIF_CONRTOLLERTYPE								CAN
 /*The can interface layer can message id type.STANDARD : 11Bit, EXPANSION : 29Bit*/
@@ -71,9 +75,12 @@
 /*can interface layer application interface enable switch*/
 #define CANIF_INITCONTROLLER_API							ENABLE
 #define CANIF_DEFAULTINITCONTROLLER_API						ENABLE
-#define CANIF_READCONTROLLERMSGBUFFINDEX_API				ENABLE
-#define CANIF_READCONTROLLERMSGBUFFDATA_API					ENABLE
-
+#define CANIF_READCONTROLLERHWMSGBUFFINDEX_API				ENABLE
+//#define CANIF_READCONTROLLERMSGDATADLC_API					ENABLE
+#define CANIF_READCONTROLLERMSGINFO_API						ENABLE
+#define CANIF_WRITECONTROLLERMSGDATA_API					ENABLE
+#define CANIF_WRITECONTROLLERMSGINFO_API					ENABLE
+#define CANIF_REQUESRCONTROLLERTXMSG_API					ENABLE
 
 
 /*The interface between Can Interface Layer and Can Transport Layer */

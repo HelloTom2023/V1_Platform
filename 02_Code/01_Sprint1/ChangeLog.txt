@@ -1,4 +1,10 @@
-﻿/*********************************************************************************************************************/
+﻿Version : V0.0.3
+ChangeLog :
+1.Add some Apis between can driver and Can Interface layer
+2.CanIf modules add send message strategy.Coding done,not debug.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.10.16
+/*********************************************************************************************************************/
 Version : V0.0.2
 ChangeLog :
 1.Create CanIf,CanTp,DiagE,DiagM,DiagS,Common modules source,head, VFB and user configuration files.

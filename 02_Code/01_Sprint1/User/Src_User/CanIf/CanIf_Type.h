@@ -54,6 +54,26 @@ typedef struct CanIf_CanMsgSoftFilterDlcCheck_Type_Tag
 }CanIf_CanMsgSoftFilterDlcCheck_Type;
 #endif
 
+typedef struct CanIf_CanMsgTxManagementDataBuffer_Type_Tag
+{
+	uint8 ChNo;
+	uint8 MsgValid;		/*If you msg is valid,the value setting to 1*/
+	uint8 MsgTxMode;	/*0: Periodic, 1 : Event*/
+	uint16 CycleTime;
+	uint16 CurrentTime;
+	uint8 TransmissionCounter;	/*If the MsgTxMode is Event,the param show the message send times*/
+	uint8 TransmittedCounter;
+	uint32 MsgId;
+	uint8 Dlc;
+	uint8 Data[8];
+}CanIf_CanMsgTxManagementDataBuffer_Type;
+
+typedef struct CanIf_CanMsgTxManagementControlInfomation_Type_Tag
+{
+	uint8 HwBufNo;	/*Can controller hardware buffer index*/
+	uint8 TxListIndex; /*can message tx list index*/
+}CanIf_CanMsgTxManagementControlInfomation_Type;
+
 typedef struct CanIf_BuffControlInformation_Type_Tag
 {
 	uint8 WriteIndex;

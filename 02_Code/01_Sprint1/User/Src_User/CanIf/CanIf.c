@@ -39,12 +39,29 @@
 ****************************************************************************/
 CAN_IF_EXTERN_API void CanIf_Init(void)
 {
-	/*Init Can messae buffer operate control information*/
+	/*Init the CanIf_CanTxMsgCtrInfo*/
+	CanIf_CanTxMsgCtrInfo.HwBufNo = 0x00;
+	CanIf_CanTxMsgCtrInfo.TxListIndex = 0x00;
+
+	/*Init Can message buffer operate control information*/
 	CanIf_CanRecvMsgBuffCtrInfo.ReadIndex = 0x00;
 	CanIf_CanRecvMsgBuffCtrInfo.WriteIndex = 0x00;
 
 	/*Init message receive buffer*/
 	CanIf_MemSetValue(CanIf_CanRecvMsgBuff,0x00,CANIF_RECEIVEBUFFERNUMBER);
+}
+
+/****************************************************************************
+ * @function	CanIf_MainFunction
+ * @brief  		can interface layer main function.
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API void CanIf_MainFunction(void)
+{
+	CanIf_RxMainFunction();
+	CanIf_TxMainFunction();
 }
 
 
@@ -53,7 +70,7 @@ CAN_IF_EXTERN_API void CanIf_Init(void)
  * @brief  		the CAN BUS receive interrupt call back function.
  * @param  		ChNo: input parameters,CAN channel index.
  * @retval 		ret : function execute result
- * @attention   null
+ * @attention   NULL
 ****************************************************************************/
 CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 {
@@ -62,7 +79,7 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 	uint8 ret_subfunc = E_OK;
 
 	/*get hardware buffer index*/
-	BufIndex = CanIf_GetControllerMsgBuffIndex(ChNo);
+	BufIndex = CanIf_GetControllerHwMsgBuffIndex(ChNo);
 
 	if(BufIndex <= CANIF_CONTROLLERHWBUFFERNUMBER)
 	{
@@ -75,7 +92,11 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 		 * but the CanIf_GetControllerMsgBuffData function parameters data type is uint32.
 		 * When the CANIF_CANMESSAGEIDTYPE is STANDARD,the function parameter has a type mismatch problem.
 		 * */
-		CanIf_GetControllerMsgBuffData(ChNo, BufIndex, &CanRecvMsg.CanMsgId, CanRecvMsg.CanData, &CanRecvMsg.CanMsgDlc);
+		CanIf_GetControllerMsgInfo(ChNo, BufIndex, &CanRecvMsg.CanMsgId, CanRecvMsg.CanData, &CanRecvMsg.CanMsgDlc);
+
+		/*Add notification application layer callback*/
+		/*PreCopy Function callback*/
+
 
 #if ( (CANIF_RECEIVERMESSAGESOTFFILTER == ENABLE) || (CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE) )
 		ret_subfunc = CanIf_RecvSoftFilterDlcCheck(CanRecvMsg.CanChNo, CanRecvMsg.CanMsgId, CanRecvMsg.CanData, CanRecvMsg.CanMsgDlc);
@@ -99,6 +120,18 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 	return ret;
 }
 
+/****************************************************************************
+ * @function	CanIf_SendInterruptCallback
+ * @brief  		the CAN BUS send interrupt call back function.
+ * @param  		ChNo: input parameters,CAN channel index.
+ * @retval 		ret : function execute result
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SendInterruptCallback(uint8 ChNo)
+{
+
+}
+
 #if ((CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE) || (CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE))
 /****************************************************************************
  * @function	CanIf_RecvSoftFilter
@@ -109,7 +142,7 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
  *				ptr_Data : input parameters,the can message data
  *				Dlc : input parameters,the can message data length
  * @retval 		ret : function execute result
- * @attention   null
+ * @attention   NULL
 ****************************************************************************/
 #if (CANIF_CANMESSAGEIDTYPE == STANDARD)
 CAN_IF_LOCAL_API uint8 CanIf_RecvSoftFilterDlcCheck(uint8 chno, uint16 MsgId, uint8* ptr_Data, uint8 Dlc)
@@ -151,7 +184,7 @@ CAN_IF_LOCAL_API uint8 CanIf_RecvSoftFilterDlcCheck(uint8 chno, uint32 MsgId, ui
  *				ptr_Data : input parameters,the can message data
  *				Dlc : input parameters,the can message data length
  * @retval 		ret : function execute result
- * @attention   null
+ * @attention   NULL
 ****************************************************************************/
 #if (CANIF_CANMESSAGEIDTYPE == STANDARD)
 CAN_IF_LOCAL_API uint8 CanIf_WriteRecvBuffer(uint8 chno, uint16 MsgId, uint8* ptr_Data, uint8 Dlc)
@@ -193,7 +226,7 @@ CAN_IF_LOCAL_API uint8 CanIf_WriteRecvBuffer(uint8 chno, uint32 MsgId, uint8* pt
  *				ptr_Data : input parameters,the can message data
  *				Dlc : input parameters,the can message data length
  * @retval 		ret : function execute result
- * @attention   null
+ * @attention   NULL
 ****************************************************************************/
 #if (CANIF_CANMESSAGEIDTYPE == STANDARD)
 CAN_IF_LOCAL_API uint8 CanIf_ReadRecvBuffer(uint8* ptr_chno, uint16* ptr_MsgId, uint8* ptr_Data, uint8* ptr_Dlc)
@@ -230,11 +263,11 @@ CAN_IF_LOCAL_API uint8 CanIf_ReadRecvBuffer(uint8* ptr_chno, uint32* ptr_MsgId, 
 /****************************************************************************
  * @function	CanIf_RxMainFunction
  * @brief  		the can interface layer receive message main function
- * @param
- * @retval
- * @attention   null
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API void CanIf_RxMainFunction(void)
+CAN_IF_LOCAL_API void CanIf_RxMainFunction(void)
 {
 	CanIf_CanMsgStruct_Type ReadCanRecvMsg;
 
@@ -267,15 +300,156 @@ CAN_IF_EXTERN_API void CanIf_RxMainFunction(void)
 /****************************************************************************
  * @function	CanIf_TxMainFunction
  * @brief  		the can interface layer transmit message main function
- * @param
- * @retval
- * @attention   null
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API void CanIf_TxMainFunction(void)
+CAN_IF_LOCAL_API void CanIf_TxMainFunction(void)
 {
-
+	CanIf_TxTimerHandleFunction();
+	CanIf_TxManagementFunction();
 }
 
+/****************************************************************************
+ * @function	CanIf_TxMainFunction
+ * @brief  		the can interface layer transmit message main function
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_TxManagementFunction(void)
+{
+	/*Check the can controller hareware buffer is valid*/
+	CanIf_CanControllerTxHardwareBuffIndexVaildCheck(&CanIf_CanTxMsgCtrInfo.HwBufNo);
 
+	/*Check if the array is end*/
+	if(0xff == CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgValid)
+	{
+		CanIf_CanTxMsgCtrInfo.TxListIndex = 0x00;
+		return;
+	}
+	/*Check if the message is valid*/
+	else if(1 == CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgValid)
+	{
+		if(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].CurrentTime >= CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].CycleTime)
+		{
+			if(0 == CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgTxMode)/*Periodic*/
+			{
+				/*Setting message to can controller hardware buffer*/
+				CanIf_SetControllerMsgInfo(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].ChNo, \
+						CanIf_CanTxMsgCtrInfo.HwBufNo, \
+						CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgId,  \
+						CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].Data, \
+						CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].Dlc);
+				/*Request send message*/
+				CanIf_ReqControllerTxMsg(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].ChNo, \
+						CanIf_CanTxMsgCtrInfo.HwBufNo);
+				/*can controller hardware buffer index control*/
+				CanIf_CanTxMsgCtrInfo.HwBufNo++;
+				/*reset cycle timer*/
+				CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].CurrentTime = 0x00;
+			}
+			else if(1 == CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgTxMode)/*Event*/
+			{
+				if(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].TransmittedCounter < CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].TransmissionCounter)
+				{
+					/*Setting message to can controller hardware buffer*/
+					CanIf_SetControllerMsgInfo(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].ChNo, \
+							CanIf_CanTxMsgCtrInfo.HwBufNo, \
+							CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgId,  \
+							CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].Data, \
+							CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].Dlc);
+					/*Request send message*/
+					CanIf_ReqControllerTxMsg(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].ChNo, \
+							CanIf_CanTxMsgCtrInfo.HwBufNo);
+					/*can controller hardware buffer index control*/
+					CanIf_CanTxMsgCtrInfo.HwBufNo++;
+					/*reset cycle timer*/
+					CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].CurrentTime = 0x00;
+					/*transmit times control information update*/
+					CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].TransmittedCounter++;
+				}
+				else
+				{
+					/*Doing nothing*/
+				}
+			}
+		}
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+}
+
+/****************************************************************************
+ * @function	CanIf_TxTimerHandleFunction
+ * @brief  		the can interface layer handle the tx message timer and counter
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_TxTimerHandleFunction(void)
+{
+	uint8 index = 0x00;
+
+	for(index = 0x00; 	; index++)
+	{
+		/*Check if the array is end*/
+		if(0xff == CanIf_CanMsgTxList[index].MsgValid)
+		{
+			break;
+		}
+		/*Check if the message is valid*/
+		else if(1 == CanIf_CanMsgTxList[index].MsgValid)
+		{
+			if(0 == CanIf_CanMsgTxList[index].MsgTxMode)/*Periodic*/
+			{
+				//if(CanIf_CanMsgTxList[CanIf_CanMsgTxListIndex].CurrentTime <= CanIf_CanMsgTxList[CanIf_CanMsgTxListIndex].CycleTime)
+				{
+					CanIf_CanMsgTxList[index].CurrentTime++;
+				}
+			}
+			else if(1 == CanIf_CanMsgTxList[index].MsgTxMode)/*Event*/
+			{
+				if(CanIf_CanMsgTxList[index].TransmittedCounter < CanIf_CanMsgTxList[index].TransmissionCounter)
+				{
+					//if(CanIf_CanMsgTxList[CanIf_CanMsgTxListIndex].CurrentTime <= CanIf_CanMsgTxList[CanIf_CanMsgTxListIndex].CycleTime)
+					{
+						CanIf_CanMsgTxList[index].CurrentTime++;
+					}
+				}
+				else
+				{
+					/*Doing nothing*/
+				}
+			}
+			else
+			{
+				/*Doing nothing*/
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+	}
+}
+
+/****************************************************************************
+ * @function	CanIf_CanControllerTxHardwareBuffIndexVaildCheck
+ * @brief  		can interface layer check can controller Tx hardware buffer Index
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* bufNo)
+{
+	if(*bufNo >= CANIF_CONTROLLERHWBUFFERNUMBER_TX)
+	{
+		*bufNo = 0x00;
+	}
+}
 
 /*********************************File End*********************************/

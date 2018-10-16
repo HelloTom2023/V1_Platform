@@ -43,6 +43,7 @@
 /*Variable declaration AREA*/
 CanIf_CanMsgStruct_Type CanIf_CanRecvMsgBuff[CANIF_RECEIVEBUFFERNUMBER];
 CanIf_BuffControlInformation_Type CanIf_CanRecvMsgBuffCtrInfo;
+CanIf_CanMsgTxManagementControlInfomation_Type CanIf_CanTxMsgCtrInfo;
 
 /*Function declaration AREA*/
 /****************************************************************************
@@ -55,13 +56,31 @@ CanIf_BuffControlInformation_Type CanIf_CanRecvMsgBuffCtrInfo;
 CAN_IF_EXTERN_API void CanIf_Init(void);
 
 /****************************************************************************
+ * @function	CanIf_MainFunction
+ * @brief  		can interface layer main function.
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API void CanIf_MainFunction(void);
+
+/****************************************************************************
  * @function	CANbus_RecvInterruptCallBack
  * @brief  		the CAN BUS receive interrupt call back function.
  * @param  		ChNo: input parameters,CAN channel index.
  * @retval 		ret : function execute result
- * @attention   null
+ * @attention   NULL
 ****************************************************************************/
 CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo);
+
+/****************************************************************************
+ * @function	CanIf_SendInterruptCallback
+ * @brief  		the CAN BUS send interrupt call back function.
+ * @param  		ChNo: input parameters,CAN channel index.
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SendInterruptCallback(uint8 ChNo);
 
 #if ((CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE) || (CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE))
 /****************************************************************************
@@ -73,7 +92,7 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo);
  *				ptr_Data : input parameters,the can message data
  *				Dlc : input parameters,the can message data length
  * @retval 		ret : function execute result
- * @attention   null
+ * @attention   NULL
 ****************************************************************************/
 #if (CANIF_CANMESSAGEIDTYPE == STANDARD)
 CAN_IF_LOCAL_API uint8 CanIf_RecvSoftFilterDlcCheck(uint8 chno, uint16 MsgId, uint8* ptr_Data, uint8 Dlc);
@@ -90,7 +109,7 @@ CAN_IF_LOCAL_API uint8 CanIf_RecvSoftFilterDlcCheck(uint8 chno, uint32 MsgId, ui
  *				ptr_Data : input parameters,the can message data
  *				Dlc : input parameters,the can message data length
  * @retval 		ret : function execute result
- * @attention   null
+ * @attention   NULL
 ****************************************************************************/
 #if (CANIF_CANMESSAGEIDTYPE == STANDARD)
 CAN_IF_LOCAL_API uint8 CanIf_WriteRecvBuffer(uint8 chno, uint16 MsgId, uint8* ptr_Data, uint8 Dlc);
@@ -106,7 +125,7 @@ CAN_IF_LOCAL_API uint8 CanIf_WriteRecvBuffer(uint8 chno, uint32 MsgId, uint8* pt
  *				ptr_Data : input parameters,the can message data
  *				Dlc : input parameters,the can message data length
  * @retval 		ret : function execute result
- * @attention   null
+ * @attention   NULL
 ****************************************************************************/
 #if (CANIF_CANMESSAGEIDTYPE == STANDARD)
 CAN_IF_LOCAL_API uint8 CanIf_ReadRecvBuffer(uint8* ptr_chno, uint16* ptr_MsgId, uint8* ptr_Data, uint8* ptr_Dlc);
@@ -121,20 +140,43 @@ CAN_IF_LOCAL_API uint8 CanIf_ReadRecvBuffer(uint8* ptr_chno, uint32* ptr_MsgId, 
  * @retval
  * @attention   null
 ****************************************************************************/
-CAN_IF_EXTERN_API void CanIf_RxMainFunction(void);
+CAN_IF_LOCAL_API void CanIf_RxMainFunction(void);
 
 /****************************************************************************
  * @function	CanIf_TxMainFunction
  * @brief  		the can interface layer transmit message main function
- * @param
- * @retval
- * @attention   null
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API void CanIf_TxMainFunction(void);
+CAN_IF_LOCAL_API void CanIf_TxMainFunction(void);
 
+/****************************************************************************
+ * @function	CanIf_TxMainFunction
+ * @brief  		the can interface layer transmit message main function
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_TxManagementFunction(void);
 
+/****************************************************************************
+ * @function	CanIf_TxTimerHandleFunction
+ * @brief  		the can interface layer handle the tx message timer and counter
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_TxTimerHandleFunction(void);
 
-
+/****************************************************************************
+ * @function	CanIf_CanControllerTxHardwareBuffIndexVaildCheck
+ * @brief  		can interface layer check can controller Tx hardware buffer Index
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* bufNo);
 
 #endif /*_CAN_IF_H*/
 /*********************************File End*********************************/

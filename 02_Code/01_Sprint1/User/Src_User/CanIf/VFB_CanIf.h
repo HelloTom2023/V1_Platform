@@ -54,20 +54,20 @@
 #endif
 
 /****************************************************************************
- * @function	CanIf_GetControllerMsgBuffIndex
+ * @function	CanIf_GetControllerHwMsgBuffIndex
  * @brief		get can controller hardware message buffer index.
  * @param  		ChNo : input parameters,CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
  * @retval 		ret_value : the buffer index,the value range depend on mcu types.
  * @attention   null
 ****************************************************************************/
-#if (CANIF_READCONTROLLERMSGBUFFINDEX_API == ENABLE)
-#define CanIf_GetControllerMsgBuffIndex(ChNo)	CANbus_GetIntBuffNumber(ChNo)
+#if (CANIF_READCONTROLLERHWMSGBUFFINDEX_API == ENABLE)
+#define CanIf_GetControllerHwMsgBuffIndex(ChNo)	CANbus_GetIntBuffNumber(ChNo)
 #else
-#define CanIf_GetControllerMsgBuffIndex(ChNo)
+#define CanIf_GetControllerHwMsgBuffIndex(ChNo)
 #endif
 
 /****************************************************************************
- * @function	CanIf_GetControllerMsgBuffData
+ * @function	CanIf_GetControllerMsgInfo
  * @brief		get can controller hardware message buffer data,include Can message id,dlc and data.
  * @param  		ChNo :  input parameters , CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
  *				BuffNo : input parameters ,the buffer index,the user shall use API of CanIf_GetControllerMsgBuffIndex to get.
@@ -77,15 +77,57 @@
  * @retval 		ret_value : the buffer index,the value range depend on mcu types.
  * @attention   null
 ****************************************************************************/
-#if (CANIF_READCONTROLLERMSGBUFFDATA_API == ENABLE)
-#define CanIf_GetControllerMsgBuffData(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)	CANbus_MsgGetIdDataDlc(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
+#if (CANIF_READCONTROLLERMSGINFO_API == ENABLE)
+#define CanIf_GetControllerMsgInfo(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)	CANbus_MsgGetIdDataDlc(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
 #else
-#define CanIf_GetControllerMsgBuffData(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
+#define CanIf_GetControllerMsgInfo(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
 #endif
 
+/****************************************************************************
+ * @function	CanIf_SetControllerMsgData
+ * @brief		set can controller hardware message buffer data,include Can message id,dlc and data.
+ * @param  		ChNo :  input parameters , CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
+ *				BuffNo : input parameters ,the buffer index,the user shall use API of CanIf_GetControllerMsgBuffIndex to get.
+ *				ptr_Data : input parameters, the receive can message data
+ * @retval 		ret_value : the buffer index,the value range depend on mcu types.
+ * @attention   null
+****************************************************************************/
+#if (CANIF_WRITECONTROLLERMSGDATA_API == ENABLE)
+#define CanIf_SetControllerMsgData(ChNo,BufNo,ptr_Data)		CANbus_MsgSetDat(ChNo,BufNo,ptr_Data)
+#else
+#define CanIf_SetControllerMsgData(ChNo,BufNo,ptr_Data)
+#endif
 
+/****************************************************************************
+ * @function	CanIf_SetControllerMsgInfo
+ * @brief		set can controller hardware message buffer data,include Can message id,dlc and data.
+ * @param  		ChNo :  input parameters , CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
+ *				BuffNo : input parameters ,the buffer index,the user shall use API of CanIf_GetControllerMsgBuffIndex to get.
+ *				ptr_MsgId : input parameters, the receive can message id.
+ *				ptr_Data : input parameters, the receive can message data
+ *				ptr_Dlc : input parameters, the receive can message dlc.
+ * @retval 		ret_value : the function operate result.
+ * @attention   null
+****************************************************************************/
+#if (CANIF_WRITECONTROLLERMSGINFO_API == ENABLE)
+#define CanIf_SetControllerMsgInfo(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)	CANbus_MsgSetIdDataDlc(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
+#else
+#define CanIf_SetControllerMsgInfo(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
+#endif
 
-
+/****************************************************************************
+ * @function	CanIf_ReqControllerTxMsg
+ * @brief		Request can controller send the hardware buffer data to extended can bus
+ * @param  		ChNo :  input parameters , CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
+ *				BuffNo : input parameters ,the buffer index,the user shall use API of CanIf_GetControllerMsgBuffIndex to get.
+ * @retval 		ret_value : the function operate result.
+ * @attention   null
+****************************************************************************/
+#if (CANIF_REQUESRCONTROLLERTXMSG_API == ENABLE)
+#define CanIf_ReqControllerTxMsg(ChNo,BufNo)	CANbus_MsgTxReq(ChNo,BufNo)
+#else
+#define CanIf_ReqControllerTxMsg(ChNo,BufNo)
+#endif
 
 
 /****************************************************************************

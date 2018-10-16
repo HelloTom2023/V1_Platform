@@ -39,7 +39,22 @@ CanIf_CanMsgSoftFilterDlcCheck_Type CanIf_CanMsgSoftFilterDlcCheckTable[] =
 		{10,		0xff,	0x00,		0x00}
 };
 
-
+/*The array name not modify*/
+CanIf_CanMsgTxManagementDataBuffer_Type CanIf_CanMsgTxList[] =
+{
+		/*ChNo, MsgValid, MsgTxMode, CycleTime, CurrentTime, TransmissionCounter, TransmittedCounter, 	MsgId, Dlc,	 Data*/
+		{0,		1,			0,			100,		0,				0,						0,			0x121,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			0,			100,		0,				0,						0,			0x123,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			0,			100,		0,				0,						0,			0x125,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			0,			100,		0,				0,						0,			0x321,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			0,			100,		0,				0,						0,			0x221,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			0,			100,		0,				0,						0,			0x521,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			1,			10,			0,				3,						0,			0x621,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			0,			100,		0,				0,						0,			0x126,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			0,			100,		0,				0,						0,			0x171,	8,	{0,0,0,0,0,0,0,0}},
+		{0,		1,			0,			100,		0,				0,						0,			0x191,	8,	{0,0,0,0,0,0,0,0}},
+		{0,	  0xff,			0,			100,		0,				0,						0,			0xffff,	8,	{0,0,0,0,0,0,0,0}}
+};
 
 
 
