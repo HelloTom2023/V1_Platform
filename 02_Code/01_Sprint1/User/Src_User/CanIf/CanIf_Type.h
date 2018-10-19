@@ -56,9 +56,10 @@ typedef struct CanIf_CanMsgSoftFilterDlcCheck_Type_Tag
 
 typedef struct CanIf_CanMsgTxManagementDataBuffer_Type_Tag
 {
+	uint8 Index;
 	uint8 ChNo;
-	uint8 MsgValid;		/*If you msg is valid,the value setting to 1*/
-	uint8 MsgTxMode;	/*0: Periodic, 1 : Event*/
+	uint8 MsgValid;		/*0: the message is invaild, 1: the message is vaild*/
+	uint8 MsgTxMode;	/*0: Periodic, 1: Event*/
 	uint16 CycleTime;
 	uint16 CurrentTime;
 	uint8 TransmissionCounter;	/*If the MsgTxMode is Event,the param show the message send times*/

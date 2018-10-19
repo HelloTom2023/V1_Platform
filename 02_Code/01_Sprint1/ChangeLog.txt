@@ -1,4 +1,14 @@
-﻿Version : V0.0.3
+﻿Version : V0.0.4
+ChangeLog :
+1.CanIf : Add CAN TX message list index control.
+2.CanIf : Add some set CanIf_CanMsgTxList elements APIs.
+3.CanIf : sturct CanIf_CanMsgTxManagementDataBuffer_Type add index element.
+4.Common : Add E_PARAM_NULLPTR Macro definition.
+5.Common : modify CommFunc_MemCopyData call memcpy function.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.10.19
+/*********************************************************************************************************************/
+Version : V0.0.3
 ChangeLog :
 1.Add some Apis between can driver and Can Interface layer
 2.CanIf modules add send message strategy.Coding done,not debug.

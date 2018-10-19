@@ -172,11 +172,124 @@ CAN_IF_LOCAL_API void CanIf_TxTimerHandleFunction(void);
 /****************************************************************************
  * @function	CanIf_CanControllerTxHardwareBuffIndexVaildCheck
  * @brief  		can interface layer check can controller Tx hardware buffer Index
- * @param		NULL
+ * @param		ptr_bufNo : input and output parameter,controller hardware buffer index
  * @retval		NULL
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* bufNo);
+CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* ptr_bufNo);
+
+/****************************************************************************
+ * @function	CanIf_SetChNo2TxList
+ * @brief  		set CanIf_CanMsgTxList ChNo
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				ChNo :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetChNo2TxList(uint8 Index, uint8 ChNo);
+
+/****************************************************************************
+ * @function	CanIf_SetMsgValid2TxList
+ * @brief  		set CanIf_CanMsgTxList MsgValid
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				MsgValid :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetMsgValid2TxList(uint8 Index, uint8 MsgValid);
+
+/****************************************************************************
+ * @function	CanIf_SetMsgTxMode2TxList
+ * @brief  		set CanIf_CanMsgTxList MsgTxMode
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				MsgTxMode :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetMsgTxMode2TxList(uint8 Index, uint8 MsgTxMode);
+
+/****************************************************************************
+ * @function	CanIf_SetCycleTime2TxList
+ * @brief  		set CanIf_CanMsgTxList CycleTime
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				CycleTime :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetCycleTime2TxList(uint8 Index, uint16 CycleTime);
+
+/****************************************************************************
+ * @function	CanIf_SetCycleTime2TxList
+ * @brief  		set CanIf_CanMsgTxList CurrentTime
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				CurrentTime :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetCurrentTime2TxList(uint8 Index, uint16 CurrentTime);
+
+/****************************************************************************
+ * @function	CanIf_SetTransmissionCounter2TxList
+ * @brief  		set CanIf_CanMsgTxList TransmissionCounter
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				TransmissionCounter :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetTransmissionCounter2TxList(uint8 Index, uint8 TransmissionCounter);
+
+/****************************************************************************
+ * @function	CanIf_SetTransmittedCounter2TxList
+ * @brief  		set CanIf_CanMsgTxList TransmittedCounter
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				TransmittedCounter :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetTransmittedCounter2TxList(uint8 Index, uint8 TransmittedCounter);
+
+/****************************************************************************
+ * @function	CanIf_SetMsgId2TxList
+ * @brief  		set CanIf_CanMsgTxList MsgId
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				MsgId :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetMsgId2TxList(uint8 Index, uint32 MsgId);
+
+/****************************************************************************
+ * @function	CanIf_SetDlc2TxList
+ * @brief  		set CanIf_CanMsgTxList Dlc
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				Dlc :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetDlc2TxList(uint8 Index, uint8 Dlc);
+
+/****************************************************************************
+ * @function	CanIf_SetData2TxList
+ * @brief  		set CanIf_CanMsgTxList Data
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetData2TxList(uint8 Index, uint8 *ptr_Data, uint8 Dtatlength);
+
+/****************************************************************************
+ * @function	CanIf_SetMsgIdDlcData2TxList
+ * @brief  		set CanIf_CanMsgTxList MsgId,Dlc,Data
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				MsgId :
+ * 				Dlc :
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetMsgIdDlcData2TxList(uint8 Index, uint32 MsgId,uint8 Dlc, uint8 *ptr_Data);
+
 
 #endif /*_CAN_IF_H*/
 /*********************************File End*********************************/

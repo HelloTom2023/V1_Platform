@@ -55,12 +55,19 @@
 #define E_CANMSGDLC_ERROR					(2)
 #endif
 
+/*The range of parameters values is overflowed*/
 #ifndef E_PARAM_RANGE_OVERFLOW
 #define E_PARAM_RANGE_OVERFLOW				(3)
 #endif
 
+/*The parameters is invalid*/
 #ifndef E_PARAM_INVALID
 #define E_PARAM_INVALID						(4)
+#endif
+
+/*The parameters is a NULL pointer*/
+#ifndef E_PARAM_NULLPTR
+#define E_PARAM_NULLPTR						(5)
 #endif
 
 /*boolean type*/

@@ -380,6 +380,8 @@ CAN_IF_LOCAL_API void CanIf_TxManagementFunction(void)
 	{
 		/*Doing nothing*/
 	}
+	/*can TX message list index control*/
+	CanIf_CanTxMsgCtrInfo.TxListIndex++;
 }
 
 /****************************************************************************
@@ -440,16 +442,346 @@ CAN_IF_LOCAL_API void CanIf_TxTimerHandleFunction(void)
 /****************************************************************************
  * @function	CanIf_CanControllerTxHardwareBuffIndexVaildCheck
  * @brief  		can interface layer check can controller Tx hardware buffer Index
- * @param		NULL
+ * @param		ptr_bufNo : input and output parameter,controller hardware buffer index
  * @retval		NULL
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* bufNo)
+CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* ptr_bufNo)
 {
-	if(*bufNo >= CANIF_CONTROLLERHWBUFFERNUMBER_TX)
+	if(*ptr_bufNo >= CANIF_CONTROLLERHWBUFFERNUMBER_TX)
 	{
-		*bufNo = 0x00;
+		*ptr_bufNo = 0x00;
 	}
 }
+
+/****************************************************************************
+ * @function	CanIf_SetChNo2TxList
+ * @brief  		set CanIf_CanMsgTxList ChNo
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				ChNo :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetChNo2TxList(uint8 Index, uint8 ChNo)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Check the ChNo is vaild*/
+		if(ChNo >= CANIF_CANCONTROLLERCHANNELNUMBER)
+		{
+			ret = E_PARAM_RANGE_OVERFLOW;
+		}
+		else
+		{
+			CanIf_CanMsgTxList[Index].ChNo = ChNo;
+			ret = E_OK;
+		}
+	}
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetMsgValid2TxList
+ * @brief  		set CanIf_CanMsgTxList MsgValid
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				MsgValid :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetMsgValid2TxList(uint8 Index, uint8 MsgValid)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*it will add check data vaild rules.*/
+		CanIf_CanMsgTxList[Index].MsgValid = MsgValid;
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetMsgTxMode2TxList
+ * @brief  		set CanIf_CanMsgTxList MsgTxMode
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				MsgTxMode :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetMsgTxMode2TxList(uint8 Index, uint8 MsgTxMode)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*it will add check data vaild rules.*/
+		CanIf_CanMsgTxList[Index].MsgTxMode = MsgTxMode;
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetCycleTime2TxList
+ * @brief  		set CanIf_CanMsgTxList CycleTime
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				CycleTime :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetCycleTime2TxList(uint8 Index, uint16 CycleTime)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*it will add check data vaild rules.*/
+		CanIf_CanMsgTxList[Index].CycleTime = CycleTime;
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetCycleTime2TxList
+ * @brief  		set CanIf_CanMsgTxList CurrentTime
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				CurrentTime :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetCurrentTime2TxList(uint8 Index, uint16 CurrentTime)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*it will add check data vaild rules.*/
+		CanIf_CanMsgTxList[Index].CurrentTime = CurrentTime;
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetTransmissionCounter2TxList
+ * @brief  		set CanIf_CanMsgTxList TransmissionCounter
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				TransmissionCounter :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetTransmissionCounter2TxList(uint8 Index, uint8 TransmissionCounter)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*it will add check data vaild rules.*/
+		CanIf_CanMsgTxList[Index].TransmissionCounter = TransmissionCounter;
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetTransmittedCounter2TxList
+ * @brief  		set CanIf_CanMsgTxList TransmittedCounter
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				TransmittedCounter :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetTransmittedCounter2TxList(uint8 Index, uint8 TransmittedCounter)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*it will add check data vaild rules.*/
+		CanIf_CanMsgTxList[Index].TransmittedCounter = TransmittedCounter;
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetMsgId2TxList
+ * @brief  		set CanIf_CanMsgTxList MsgId
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				MsgId :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetMsgId2TxList(uint8 Index, uint32 MsgId)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*it will add check data vaild rules.*/
+		CanIf_CanMsgTxList[Index].MsgId = MsgId;
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetDlc2TxList
+ * @brief  		set CanIf_CanMsgTxList Dlc
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				Dlc :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetDlc2TxList(uint8 Index, uint8 Dlc)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*it will add check data vaild rules.*/
+		CanIf_CanMsgTxList[Index].Dlc = Dlc;
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetData2TxList
+ * @brief  		set CanIf_CanMsgTxList Data
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetData2TxList(uint8 Index, uint8 *ptr_Data, uint8 Dtatlength)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		ret = E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		if(NULL != ptr_Data)
+		{
+			if(Dtatlength <= 8)
+			{
+				memcpy(ptr_Data, CanIf_CanMsgTxList[Index].Data, Dtatlength);
+				ret = E_OK;
+			}
+			else
+			{
+				/*Doing nothing*/
+			}
+		}
+		else
+		{
+			ret = E_PARAM_NULLPTR;
+		}
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetMsgIdDlcData2TxList
+ * @brief  		set CanIf_CanMsgTxList MsgId,Dlc,Data
+ * @param		Index : will set CanIf_CanMsgTxList index
+ * 				MsgId :
+ * 				Dlc :
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_SetMsgIdDlcData2TxList(uint8 Index, uint32 MsgId,uint8 Dlc, uint8 *ptr_Data)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 DataLength = 0x00;
+
+	/*Check the index is vaild*/
+	if(Index >= (sizeof(CanIf_CanMsgTxList)/sizeof(CanIf_CanMsgTxManagementDataBuffer_Type)) )
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check ptr_Data is valid*/
+	if(NULL == ptr_Data)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	CanIf_CanMsgTxList[Index].MsgId = MsgId;
+	CanIf_CanMsgTxList[Index].Dlc = Dlc;
+	DataLength = Dlc;
+	memcpy(ptr_Data, CanIf_CanMsgTxList[Index].Data, DataLength);
+	ret = E_OK;
+
+	return ret;
+}
+
+
+
+
+
 
 /*********************************File End*********************************/

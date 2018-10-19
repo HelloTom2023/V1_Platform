@@ -52,7 +52,7 @@
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-#define CommFunc_MemCopyData(ptr_DestData,ptr_SoureData,DataLength)		memset(ptr_DestData,ptr_SoureData,DataLength)
+#define CommFunc_MemCopyData(ptr_DestData,ptr_SoureData,DataLength)		memcpy(ptr_DestData,ptr_SoureData,DataLength)
 
 
 
