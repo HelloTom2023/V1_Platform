@@ -1,4 +1,13 @@
-﻿Version : V0.0.4
+﻿Version : V0.0.5
+ChangeLog :
+1.CanIf : rename set CanIf_CanMsgTxList elements APIs name.
+2.CanIf : add some  get or set CanIf_CanMsgRxList elements APIs .
+3.CanIf : modify message check strategy.
+4.CanIf : add CanIf_PreCopy callback function. the function implement in application
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.10.20
+/*********************************************************************************************************************/
+Version : V0.0.4
 ChangeLog :
 1.CanIf : Add CAN TX message list index control.
 2.CanIf : Add some set CanIf_CanMsgTxList elements APIs.

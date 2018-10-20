@@ -85,7 +85,7 @@
 
 /*The interface between Can Interface Layer and Can Transport Layer */
 #define CANIF_CANTP_RECVNOTIFICATION_API					ENABLE
-
+#define CANIF_PRECOPY_API									DISABLE
 
 
 

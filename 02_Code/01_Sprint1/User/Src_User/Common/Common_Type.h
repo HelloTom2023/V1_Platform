@@ -70,6 +70,17 @@
 #define E_PARAM_NULLPTR						(5)
 #endif
 
+/*Search function result is not found*/
+#ifndef E_RET_NOT_FOUND
+#define E_RET_NOT_FOUND						(6)
+#endif
+
+/*Message is invalid*/
+#ifndef E_MSG_INVALID
+#define E_MSG_INVALID						(7)
+#endif
+
+
 /*boolean type*/
 #ifndef TRUE
 #define TRUE	(1)

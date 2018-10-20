@@ -146,7 +146,21 @@
 #define CanIf_CanTp_RecvNotificationFunction(ChNo,MsgId,ptr_Data,Dlc)
 #endif
 
-
+/****************************************************************************
+ * @function	CanIf_PreCopy
+ * @brief
+ * @param  		ChNo :  input parameters , CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
+ *				ptr_MsgId : output parameters, the receive can message id.
+ *				ptr_Data : output parameters, the receive can message data
+ *				ptr_Dlc : output parameters, the receive can message dlc.
+ * @retval 		ret :
+ * @attention   null
+****************************************************************************/
+#if (CANIF_PRECOPY_API == ENABLE)
+#define CanIf_PreCopy(ChNo,MsgId,ptr_Data,Dlc)
+#else
+#define CanIf_PreCopy(ChNo,MsgId,ptr_Data,Dlc)	E_OK
+#endif
 
 
 

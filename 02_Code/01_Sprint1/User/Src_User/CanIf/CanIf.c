@@ -94,23 +94,12 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 		 * */
 		CanIf_GetControllerMsgInfo(ChNo, BufIndex, &CanRecvMsg.CanMsgId, CanRecvMsg.CanData, &CanRecvMsg.CanMsgDlc);
 
-		/*Add notification application layer callback*/
-		/*PreCopy Function callback*/
-
-
-#if ( (CANIF_RECEIVERMESSAGESOTFFILTER == ENABLE) || (CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE) )
-		ret_subfunc = CanIf_RecvSoftFilterDlcCheck(CanRecvMsg.CanChNo, CanRecvMsg.CanMsgId, CanRecvMsg.CanData, CanRecvMsg.CanMsgDlc);
-		if(E_CANMSGDLC_ERROR == ret_subfunc)
+		/*notification application layer callback : PreCopy Function callback*/
+		if(E_OK != CanIf_PreCopy(CanRecvMsg.CanChNo, CanRecvMsg.CanMsgId, CanRecvMsg.CanData, CanRecvMsg.CanMsgDlc))
 		{
-			/*process DLC ERROR ,eg.Notification other layer*/
-			/*Reserved*/
-		}
-		else if(E_NOT_OK == ret_subfunc)
-		{
-			/*Doing nothing*/
+			ret = E_NOT_OK;
 		}
 		else
-#endif
 		{
 			/*write data to CanIf_CanRecvMsgBuf buffer*/
 			ret = CanIf_WriteRecvBuffer(CanRecvMsg.CanChNo, CanRecvMsg.CanMsgId, CanRecvMsg.CanData, CanRecvMsg.CanMsgDlc);
@@ -131,50 +120,6 @@ CAN_IF_EXTERN_API uint8 CanIf_SendInterruptCallback(uint8 ChNo)
 {
 
 }
-
-#if ((CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE) || (CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE))
-/****************************************************************************
- * @function	CanIf_RecvSoftFilter
- * @brief  		can receive message software filter.
- * 				the function filter rules base on can message id and DLC .
- * @param  		ChNo: input parameters,CAN channel index.
- *				MsgId : input parameters,the can message id
- *				ptr_Data : input parameters,the can message data
- *				Dlc : input parameters,the can message data length
- * @retval 		ret : function execute result
- * @attention   NULL
-****************************************************************************/
-#if (CANIF_CANMESSAGEIDTYPE == STANDARD)
-CAN_IF_LOCAL_API uint8 CanIf_RecvSoftFilterDlcCheck(uint8 chno, uint16 MsgId, uint8* ptr_Data, uint8 Dlc)
-#else
-CAN_IF_LOCAL_API uint8 CanIf_RecvSoftFilterDlcCheck(uint8 chno, uint32 MsgId, uint8* ptr_Data, uint8 Dlc)
-#endif
-{
-	uint8 ret = E_NOT_OK;
-	uint8 Index = 0x00;
-
-	for(Index = 0; ; Index++)
-	{
-		if(0xff == CanIf_CanMsgSoftFilterDlcCheckTable[Index].CanChNo)
-		{
-			break;
-		}
-
-		if((chno == CanIf_CanMsgSoftFilterDlcCheckTable[Index].CanChNo) && (MsgId == CanIf_CanMsgSoftFilterDlcCheckTable[Index].CanMsgId))
-		{
-			ret = E_OK;
-#if (CANIF_RECEIVERMESSAGEDLCCHECK == ENABLE)
-			if(Dlc != CanIf_CanMsgSoftFilterDlcCheckTable[Index].Dlc)
-			{
-				ret = E_CANMSGDLC_ERROR;
-			}
-#endif
-			break;
-		}
-	}
-	return ret;
-}
-#endif
 
 /****************************************************************************
  * @function	CanIf_WriteRecvBuffer
@@ -269,6 +214,20 @@ CAN_IF_LOCAL_API uint8 CanIf_ReadRecvBuffer(uint8* ptr_chno, uint32* ptr_MsgId, 
 ****************************************************************************/
 CAN_IF_LOCAL_API void CanIf_RxMainFunction(void)
 {
+	CanIf_RxManagementFunction();
+	CanIf_RxTimerHandleFunction();
+	CanIf_MsgTimeoutCheck();
+}
+
+/****************************************************************************
+ * @function	CanIf_RxManagementFunction
+ * @brief  		handles the rx buffer data
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_RxManagementFunction(void)
+{
 	CanIf_CanMsgStruct_Type ReadCanRecvMsg;
 
 	/*check the can receive message buffer is new data*/
@@ -277,6 +236,29 @@ CAN_IF_LOCAL_API void CanIf_RxMainFunction(void)
 		/*Read data and notification to Can Transport layer*/
 		CanIf_ReadRecvBuffer(&ReadCanRecvMsg.CanChNo, &ReadCanRecvMsg.CanMsgId , ReadCanRecvMsg.CanData , &ReadCanRecvMsg.CanMsgDlc);
 
+		/*have other idea : in the receive interrupt callback function check message.*/
+		/*Message id check*/
+		if(E_OK != CanIf_MsgIdCheck(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId) )
+		{
+			return;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*overload the message timeout timer*/
+		CanIf_OverloadMsgTimeoutTimer(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId);
+
+		/*Check Dlc*/
+		if(E_OK != CanIf_MsgDlcCheck(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId, ReadCanRecvMsg.CanMsgDlc))
+		{
+			return;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
 
 		if((CANIF_DIAG_CHANNEL_ADDR != ReadCanRecvMsg.CanChNo) &&
 				((CANIF_DIAG_PHY_ADDR == ReadCanRecvMsg.CanMsgId) || (CANIF_DIAG_FUNC_ADDR == ReadCanRecvMsg.CanMsgId)))
@@ -296,6 +278,606 @@ CAN_IF_LOCAL_API void CanIf_RxMainFunction(void)
 		}
 	}
 }
+
+/****************************************************************************
+ * @function	CanIf_MsgIdCheck
+ * @brief  		software filter
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters.
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_MsgIdCheck(uint8 ChNo, uint32 MsgId)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 index = 0x00;
+
+	/*get the message id in RxList index*/
+	ret = CanIf_GetRxListIndex(&index,ChNo,MsgId);
+	if(E_OK != ret)
+	{
+		return ret;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*check the message is valid*/
+	if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+	{
+		return E_MSG_INVALID;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*Check MsgCheckMode*/
+	if(CANIF_CHECK_MODE_ID == (CanIf_CanMsgRxList[index].MsgCheckMode & CANIF_CHECK_MODE_ID) )
+	{
+		/*compare the message id*/
+		if(MsgId == CanIf_CanMsgRxList[index].MsgId)
+		{
+			CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet & (~CANIF_CHECK_MODE_ID);
+			ret = E_OK;
+		}
+		else
+		{
+			CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet | CANIF_CHECK_MODE_ID;
+			ret = E_NOT_OK;
+		}
+	}
+	else
+	{
+		CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet & (~CANIF_CHECK_MODE_ID);
+		/*if you message not support message id check,return E_OK*/
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_MsgDlcCheck
+ * @brief
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters.
+ * 				Dlc : input parameters.
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_MsgDlcCheck(uint8 ChNo, uint32 MsgId,uint8 Dlc)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 index = 0x00;
+
+	/*get the message id in RxList index*/
+	ret = CanIf_GetRxListIndex(&index,ChNo,MsgId);
+	if(E_OK != ret)
+	{
+		return ret;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*check the message is valid*/
+	if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+	{
+		return E_MSG_INVALID;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*Check MsgCheckMode*/
+	if(CANIF_CHECK_MODE_DLC == (CanIf_CanMsgRxList[index].MsgCheckMode & CANIF_CHECK_MODE_DLC) )
+	{
+		/*compare the message dlc*/
+		if(Dlc == CanIf_CanMsgRxList[index].Dlc)
+		{
+			CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet & (~CANIF_CHECK_MODE_DLC);
+			ret = E_OK;
+		}
+		else
+		{
+			CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet | CANIF_CHECK_MODE_DLC;
+			ret = E_NOT_OK;
+		}
+	}
+	else
+	{
+		CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet & (~CANIF_CHECK_MODE_DLC);
+		/*if you message not support message dlc check,return E_OK*/
+		ret = E_OK;
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_MsgTimeoutCheck
+ * @brief
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters.
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_MsgTimeoutCheck(void)
+{
+	uint8 index = 0x00;
+	uint8 RxListLength = sizeof(CanIf_CanMsgRxList) / sizeof(CanIf_CanMsgRxManagementDataBuffer_Type);
+
+	for(index = 0 ; index < RxListLength ; index++)
+	{
+		/*check the message is valid*/
+		if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+		{
+			/*if the message is invalid,break current loop,and start next loop*/
+			continue;
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+
+		/*Check MsgRxMode is CANIF_MSG_MODE_PERIODIC or CANIF_MSG_MODE_MIXED*/
+		if(	(CANIF_MSG_MODE_PERIODIC != CanIf_CanMsgRxList[index].MsgRxMode) && \
+				(CANIF_MSG_MODE_MIXED != CanIf_CanMsgRxList[index].MsgRxMode)	)
+		{
+			/*if the message is not PERIODIC or MIXED message,break current loop,and start next loop*/
+			continue;
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+
+		/*check the message check mode support timeout check*/
+		if(CANIF_CHECK_MODE_TIMEOUT != (CanIf_CanMsgRxList[index].MsgCheckMode & CANIF_CHECK_MODE_TIMEOUT) )
+		{
+			/*if the message is not support CANIF_CHECK_MODE_TIMEOUT,break current loop,and start next loop*/
+			continue;
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+
+		/*check the timer is timeout*/
+		if(0x00 == CanIf_CanMsgRxList[index].CurrentTime)
+		{
+			CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet | CANIF_CHECK_MODE_TIMEOUT;
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+	}
+}
+
+/****************************************************************************
+ * @function	CanIf_OverloadMsgTimeoutTimer
+ * @brief
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters.
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_OverloadMsgTimeoutTimer(uint8 ChNo, uint32 MsgId)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 index = 0x00;
+
+	/*get the message id in RxList index*/
+	ret = CanIf_GetRxListIndex(&index,ChNo,MsgId);
+	if(E_OK != ret)
+	{
+		return ret;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*check the message is valid*/
+	if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+	{
+		return E_MSG_INVALID;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*Check MsgRxMode is CANIF_MSG_MODE_PERIODIC or CANIF_MSG_MODE_MIXED*/
+	if(	(CANIF_MSG_MODE_PERIODIC == CanIf_CanMsgRxList[index].MsgRxMode) || \
+			(CANIF_MSG_MODE_MIXED == CanIf_CanMsgRxList[index].MsgRxMode)	)
+	{
+		/*check the message check mode support timeout check*/
+		if(CANIF_CHECK_MODE_TIMEOUT == (CanIf_CanMsgRxList[index].MsgCheckMode & CANIF_CHECK_MODE_TIMEOUT) )
+		{
+			/*Over load Timeout Timer*/
+			CanIf_CanMsgRxList[index].CurrentTime = CanIf_CanMsgRxList[index].Timeout;
+			/*Update the timeout check result*/
+			//if(CANIF_CHECK_MODE_TIMEOUT == (CanIf_CanMsgRxList[index].MsgCheckRet & CANIF_CHECK_MODE_TIMEOUT))
+			{
+				CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet & (~CANIF_CHECK_MODE_TIMEOUT);
+			}
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_RxTimerHandleFunction
+ * @brief  		the can interface layer handle the Rx message timer and counter
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API void CanIf_RxTimerHandleFunction(void)
+{
+	uint8 index = 0x00;
+	uint8 RxListLength = sizeof(CanIf_CanMsgRxList) / sizeof(CanIf_CanMsgRxManagementDataBuffer_Type);
+
+	for(index = 0 ; index < RxListLength ; index++)
+	{
+		/*check the message is valid*/
+		if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+		{
+			/*if the message is invalid,break current loop,and start next loop*/
+			continue;
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+
+		/*Check MsgRxMode is CANIF_MSG_MODE_PERIODIC or CANIF_MSG_MODE_MIXED*/
+		if(	(CANIF_MSG_MODE_PERIODIC != CanIf_CanMsgRxList[index].MsgRxMode) && \
+				(CANIF_MSG_MODE_MIXED != CanIf_CanMsgRxList[index].MsgRxMode)	)
+		{
+			/*if the message is not PERIODIC or MIXED message,break current loop,and start next loop*/
+			continue;
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+
+		/*check the message check mode support timeout check*/
+		if(CANIF_CHECK_MODE_TIMEOUT != (CanIf_CanMsgRxList[index].MsgCheckMode & CANIF_CHECK_MODE_TIMEOUT) )
+		{
+			/*if the message is not support CANIF_CHECK_MODE_TIMEOUT,break current loop,and start next loop*/
+			continue;
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+
+		/*update timeout timer : CurrentTime*/
+		if(0x00 != CanIf_CanMsgRxList[index].CurrentTime)
+		{
+			CanIf_CanMsgRxList[index].CurrentTime --;
+		}
+		else
+		{
+			/*doing nothing*/
+		}
+	}
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListIndex
+ * @brief  		get CanIf_CanMsgRxList index base on ChNo and MsgId
+ * @param		ptr_Index : output parameters,
+ * 				ChNo : input parameters,
+ * 				MsgId : input parameters.
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListIndex(uint8* ptr_Index, uint8 ChNo, uint32 MsgId)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 index = 0x00;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_Index)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	if(ChNo >= CANIF_CANCONTROLLERCHANNELNUMBER)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	for(index = 0;  ;index++)
+	{
+		if(0xff == CanIf_CanMsgRxList[index].ChNo)
+		{
+			return E_RET_NOT_FOUND; /*not found*/
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		if( (ChNo == CanIf_CanMsgRxList[index].ChNo ) && (MsgId == CanIf_CanMsgRxList[index].MsgId) )
+		{
+			*ptr_Index = index;
+			return E_OK;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+	}
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListChNo
+ * @brief  		get CanIf_CanMsgRxList ChNo base on Index
+ * @param		Index : input parameters,
+ * 				ptr_ChNo : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListChNo(uint8 Index, uint8* ptr_ChNo)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_ChNo)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_ChNo = CanIf_CanMsgRxList[Index].ChNo;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListMsgValid
+ * @brief  		get CanIf_CanMsgRxList MsgValid base on Index
+ * @param		Index : input parameters,
+ * 				ptr_MsgValid : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgValid(uint8 Index, uint8* ptr_MsgValid)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_MsgValid)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_MsgValid = CanIf_CanMsgRxList[Index].MsgValid;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListMsgRxMode
+ * @brief  		get CanIf_CanMsgRxList MsgRxMode base on Index
+ * @param		Index : input parameters,
+ * 				ptr_MsgRxMode : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgRxMode(uint8 Index, uint8* ptr_MsgRxMode)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_MsgRxMode)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_MsgRxMode = CanIf_CanMsgRxList[Index].MsgRxMode;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListMsgCheckMode
+ * @brief  		get CanIf_CanMsgRxList MsgCheckMode base on Index
+ * @param		Index : input parameters,
+ * 				ptr_MsgCheckMode : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgCheckMode(uint8 Index, uint8* ptr_MsgCheckMode)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_MsgCheckMode)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_MsgCheckMode = CanIf_CanMsgRxList[Index].MsgCheckMode;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListTimeout
+ * @brief  		get CanIf_CanMsgRxList Timeout base on Index
+ * @param		Index : input parameters,
+ * 				ptr_Timeout : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListTimeout(uint8 Index, uint16* ptr_Timeout)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_Timeout)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_Timeout = CanIf_CanMsgRxList[Index].Timeout;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListCurrentTime
+ * @brief  		get CanIf_CanMsgRxList CurrentTime base on Index
+ * @param		Index : input parameters,
+ * 				ptr_CurrentTime : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListCurrentTime(uint8 Index, uint16* ptr_CurrentTime)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_CurrentTime)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_CurrentTime = CanIf_CanMsgRxList[Index].CurrentTime;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListMsgId
+ * @brief  		get CanIf_CanMsgRxList MsgId base on Index
+ * @param		Index : input parameters,
+ * 				ptr_MsgId : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgId(uint8 Index, uint32* ptr_MsgId)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_MsgId)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_MsgId = CanIf_CanMsgRxList[Index].MsgId;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxListDlc
+ * @brief  		get CanIf_CanMsgRxList Dlc base on Index
+ * @param		Index : input parameters,
+ * 				ptr_Dlc : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListDlc(uint8 Index, uint32* ptr_Dlc)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_Dlc)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_Dlc = CanIf_CanMsgRxList[Index].Dlc;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_SetRxListCurrentTime
+ * @brief  		set CanIf_CanMsgRxList CurrentTime base on Index
+ * @param		Index : input parameters,
+ * 				CurrentTime : input parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_SetRxListCurrentTime(uint8 Index, uint16 CurrentTime)
+{
+	uint8 ret = E_OK;
+
+	CanIf_CanMsgRxList[Index].CurrentTime = CurrentTime;
+
+	return ret;
+}
+
 
 /****************************************************************************
  * @function	CanIf_TxMainFunction
@@ -323,7 +905,7 @@ CAN_IF_LOCAL_API void CanIf_TxManagementFunction(void)
 	CanIf_CanControllerTxHardwareBuffIndexVaildCheck(&CanIf_CanTxMsgCtrInfo.HwBufNo);
 
 	/*Check if the array is end*/
-	if(0xff == CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgValid)
+	if(0xff == CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].ChNo)
 	{
 		CanIf_CanTxMsgCtrInfo.TxListIndex = 0x00;
 		return;
@@ -455,14 +1037,14 @@ CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* pt
 }
 
 /****************************************************************************
- * @function	CanIf_SetChNo2TxList
+ * @function	CanIf_SetTxListChNo
  * @brief  		set CanIf_CanMsgTxList ChNo
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				ChNo :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetChNo2TxList(uint8 Index, uint8 ChNo)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListChNo(uint8 Index, uint8 ChNo)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -489,14 +1071,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetChNo2TxList(uint8 Index, uint8 ChNo)
 }
 
 /****************************************************************************
- * @function	CanIf_SetMsgValid2TxList
+ * @function	CanIf_SetTxListMsgValid
  * @brief  		set CanIf_CanMsgTxList MsgValid
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				MsgValid :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetMsgValid2TxList(uint8 Index, uint8 MsgValid)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgValid(uint8 Index, uint8 MsgValid)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -515,14 +1097,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetMsgValid2TxList(uint8 Index, uint8 MsgValid)
 }
 
 /****************************************************************************
- * @function	CanIf_SetMsgTxMode2TxList
+ * @function	CanIf_SetTxListMsgTxMode
  * @brief  		set CanIf_CanMsgTxList MsgTxMode
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				MsgTxMode :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetMsgTxMode2TxList(uint8 Index, uint8 MsgTxMode)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgTxMode(uint8 Index, uint8 MsgTxMode)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -541,14 +1123,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetMsgTxMode2TxList(uint8 Index, uint8 MsgTxMode)
 }
 
 /****************************************************************************
- * @function	CanIf_SetCycleTime2TxList
+ * @function	CanIf_SetTxListCycleTime
  * @brief  		set CanIf_CanMsgTxList CycleTime
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				CycleTime :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetCycleTime2TxList(uint8 Index, uint16 CycleTime)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListCycleTime(uint8 Index, uint16 CycleTime)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -567,14 +1149,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetCycleTime2TxList(uint8 Index, uint16 CycleTime)
 }
 
 /****************************************************************************
- * @function	CanIf_SetCycleTime2TxList
+ * @function	CanIf_SetTxListCurrentTime
  * @brief  		set CanIf_CanMsgTxList CurrentTime
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				CurrentTime :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetCurrentTime2TxList(uint8 Index, uint16 CurrentTime)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListCurrentTime(uint8 Index, uint16 CurrentTime)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -593,14 +1175,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetCurrentTime2TxList(uint8 Index, uint16 CurrentT
 }
 
 /****************************************************************************
- * @function	CanIf_SetTransmissionCounter2TxList
+ * @function	CanIf_SetTxListTransmissionCounter
  * @brief  		set CanIf_CanMsgTxList TransmissionCounter
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				TransmissionCounter :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetTransmissionCounter2TxList(uint8 Index, uint8 TransmissionCounter)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListTransmissionCounter(uint8 Index, uint8 TransmissionCounter)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -619,14 +1201,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetTransmissionCounter2TxList(uint8 Index, uint8 T
 }
 
 /****************************************************************************
- * @function	CanIf_SetTransmittedCounter2TxList
+ * @function	CanIf_SetTxListTransmittedCounter
  * @brief  		set CanIf_CanMsgTxList TransmittedCounter
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				TransmittedCounter :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetTransmittedCounter2TxList(uint8 Index, uint8 TransmittedCounter)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListTransmittedCounter(uint8 Index, uint8 TransmittedCounter)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -645,14 +1227,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetTransmittedCounter2TxList(uint8 Index, uint8 Tr
 }
 
 /****************************************************************************
- * @function	CanIf_SetMsgId2TxList
+ * @function	CanIf_SetTxListMsgId
  * @brief  		set CanIf_CanMsgTxList MsgId
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				MsgId :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetMsgId2TxList(uint8 Index, uint32 MsgId)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgId(uint8 Index, uint32 MsgId)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -671,14 +1253,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetMsgId2TxList(uint8 Index, uint32 MsgId)
 }
 
 /****************************************************************************
- * @function	CanIf_SetDlc2TxList
+ * @function	CanIf_SetTxListDlc
  * @brief  		set CanIf_CanMsgTxList Dlc
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				Dlc :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetDlc2TxList(uint8 Index, uint8 Dlc)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListDlc(uint8 Index, uint8 Dlc)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -697,14 +1279,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetDlc2TxList(uint8 Index, uint8 Dlc)
 }
 
 /****************************************************************************
- * @function	CanIf_SetData2TxList
+ * @function	CanIf_SetTxListData
  * @brief  		set CanIf_CanMsgTxList Data
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				ptr_Data :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetData2TxList(uint8 Index, uint8 *ptr_Data, uint8 Dtatlength)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListData(uint8 Index, uint8 *ptr_Data, uint8 Dtatlength)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -736,7 +1318,7 @@ CAN_IF_EXTERN_API uint8 CanIf_SetData2TxList(uint8 Index, uint8 *ptr_Data, uint8
 }
 
 /****************************************************************************
- * @function	CanIf_SetMsgIdDlcData2TxList
+ * @function	CanIf_SetTxListMsgIdDlcData
  * @brief  		set CanIf_CanMsgTxList MsgId,Dlc,Data
  * @param		Index : will set CanIf_CanMsgTxList index
  * 				MsgId :
@@ -745,7 +1327,7 @@ CAN_IF_EXTERN_API uint8 CanIf_SetData2TxList(uint8 Index, uint8 *ptr_Data, uint8
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetMsgIdDlcData2TxList(uint8 Index, uint32 MsgId,uint8 Dlc, uint8 *ptr_Data)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgIdDlcData(uint8 Index, uint32 MsgId,uint8 Dlc, uint8 *ptr_Data)
 {
 	uint8 ret = E_NOT_OK;
 	uint8 DataLength = 0x00;
@@ -778,10 +1360,5 @@ CAN_IF_EXTERN_API uint8 CanIf_SetMsgIdDlcData2TxList(uint8 Index, uint32 MsgId,u
 
 	return ret;
 }
-
-
-
-
-
 
 /*********************************File End*********************************/

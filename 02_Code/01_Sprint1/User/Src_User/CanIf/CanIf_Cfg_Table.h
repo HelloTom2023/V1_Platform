@@ -22,38 +22,40 @@
 #include "CanIf_Type.h"
 #include "CanIf_Cfg_Define.h"
 
-
-
-CanIf_CanMsgSoftFilterDlcCheck_Type CanIf_CanMsgSoftFilterDlcCheckTable[] =
-{/*		Index	CanChNo,	CanMsgId,	Dlc*/
-		{0,		0,		0x100,		8},
-		{1,		0,		0x105,		8},
-		{2,		0,		0x2E0,		8},
-		{3,		0,		0x3F0,		8},
-		{4,		0,		0x520,		8},
-		{5,		0,		0x801,		6},
-		{6,		0,		0x310,		8},
-		{7,		0,		0x405,		8},
-		{8,		0,		0x7A0,		8},
-		{9,		0,		0x7DF,		8},
-		{10,		0xff,	0x00,		0x00}
+/*Do not modify the array name*/
+CanIf_CanMsgRxManagementDataBuffer_Type CanIf_CanMsgRxList[] =
+{
+		/*Index,ChNo,	MsgValid, 			MsgRxMode, 					MsgCheckRet,	MsgCheckMode,	Timeout,	CurrentTime,  	MsgId, 	Dlc,*/
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x340,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x350,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x360,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x370,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x380,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_EVENT,		0x00,			0x07,			1000,		0,				0x390,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x540,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x740,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x840,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0xA40,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x140,	8},
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x240,	8},
+		{0,		0xff,	CANIF_MSG_INVALID,	CANIF_MSG_MODE_NONE,		0x00,			0x0,			0	,		0,				0x0,	0}
 };
 
-/*The array name not modify*/
+/*Do not modify the array name*/
 CanIf_CanMsgTxManagementDataBuffer_Type CanIf_CanMsgTxList[] =
 {
-		/*Index,ChNo, MsgValid, MsgTxMode, CycleTime, CurrentTime, TransmissionCounter, TransmittedCounter, 	MsgId, Dlc,	 Data*/
-		{0,		0,		1,			0,			100,		0,				0,						0,			0x121,	8,	{0,0,0,0,0,0,0,0}},
-		{1,		0,		1,			0,			100,		0,				0,						0,			0x123,	8,	{0,0,0,0,0,0,0,0}},
-		{2,		0,		1,			0,			100,		0,				0,						0,			0x125,	8,	{0,0,0,0,0,0,0,0}},
-		{3,		0,		1,			0,			100,		0,				0,						0,			0x321,	8,	{0,0,0,0,0,0,0,0}},
-		{4,		0,		1,			0,			100,		0,				0,						0,			0x221,	8,	{0,0,0,0,0,0,0,0}},
-		{5,		0,		1,			0,			100,		0,				0,						0,			0x521,	8,	{0,0,0,0,0,0,0,0}},
-		{6,		0,		1,			1,			10,			0,				3,						0,			0x621,	8,	{0,0,0,0,0,0,0,0}},
-		{7,		0,		1,			0,			100,		0,				0,						0,			0x126,	8,	{0,0,0,0,0,0,0,0}},
-		{8,		0,		1,			0,			100,		0,				0,						0,			0x171,	8,	{0,0,0,0,0,0,0,0}},
-		{9,		0,		1,			0,			100,		0,				0,						0,			0x191,	8,	{0,0,0,0,0,0,0,0}},
-		{10,	0,	  0xff,			0,			100,		0,				0,						0,			0xffff,	8,	{0,0,0,0,0,0,0,0}}
+		/*Index,ChNo, MsgValid, 			MsgTxMode, 					CycleTime,	CurrentTime,	TransmissionCounter,	TransmittedCounter,	MsgId,	Dlc,	Data*/
+		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x121,	8,		{0,0,0,0,0,0,0,0}},
+		{1,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x123,	8,		{0,0,0,0,0,0,0,0}},
+		{2,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x125,	8,		{0,0,0,0,0,0,0,0}},
+		{3,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x321,	8,		{0,0,0,0,0,0,0,0}},
+		{4,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x221,	8,		{0,0,0,0,0,0,0,0}},
+		{5,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x521,	8,		{0,0,0,0,0,0,0,0}},
+		{6,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_EVENT,		10,			0,				3,						0,					0x621,	8,		{0,0,0,0,0,0,0,0}},
+		{7,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x126,	8,		{0,0,0,0,0,0,0,0}},
+		{8,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x171,	8,		{0,0,0,0,0,0,0,0}},
+		{9,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	100,		0,				0,						0,					0x191,	8,		{0,0,0,0,0,0,0,0}},
+		{10,	0xFF,	CANIF_MSG_INVALID,	CANIF_MSG_MODE_NONE,		0,			0,				0,						0,					0xffff,	8,		{0,0,0,0,0,0,0,0}}
 };
 
 
