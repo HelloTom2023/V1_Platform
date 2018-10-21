@@ -1,7 +1,7 @@
 /****************************************************************************
 * File Name : CanIf_Cfg_Define.h
 *
-* Modules : CAN Interface Layer configuration file
+* Modules : CAN Interface Layer user configuration switch file
 *
 * Summary :	1.configuration parameters,micro define
 *
@@ -55,10 +55,6 @@
 #define CANIF_CONRTOLLERTYPE								CAN
 /*The can interface layer can message id type.STANDARD : 11Bit, EXPANSION : 29Bit*/
 #define CANIF_CANMESSAGEIDTYPE								EXPANSION
-/*The can interface layer soft filter switch*/
-#define CANIF_RECEIVERMESSAGESOTFFILTER						ENABLE
-/*The can interface layer message DLC check switch*/
-#define CANIF_RECEIVERMESSAGEDLCCHECK						ENABLE
 /*Diagnostic message channel id*/
 #define CANIF_DIAG_CHANNEL_ADDR								(0)
 /*Diagnostic physical message id*/

@@ -1,4 +1,15 @@
-﻿Version : V0.0.5
+﻿Version : V0.0.6
+ChangeLog :
+1.CanIf : Update can interface some comments.
+2.CanIf : Delete some unused code and comments.
+3.CanIf : Delete some APIs enable switch.
+4.CanIf : Add one Api between CanIf and Com.
+5.Com : create Com modules.
+6.Com : Add Com_RxNotificationFunction handle strategy.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.10.21
+/*********************************************************************************************************************/
+Version : V0.0.5
 ChangeLog :
 1.CanIf : rename set CanIf_CanMsgTxList elements APIs name.
 2.CanIf : add some  get or set CanIf_CanMsgRxList elements APIs .
@@ -49,5 +60,3 @@ ChangeLog :
 Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
 Data  : 2018.09.24
 /*********************************************************************************************************************/
-	
-	

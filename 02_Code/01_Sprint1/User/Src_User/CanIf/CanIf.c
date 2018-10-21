@@ -3,8 +3,9 @@
 *
 * Modules : CAN Interface Layer source file
 *
-* Summary : 1.The module between CAN Driver and CanTP modules.
+* Summary : 1.The module between CAN Driver layer and Can Server layer modules.
 *			2.The module user encapsulates the Can Driver Layer APIs.
+*			3.Implements can message receive,transmission and message data handle.
 *
 * Reference Documents :
 *
@@ -118,7 +119,9 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 ****************************************************************************/
 CAN_IF_EXTERN_API uint8 CanIf_SendInterruptCallback(uint8 ChNo)
 {
+	uint8 ret = E_NOT_OK;
 
+	return ret;
 }
 
 /****************************************************************************
@@ -273,8 +276,8 @@ CAN_IF_LOCAL_API void CanIf_RxManagementFunction(void)
 		}
 		else
 		{
-			/*Notification to communication layer*/
-
+			/*Notification to communication server layer*/
+			CanIf_Com_RxNotificationFunction(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId, ReadCanRecvMsg.CanData, ReadCanRecvMsg.CanMsgDlc);
 		}
 	}
 }

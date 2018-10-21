@@ -3,7 +3,7 @@
 *
 * Modules : Virtual Function Bus base on CAN Interface Layer
 *
-* Summary : 1.The module user encapsulates the Can Driver Layer APIs.
+* Summary :
 *
 * Reference Documents :
 *
@@ -22,7 +22,7 @@
 #include "CanIf_Cfg_Define.h"
 #include "..\..\..\config\inc.h"
 #include "..\CanTp\CanTp.h"
-
+#include "..\Com\Com.h"
 
 
 
@@ -34,11 +34,8 @@
  * @retval 		null
  * @attention   null
 ****************************************************************************/
-#if (CANIF_INITCONTROLLER_API == ENABLE)
 #define CanIf_InitController(ChNo)	CANbus_Init(ChNo)
-#else
-#define CanIf_InitController(ChNo)
-#endif
+
 
 /****************************************************************************
  * @function	CanIf_DefaultInitController
@@ -47,11 +44,7 @@
  * @retval 		null
  * @attention   null
 ****************************************************************************/
-#if (CANIF_DEFAULTINITCONTROLLER_API == ENABLE)
 #define CanIf_DefaultInitController(ChNo)	CANbus_DefaultInit(ChNo)
-#else
-#define CanIf_DefaultInitController(ChNo)
-#endif
 
 /****************************************************************************
  * @function	CanIf_GetControllerHwMsgBuffIndex
@@ -60,11 +53,8 @@
  * @retval 		ret_value : the buffer index,the value range depend on mcu types.
  * @attention   null
 ****************************************************************************/
-#if (CANIF_READCONTROLLERHWMSGBUFFINDEX_API == ENABLE)
 #define CanIf_GetControllerHwMsgBuffIndex(ChNo)	CANbus_GetIntBuffNumber(ChNo)
-#else
-#define CanIf_GetControllerHwMsgBuffIndex(ChNo)
-#endif
+
 
 /****************************************************************************
  * @function	CanIf_GetControllerMsgInfo
@@ -77,11 +67,8 @@
  * @retval 		ret_value : the buffer index,the value range depend on mcu types.
  * @attention   null
 ****************************************************************************/
-#if (CANIF_READCONTROLLERMSGINFO_API == ENABLE)
 #define CanIf_GetControllerMsgInfo(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)	CANbus_MsgGetIdDataDlc(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
-#else
-#define CanIf_GetControllerMsgInfo(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
-#endif
+
 
 /****************************************************************************
  * @function	CanIf_SetControllerMsgData
@@ -92,11 +79,8 @@
  * @retval 		ret_value : the buffer index,the value range depend on mcu types.
  * @attention   null
 ****************************************************************************/
-#if (CANIF_WRITECONTROLLERMSGDATA_API == ENABLE)
 #define CanIf_SetControllerMsgData(ChNo,BufNo,ptr_Data)		CANbus_MsgSetDat(ChNo,BufNo,ptr_Data)
-#else
-#define CanIf_SetControllerMsgData(ChNo,BufNo,ptr_Data)
-#endif
+
 
 /****************************************************************************
  * @function	CanIf_SetControllerMsgInfo
@@ -109,11 +93,8 @@
  * @retval 		ret_value : the function operate result.
  * @attention   null
 ****************************************************************************/
-#if (CANIF_WRITECONTROLLERMSGINFO_API == ENABLE)
 #define CanIf_SetControllerMsgInfo(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)	CANbus_MsgSetIdDataDlc(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
-#else
-#define CanIf_SetControllerMsgInfo(ChNo,BufNo,ptr_MsgId,ptr_Data,ptr_Dlc)
-#endif
+
 
 /****************************************************************************
  * @function	CanIf_ReqControllerTxMsg
@@ -123,11 +104,8 @@
  * @retval 		ret_value : the function operate result.
  * @attention   null
 ****************************************************************************/
-#if (CANIF_REQUESRCONTROLLERTXMSG_API == ENABLE)
 #define CanIf_ReqControllerTxMsg(ChNo,BufNo)	CANbus_MsgTxReq(ChNo,BufNo)
-#else
-#define CanIf_ReqControllerTxMsg(ChNo,BufNo)
-#endif
+
 
 
 /****************************************************************************
@@ -140,11 +118,22 @@
  * @retval 		ret_value : the buffer index,the value range depend on mcu types.
  * @attention   null
 ****************************************************************************/
-#if (CANIF_CANTP_RECVNOTIFICATION_API == ENABLE)
 #define CanIf_CanTp_RecvNotificationFunction(ChNo,MsgId,ptr_Data,Dlc)	CanTp_RxIndicationFunction(ChNo,MsgId,ptr_Data,Dlc)
-#else
-#define CanIf_CanTp_RecvNotificationFunction(ChNo,MsgId,ptr_Data,Dlc)
-#endif
+
+
+/****************************************************************************
+ * @function	CanIf_Com_RecvNotificationFunction
+ * @brief		transmit diagnostic message to communication server layer
+ * @param  		ChNo :  input parameters , CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
+ *				ptr_MsgId : output parameters, the receive can message id.
+ *				ptr_Data : output parameters, the receive can message data
+ *				ptr_Dlc : output parameters, the receive can message dlc.
+ * @retval 		ret_value : the buffer index,the value range depend on mcu types.
+ * @attention   null
+****************************************************************************/
+#define CanIf_Com_RxNotificationFunction(ChNo,MsgId,ptr_Data,Dlc)		Com_RxNotificationFunction(ChNo,MsgId,ptr_Data,Dlc)
+
+
 
 /****************************************************************************
  * @function	CanIf_PreCopy
@@ -156,11 +145,8 @@
  * @retval 		ret :
  * @attention   null
 ****************************************************************************/
-#if (CANIF_PRECOPY_API == ENABLE)
-#define CanIf_PreCopy(ChNo,MsgId,ptr_Data,Dlc)
-#else
 #define CanIf_PreCopy(ChNo,MsgId,ptr_Data,Dlc)	E_OK
-#endif
+
 
 
 

@@ -3,9 +3,7 @@
 *
 * Modules : CAN Interface Layer head file
 *
-* Summary : 1.The file is Can interface layer head file.
-* 			2.The file user define Can interface layer type and variables.
-* 			3.The module between CAN Driver and CanTP modules.
+* Summary :
 *
 *
 * Reference Documents :
@@ -37,7 +35,7 @@
 #else
 #define CAN_IF_EXTERN_API extern
 #define CAN_IF_LOCAL_API static
-#endif /*_CAN_TP_C*/
+#endif /*_CAN_IF_C*/
 
 
 /*Variable declaration AREA*/

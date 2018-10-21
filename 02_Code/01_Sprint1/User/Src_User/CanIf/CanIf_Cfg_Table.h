@@ -1,9 +1,9 @@
 /****************************************************************************
 * File Name : CanIf_Cfg_Table.h
 *
-* Modules : CAN Interface Layer configuration file
+* Modules : CAN Interface Layer user configuration table file
 *
-* Summary : 1.configuration parameters Table
+* Summary :
 *
 * Reference Documents :
 *

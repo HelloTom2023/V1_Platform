@@ -80,6 +80,15 @@
 #define E_MSG_INVALID						(7)
 #endif
 
+/*Array is full*/
+#ifndef E_ARRAY_FULL
+#define E_ARRAY_FULL						(8)
+#endif
+
+/*Array is empty*/
+#ifndef E_ARRAY_EMPTY
+#define E_ARRAY_EMPTY						(9)
+#endif
 
 /*boolean type*/
 #ifndef TRUE

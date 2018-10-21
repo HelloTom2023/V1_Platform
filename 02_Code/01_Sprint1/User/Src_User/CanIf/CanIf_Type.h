@@ -1,10 +1,9 @@
 /****************************************************************************
 * File Name : CanIf_Type.h
 *
-* Modules : CAN Interface Layer head file
+* Modules : CAN Interface Layer data type define head file
 *
-* Summary : 1.The file define use data type in can interface layer.
-* 			2.The module between CAN Driver and CanTP modules.
+* Summary :
 *
 *
 * Reference Documents : None
