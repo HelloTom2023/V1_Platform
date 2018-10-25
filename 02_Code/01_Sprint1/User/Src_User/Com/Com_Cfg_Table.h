@@ -23,7 +23,13 @@
 #include "Com_Cfg_Define.h"
 
 /*do not modify the array name. and the array length is configurable*/
+/*Note :
+ * the length if this array should be the same as the number of message that need to be received
+ * */
 Com_BusMsgStruct_Type Com_BusRxMsgList[10];/*the communication receive message number*/
+/*Note :
+ * the length if this array should be the same as the number of message that need to be sent
+ * */
 Com_BusMsgStruct_Type Com_BusTxMsgList[10];/*the communication send message number*/
 
 #endif /*_COM_CFG_TABLE_H*/

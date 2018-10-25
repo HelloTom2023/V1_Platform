@@ -27,27 +27,6 @@
 
 /*Function declaration AREA*/
 
-/****************************************************************************
- * @function	CanTp_MemSetValue
- * @brief		set value to ptr_DestData
- * @param  		ptr_DestData :  output parameters , target data pointer
- *				Value : input parameters , needs to be set values
- *				DataLength : input parameters, data length.
- * @retval 		NULL
- * @attention   NULL
-****************************************************************************/
-#define CanTp_MemSetValue(ptr_DestData,Value,DataLength)		CommFunc_MemSetValue(ptr_DestData,Value,DataLength)
-
-/****************************************************************************
- * @function	CanTp_MemCopyData
- * @brief		set value to ptr_DestData
- * @param  		ptr_DestData :  output parameters , target data pointer
- *				ptr_SoureData : output parameters , source data pointer
- *				DataLength : input parameters, data length.
- * @retval 		NULL
- * @attention   NULL
-****************************************************************************/
-#define CanTp_MemCopyData(ptr_DestData,ptr_SoureData,DataLength)		CommFunc_MemCopyData(ptr_DestData,ptr_SoureData,DataLength)
 
 
 

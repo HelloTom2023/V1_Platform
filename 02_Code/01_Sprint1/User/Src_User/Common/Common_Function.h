@@ -32,31 +32,33 @@
 #define COMMON_FUNCTION_LOCAL_API static
 #endif
 
+
 /****************************************************************************
- * @function	CommFunc_MemSetValue
- * @brief		set value to ptr_DestData
- * @param  		ptr_DestData :  output parameters , target data pointer
- *				Value : input parameters , needs to be set values
- *				DataLength : input parameters, data length.
+ * @function	CommFunc_GetBitMask
+ * @brief
+ * @param  		n : input parameters,
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-#define CommFunc_MemSetValue(ptr_DestData,Value,DataLength)		memset(ptr_DestData,Value,DataLength)
+#define CommFunc_GetBitMask(n)		((1<<(n))-1)
 
 /****************************************************************************
- * @function	CommFunc_MemCopyData
- * @brief		set value to ptr_DestData
- * @param  		ptr_DestData :  output parameters , target data pointer
- *				ptr_SoureData : output parameters , source data pointer
- *				DataLength : input parameters, data length.
+ * @function	CommFunc_BitShiftLeft
+ * @brief
+ * @param  		n : input parameters,
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-#define CommFunc_MemCopyData(ptr_DestData,ptr_SoureData,DataLength)		memcpy(ptr_DestData,ptr_SoureData,DataLength)
+#define CommFunc_BitShiftLeft(data,n)		(data << n)
 
-
-
-
+/****************************************************************************
+ * @function	CommFunc_BitShiftRigth
+ * @brief
+ * @param  		n : input parameters,
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+#define CommFunc_BitShiftRigth(data,n)		(data << n)
 
 
 #endif /*_COMMON_FUNCTION_H*/

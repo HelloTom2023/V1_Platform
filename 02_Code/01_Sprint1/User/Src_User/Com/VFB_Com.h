@@ -25,7 +25,16 @@
 
 
 /*Macro definition AREA*/
-
+/****************************************************************************
+ * @function	Com_CanIf_SetTxListMsgIdDlcData
+ * @brief		Set Message Id,Dlc,Data to CanIf TxMsgList Buffer
+ * @param  		ChNo :  input parameters
+ *				MsgId : input parameters
+ *				ptr_Index : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+#define Com_CanIf_SetTxListMsgIdDlcData(MsgId,Dlc,ptr_Data)		(MsgId,Dlc,ptr_Data)
 
 
 /*Function declaration AREA*/

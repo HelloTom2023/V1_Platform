@@ -25,7 +25,7 @@
 
 typedef struct Com_BusMsgStruct_Type_Tag
 {
-	//uint8 Index;
+	uint8 Update;	/*Data update flag,0x00 : not update,  0x01 : data update*/
 	uint8 ChNo;
 	uint32 MsgId;
 	uint8 MsgDlc;

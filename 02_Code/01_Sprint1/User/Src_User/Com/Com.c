@@ -87,6 +87,7 @@ COM_EXTERN_API uint8 Com_RxNotificationFunction(uint8 ChNo,uint32 MsgId,uint8* p
 			 * */
 
 			Com_SetRxMsgListChNoMsgIdDlcData(Index, ChNo, MsgId, Dlc, ptr_Data);
+			//Com_SetRxMsgListUpdate(Index,0x01);
 		}
 		else
 		{
@@ -194,6 +195,46 @@ COM_LOCAL_API uint8 Com_GetRxMsgListIndex(uint8 ChNo,uint32 MsgId,uint8 *ptr_Ind
 	}
 
 	ret = E_RET_NOT_FOUND;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_GetRxMsgListUpdate
+ * @brief		get Com_BusRxMsgList Update base on Index
+ * @param  		Index :  input parameters
+ *				ptr_Updata : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetRxMsgListUpdate(uint8 Index,uint8 *ptr_Update)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 RxMsgListLength = sizeof(Com_BusRxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(RxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_Update)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get message id base on index*/
+	*ptr_Update = Com_BusRxMsgList[Index].Update;
+
+	ret = E_OK;
 	return ret;
 }
 
@@ -405,6 +446,36 @@ COM_LOCAL_API uint8 Com_GetRxMsgListChNoMsgIdDlcData(uint8 Index,uint8 *ptr_ChNo
 }
 
 /****************************************************************************
+ * @function	Com_SetRxMsgListUpdate
+ * @brief		set Com_BusRxMsgList Update base on Index
+ * @param  		Index :  input parameters
+ *				Update : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetRxMsgListUpdate(uint8 Index,uint8 Update)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 RxMsgListLength = sizeof(Com_BusRxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(RxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Set Update flag base on index*/
+	Com_BusRxMsgList[Index].Update = Update;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
  * @function	Com_SetRxMsgListChNo
  * @brief		set Com_BusRxMsgList ChNo base on Index
  * @param  		Index :  input parameters
@@ -596,5 +667,1045 @@ COM_LOCAL_API uint8 Com_SetRxMsgListChNoMsgIdDlcData(uint8 Index,uint8 ChNo,uint
 	ret = E_OK;
 	return ret;
 }
+
+/****************************************************************************
+ * @function	Com_ReadRxMsgListSignal
+ * @brief
+ * @param  		Index :  input parameters
+ * 				FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : output parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_ReadRxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 RxMsgListLength = sizeof(Com_BusRxMsgList) / sizeof(Com_BusMsgStruct_Type);
+	uint8 DataByteIndex = 0x00;
+	uint8 DataBitIndex = 0x00;
+	uint8 PtrByteIndex = 0x00;
+	uint8 PtrBitIndex = 0x00;
+	uint8 ReadLength = 0x00;
+
+	/*Check parameters is valid*/
+	if(RxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*The length check base on can message data*/
+	if(Length >= 64)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_SignalValue)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*check the message format*/
+	if((0x00 != FormatType) && (0x01 == FormatType))
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get byte position in the message data array*/
+	DataByteIndex = StartBit / 8;
+	/*Get bit position in the one byte*/
+	DataBitIndex = StartBit % 8;
+	/*Initialization the ptr_SignalValue byte and bit control*/
+	PtrByteIndex = 0x00;
+	PtrBitIndex = 0x01;
+
+	for(ReadLength = 0x00; ReadLength >=Length; 	)
+	{
+
+		ptr_SignalValue[PtrByteIndex] = ptr_SignalValue[PtrByteIndex] | 	\
+				CommFunc_BitShiftLeft(	\
+						(CommFunc_BitShiftRigth(Com_BusRxMsgList[Index].MsgData[DataByteIndex],DataBitIndex) & CommFunc_GetBitMask(0x01)),	\
+						PtrBitIndex);
+		PtrBitIndex++;
+		DataBitIndex++;
+		/*Check the MsgData[] byte is full*/
+		if(DataBitIndex >= 0x07)
+		{
+			DataBitIndex = 0x00;
+			if(0x00 == FormatType)/*Motorola Format*/
+			{
+				DataByteIndex--;
+			}
+			else /*if(0x01 == FormatType)  // Intel Format*/
+			{
+				DataByteIndex++;
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+		/*Check the ptr_SignalValue[] byte is full*/
+		if(PtrBitIndex >= 0x08)
+		{
+			PtrBitIndex = 0x01;
+			PtrByteIndex++;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*read data from MsgData number of times,loop control*/
+		ReadLength++;
+	}
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_WriteRxMsgListSignal
+ * @brief
+ * @param  		Index :  input parameters
+ * 				FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_WriteRxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 RxMsgListLength = sizeof(Com_BusRxMsgList) / sizeof(Com_BusMsgStruct_Type);
+	uint8 DataByteIndex = 0x00;
+	uint8 DataBitIndex = 0x00;
+	uint8 PtrByteIndex = 0x00;
+	uint8 PtrBitIndex = 0x00;
+	uint8 WroteLength = 0x00;
+
+	/*Check parameters is valid*/
+	if(RxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*The length check base on can message data*/
+	if(Length >= 64)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_SignalValue)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*check the message format*/
+	if((0x00 != FormatType) && (0x01 == FormatType))
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get byte position in the message data array*/
+	DataByteIndex = StartBit / 8;
+	/*Get bit position in the one byte*/
+	DataBitIndex = StartBit % 8;
+	/*Initialization the ptr_SignalValue byte and bit control*/
+	PtrByteIndex = 0x00;
+	PtrBitIndex = 0x01;
+
+	for(WroteLength = 0x00; WroteLength >= Length; 	)
+	{
+		Com_BusRxMsgList[Index].MsgData[DataByteIndex] =  Com_BusRxMsgList[Index].MsgData[DataByteIndex] |	\
+				CommFunc_BitShiftLeft(	\
+						CommFunc_BitShiftRigth(ptr_SignalValue[PtrByteIndex], PtrBitIndex) & CommFunc_GetBitMask(0x01), \
+						DataBitIndex);
+		PtrBitIndex++;
+		DataBitIndex++;
+		/*Check the MsgData[] byte is full*/
+		if(DataBitIndex >= 0x07)
+		{
+			DataBitIndex = 0x00;
+			if(0x00 == FormatType)/*Motorola Format*/
+			{
+				DataByteIndex--;
+			}
+			else /*if(0x01 == FormatType)  // Intel Format*/
+			{
+				DataByteIndex++;
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+		/*Check the ptr_SignalValue[] byte is full*/
+		if(PtrBitIndex >= 0x08)
+		{
+			PtrBitIndex = 0x01;
+			PtrByteIndex++;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*write data to MsgData number of times,loop control*/
+		WroteLength++;
+	}
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_CheckTxMsgListIsFull
+ * @brief		check Com_BusTxMsgList is full
+ * @param  		ptr_Index : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_CheckTxMsgListIsFull(uint8 *ptr_Index)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 Index = 0x00;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_Index)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check the array is full.*/
+	for(Index = 0x00; Index < TxMsgListLength; Index++)
+	{
+		if( (0x00 == Com_BusTxMsgList[Index].ChNo) && \
+				(0x00 == Com_BusTxMsgList[Index].MsgId) && \
+				(0x00 == Com_BusTxMsgList[Index].MsgDlc))
+		{
+			*ptr_Index = Index;
+			return E_OK;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+	}
+
+	ret = E_ARRAY_FULL;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListIndex
+ * @brief		get Com_BusTxMsgList Index base on ChNo and MsgId
+ * @param  		ChNo :  input parameters
+ *				MsgId : input parameters
+ *				ptr_Index : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListIndex(uint8 ChNo,uint32 MsgId,uint8 *ptr_Index)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 Index = 0x00;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(COM_CANCONTROLLERCHANNELNUMBER <= ChNo)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_Index)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Search Message Id and bus channel number*/
+	for(Index = 0x00; Index < TxMsgListLength; Index++)
+	{
+		if( (Com_BusTxMsgList[Index].MsgId == MsgId) && (Com_BusTxMsgList[Index].ChNo == ChNo) )
+		{
+			*ptr_Index = Index;
+			return E_OK;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+	}
+
+	ret = E_RET_NOT_FOUND;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListUpdate
+ * @brief		get Com_BusTxMsgList Update base on Index
+ * @param  		Index :  input parameters
+ *				ptr_Updata : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListUpdate(uint8 Index,uint8 *ptr_Update)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_Update)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get message id base on index*/
+	*ptr_Update = Com_BusTxMsgList[Index].Update;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListChNo
+ * @brief		get Com_BusTxMsgList ChNo base on Index
+ * @param  		Index :  input parameters
+ *				ptr_ChNo : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListChNo(uint8 Index,uint8 *ptr_ChNo)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_ChNo)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get message id base on index*/
+	*ptr_ChNo = Com_BusTxMsgList[Index].ChNo;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListMsgId
+ * @brief		get Com_BusTxMsgList MsgId base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgId : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListMsgId(uint8 Index,uint32 *ptr_MsgId)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_MsgId)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get message id base on index*/
+	*ptr_MsgId = Com_BusTxMsgList[Index].MsgId;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListMsgDlc
+ * @brief		get Com_BusTxMsgList MsgDlc base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgDlc : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListMsgDlc(uint8 Index,uint8 *ptr_MsgDlc)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_MsgDlc)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get message dlc base on index*/
+	*ptr_MsgDlc = Com_BusTxMsgList[Index].MsgDlc;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListMsgData
+ * @brief		get Com_BusTxMsgList MsgData base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgData : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListMsgData(uint8 Index,uint8 *ptr_MsgData)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_MsgData)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get message data base on index*/
+	//ptr_MsgData = Com_BusTxMsgList[Index].MsgData;
+	memcpy(ptr_MsgData, Com_BusTxMsgList[Index].MsgData, 8);
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListChNoMsgIdDlcData
+ * @brief		get Com_BusTxMsgList ChNo,MsgId,MsgDlc,MsgData base on Index
+ * @param  		Index :  input parameters
+ * 				ptr_ChNo : output parameters
+ * 				ptr_MsgId : output parameters
+ * 				ptr_MsgDlc : output parameters
+ *				ptr_MsgData : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListChNoMsgIdDlcData(uint8 Index,uint8 *ptr_ChNo,uint32 *ptr_MsgId,uint8 *ptr_MsgDlc,uint8 *ptr_MsgData)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if( (NULL == ptr_ChNo) || (NULL == ptr_MsgId) || (NULL == ptr_MsgDlc) || (NULL == ptr_MsgData) )
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_ChNo = Com_BusTxMsgList[Index].ChNo;
+	*ptr_MsgId = Com_BusTxMsgList[Index].MsgId;
+	*ptr_MsgDlc = Com_BusTxMsgList[Index].MsgDlc;
+	//ptr_MsgData = Com_BusTxMsgList[Index].MsgData;
+	memcpy(ptr_MsgDlc, Com_BusTxMsgList[Index].MsgData, 8);
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListUpdate
+ * @brief		set Com_BusTxMsgList Update base on Index
+ * @param  		Index :  input parameters
+ *				Update : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListUpdate(uint8 Index,uint8 Update)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Set Update flag base on index*/
+	Com_BusTxMsgList[Index].Update = Update;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListChNo
+ * @brief		set Com_BusTxMsgList ChNo base on Index
+ * @param  		Index :  input parameters
+ *				ChNo : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListChNo(uint8 Index,uint8 ChNo)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	if(COM_CANCONTROLLERCHANNELNUMBER <= ChNo)
+	{
+			return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Set message id base on index*/
+	Com_BusTxMsgList[Index].ChNo = ChNo;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListMsgId
+ * @brief		set Com_BusTxMsgList MsgId base on Index
+ * @param  		Index :  input parameters
+ *				MsgId : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListMsgId(uint8 Index,uint32 MsgId)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Set message id base on index*/
+	Com_BusTxMsgList[Index].MsgId = MsgId;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListMsgDlc
+ * @brief		set Com_BusTxMsgList MsgDlc base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgDlc : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListMsgDlc(uint8 Index,uint8 MsgDlc)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*set message dlc base on index*/
+	Com_BusTxMsgList[Index].MsgDlc = MsgDlc;
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListMsgData
+ * @brief		set Com_BusTxMsgList MsgData base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgData : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListMsgData(uint8 Index,uint8 *ptr_MsgData)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_MsgData)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*set message data base on index*/
+	memcpy(Com_BusTxMsgList[Index].MsgData, ptr_MsgData, 8);
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListChNoMsgIdDlcData
+ * @brief		set Com_BusTxMsgList ChNo,MsgId,MsgDlc,MsgData base on Index
+ * @param  		Index :  input parameters
+ * 				ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				MsgDlc : input parameters
+ *				ptr_MsgData : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListChNoMsgIdDlcData(uint8 Index,uint8 ChNo,uint32 MsgId,uint8 MsgDlc,uint8 *ptr_MsgData)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	if(ChNo >= COM_CANCONTROLLERCHANNELNUMBER)
+	{
+			return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_MsgData)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	Com_BusTxMsgList[Index].ChNo = ChNo;
+	Com_BusTxMsgList[Index].MsgId = MsgId;
+	Com_BusTxMsgList[Index].MsgDlc = MsgDlc;
+	memcpy(Com_BusTxMsgList[Index].MsgData, ptr_MsgData, 8);
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_ReadTxMsgListSignal
+ * @brief
+ * @param  		Index :  input parameters
+ * 				FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : output parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_ReadTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+	uint8 DataByteIndex = 0x00;
+	uint8 DataBitIndex = 0x00;
+	uint8 PtrByteIndex = 0x00;
+	uint8 PtrBitIndex = 0x00;
+	uint8 ReadLength = 0x00;
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*The length check base on can message data*/
+	if(Length >= 64)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_SignalValue)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*check the message format*/
+	if((0x00 != FormatType) && (0x01 == FormatType))
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get byte position in the message data array*/
+	DataByteIndex = StartBit / 8;
+	/*Get bit position in the one byte*/
+	DataBitIndex = StartBit % 8;
+	/*Initialization the ptr_SignalValue byte and bit control*/
+	PtrByteIndex = 0x00;
+	PtrBitIndex = 0x01;
+
+	for(ReadLength = 0x00; ReadLength >=Length; 	)
+	{
+
+		ptr_SignalValue[PtrByteIndex] = ptr_SignalValue[PtrByteIndex] | 	\
+				CommFunc_BitShiftLeft(	\
+						(CommFunc_BitShiftRigth(Com_BusTxMsgList[Index].MsgData[DataByteIndex],DataBitIndex) & CommFunc_GetBitMask(0x01)),	\
+						PtrBitIndex);
+		PtrBitIndex++;
+		DataBitIndex++;
+		/*Check the MsgData[] byte is full*/
+		if(DataBitIndex >= 0x07)
+		{
+			DataBitIndex = 0x00;
+			if(0x00 == FormatType)/*Motorola Format*/
+			{
+				DataByteIndex--;
+			}
+			else /*if(0x01 == FormatType)  // Intel Format*/
+			{
+				DataByteIndex++;
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+		/*Check the ptr_SignalValue[] byte is full*/
+		if(PtrBitIndex >= 0x08)
+		{
+			PtrBitIndex = 0x01;
+			PtrByteIndex++;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*read data from MsgData number of times,loop control*/
+		ReadLength++;
+	}
+
+	ret = E_OK;
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Com_WriteTxMsgListSignal
+ * @brief
+ * @param  		Index :  input parameters
+ * 				FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 TxMsgListLength = sizeof(Com_BusTxMsgList) / sizeof(Com_BusMsgStruct_Type);
+	uint8 DataByteIndex = 0x00;
+	uint8 DataBitIndex = 0x00;
+	uint8 PtrByteIndex = 0x00;
+	uint8 PtrBitIndex = 0x00;
+	uint8 WroteLength = 0x00;
+
+	/*Check parameters is valid*/
+	if(TxMsgListLength <= Index)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*The length check base on can message data*/
+	if(Length >= 64)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_SignalValue)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*check the message format*/
+	if((0x00 != FormatType) && (0x01 == FormatType))
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get byte position in the message data array*/
+	DataByteIndex = StartBit / 8;
+	/*Get bit position in the one byte*/
+	DataBitIndex = StartBit % 8;
+	/*Initialization the ptr_SignalValue byte and bit control*/
+	PtrByteIndex = 0x00;
+	PtrBitIndex = 0x01;
+
+	for(WroteLength = 0x00; WroteLength >= Length; 	)
+	{
+		Com_BusRxMsgList[Index].MsgData[DataByteIndex] =  Com_BusTxMsgList[Index].MsgData[DataByteIndex] |	\
+				CommFunc_BitShiftLeft(	\
+						CommFunc_BitShiftRigth(ptr_SignalValue[PtrByteIndex], PtrBitIndex) & CommFunc_GetBitMask(0x01), \
+						DataBitIndex);
+		PtrBitIndex++;
+		DataBitIndex++;
+		/*Check the MsgData[] byte is full*/
+		if(DataBitIndex >= 0x07)
+		{
+			DataBitIndex = 0x00;
+			if(0x00 == FormatType)/*Motorola Format*/
+			{
+				DataByteIndex--;
+			}
+			else /*if(0x01 == FormatType)  // Intel Format*/
+			{
+				DataByteIndex++;
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+		/*Check the ptr_SignalValue[] byte is full*/
+		if(PtrBitIndex >= 0x08)
+		{
+			PtrBitIndex = 0x01;
+			PtrByteIndex++;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*write data to MsgData number of times,loop control*/
+		WroteLength++;
+	}
+
+	/*Set TxMsgList Data update flag*/
+	Com_SetTxMsgListUpdate(Index, 0x01);
+
+	ret = E_OK;
+	return ret;
+}
+
 
 /*********************************File End*********************************/

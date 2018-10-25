@@ -49,7 +49,7 @@ CAN_IF_EXTERN_API void CanIf_Init(void)
 	CanIf_CanRecvMsgBuffCtrInfo.WriteIndex = 0x00;
 
 	/*Init message receive buffer*/
-	CanIf_MemSetValue(CanIf_CanRecvMsgBuff,0x00,CANIF_RECEIVEBUFFERNUMBER);
+	memset(CanIf_CanRecvMsgBuff,0x00,CANIF_RECEIVEBUFFERNUMBER);
 }
 
 /****************************************************************************
@@ -154,7 +154,7 @@ CAN_IF_LOCAL_API uint8 CanIf_WriteRecvBuffer(uint8 chno, uint32 MsgId, uint8* pt
 		CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.WriteIndex].CanChNo = chno;
 		CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.WriteIndex].CanMsgId = MsgId;
 		CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.WriteIndex].CanMsgDlc = Dlc;
-		CanIf_MemCopyData(CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.WriteIndex].CanData,ptr_Data,Dlc);
+		memcpy(CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.WriteIndex].CanData,ptr_Data,Dlc);
 
 		/*write point ++ */
 		CanIf_CanRecvMsgBuffCtrInfo.WriteIndex++;
@@ -196,7 +196,7 @@ CAN_IF_LOCAL_API uint8 CanIf_ReadRecvBuffer(uint8* ptr_chno, uint32* ptr_MsgId, 
 		*ptr_chno = CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.ReadIndex].CanChNo;
 		*ptr_MsgId = CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.ReadIndex].CanMsgId;
 		*ptr_Dlc = CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.ReadIndex].CanMsgDlc;
-		CanIf_MemCopyData(ptr_Data, CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.ReadIndex].CanData,CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.ReadIndex].CanMsgDlc);
+		memcpy(ptr_Data, CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.ReadIndex].CanData,CanIf_CanRecvMsgBuff[CanIf_CanRecvMsgBuffCtrInfo.ReadIndex].CanMsgDlc);
 
 		/*write point ++ */
 		CanIf_CanRecvMsgBuffCtrInfo.ReadIndex++;

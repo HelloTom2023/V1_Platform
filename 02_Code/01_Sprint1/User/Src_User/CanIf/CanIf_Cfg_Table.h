@@ -38,7 +38,7 @@ CanIf_CanMsgRxManagementDataBuffer_Type CanIf_CanMsgRxList[] =
 		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0xA40,	8},
 		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x140,	8},
 		{0,		0,		CANIF_MSG_VALID,	CANIF_MSG_MODE_PERIODIC,	0x00,			0x07,			1000,		0,				0x240,	8},
-		{0,		0xff,	CANIF_MSG_INVALID,	CANIF_MSG_MODE_NONE,		0x00,			0x0,			0	,		0,				0x0,	0}
+		{0,		0xFF,	CANIF_MSG_INVALID,	CANIF_MSG_MODE_NONE,		0x00,			0x0,			0	,		0,				0x0,	0}
 };
 
 /*Do not modify the array name*/

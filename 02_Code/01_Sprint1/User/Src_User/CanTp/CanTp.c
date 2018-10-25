@@ -114,7 +114,7 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, ui
 		{
 			CanTp_RecvPduCtrInfo.TotalDataLength = DataLength;
 			CanTp_RecvPduCtrInfo.RecvDataLength = DataLength;
-			CanTp_MemCopyData(CanTp_RecvPduCtrInfo.ReqData, &ptr_Data[1], CanTp_RecvPduCtrInfo.RecvDataLength);
+			memcpy(CanTp_RecvPduCtrInfo.ReqData, &ptr_Data[1], CanTp_RecvPduCtrInfo.RecvDataLength);
 			ret = E_OK;
 		}
 		else
@@ -172,7 +172,7 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint32 MsgId, ui
 		{
 			CanTp_RecvPduCtrInfo.TotalDataLength = DataLength;
 			CanTp_RecvPduCtrInfo.RecvDataLength = 6;
-			CanTp_MemCopyData(CanTp_RecvPduCtrInfo.ReqData, &ptr_Data[2], CanTp_RecvPduCtrInfo.RecvDataLength);
+			memcpy(CanTp_RecvPduCtrInfo.ReqData, &ptr_Data[2], CanTp_RecvPduCtrInfo.RecvDataLength);
 			ret = E_OK;
 			/*Send flow control frame */
 

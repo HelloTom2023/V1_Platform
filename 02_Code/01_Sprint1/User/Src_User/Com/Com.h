@@ -75,6 +75,16 @@ COM_LOCAL_API uint8 Com_CheckRxMsgListIsFull(uint8 *ptr_Index);
 COM_LOCAL_API uint8 Com_GetRxMsgListIndex(uint8 ChNo,uint32 MsgId,uint8 *ptr_Index);
 
 /****************************************************************************
+ * @function	Com_GetRxMsgListUpdate
+ * @brief		get Com_BusRxMsgList Update base on Index
+ * @param  		Index :  input parameters
+ *				ptr_Updata : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetRxMsgListUpdate(uint8 Index,uint8 *ptr_Update);
+
+/****************************************************************************
  * @function	Com_GetRxMsgListChNo
  * @brief		get Com_BusRxMsgList ChNo base on Index
  * @param  		Index :  input parameters
@@ -128,6 +138,16 @@ COM_LOCAL_API uint8 Com_GetRxMsgListMsgData(uint8 Index,uint8 *ptr_MsgData);
 COM_LOCAL_API uint8 Com_GetRxMsgListChNoMsgIdDlcData(uint8 Index,uint8 *ptr_ChNo,uint32 *ptr_MsgId,uint8 *ptr_MsgDlc,uint8 *ptr_MsgData);
 
 /****************************************************************************
+ * @function	Com_SetRxMsgListUpdate
+ * @brief		set Com_BusRxMsgList Update base on Index
+ * @param  		Index :  input parameters
+ *				Update : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetRxMsgListUpdate(uint8 Index,uint8 Update);
+
+/****************************************************************************
  * @function	Com_SetRxMsgListChNo
  * @brief		set Com_BusRxMsgList ChNo base on Index
  * @param  		Index :  input parameters
@@ -179,6 +199,191 @@ COM_LOCAL_API uint8 Com_SetRxMsgListMsgData(uint8 Index,uint8 *ptr_MsgData);
  * @attention   NULL
 ****************************************************************************/
 COM_LOCAL_API uint8 Com_SetRxMsgListChNoMsgIdDlcData(uint8 Index,uint8 ChNo,uint32 MsgId,uint8 MsgDlc,uint8 *ptr_MsgData);
+
+
+/****************************************************************************
+ * @function	Com_CheckTxMsgListIsFull
+ * @brief		check Com_BusTxMsgList is full
+ * @param  		ptr_Index : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_CheckTxMsgListIsFull(uint8 *ptr_Index);
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListIndex
+ * @brief		get Com_BusTxMsgList Index base on ChNo and MsgId
+ * @param  		ChNo :  input parameters
+ *				MsgId : input parameters
+ *				ptr_Index : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListIndex(uint8 ChNo,uint32 MsgId,uint8 *ptr_Index);
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListUpdate
+ * @brief		get Com_BusTxMsgList Update base on Index
+ * @param  		Index :  input parameters
+ *				ptr_Updata : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListUpdate(uint8 Index,uint8 *ptr_Update);
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListChNo
+ * @brief		get Com_BusTxMsgList ChNo base on Index
+ * @param  		Index :  input parameters
+ *				ptr_ChNo : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListChNo(uint8 Index,uint8 *ptr_ChNo);
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListMsgId
+ * @brief		get Com_BusTxMsgList MsgId base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgId : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListMsgId(uint8 Index,uint32 *ptr_MsgId);
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListMsgDlc
+ * @brief		get Com_BusTxMsgList MsgDlc base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgDlc : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListMsgDlc(uint8 Index,uint8 *ptr_MsgDlc);
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListMsgData
+ * @brief		get Com_BusTxMsgList MsgData base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgData : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListMsgData(uint8 Index,uint8 *ptr_MsgData);
+
+/****************************************************************************
+ * @function	Com_GetTxMsgListChNoMsgIdDlcData
+ * @brief		get Com_BusTxMsgList ChNo,MsgId,MsgDlc,MsgData base on Index
+ * @param  		Index :  input parameters
+ * 				ptr_ChNo : output parameters
+ * 				ptr_MsgId : output parameters
+ * 				ptr_MsgDlc : output parameters
+ *				ptr_MsgData : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_GetTxMsgListChNoMsgIdDlcData(uint8 Index,uint8 *ptr_ChNo,uint32 *ptr_MsgId,uint8 *ptr_MsgDlc,uint8 *ptr_MsgData);
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListUpdate
+ * @brief		set Com_BusTxMsgList Update base on Index
+ * @param  		Index :  input parameters
+ *				Update : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListUpdate(uint8 Index,uint8 Update);
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListChNo
+ * @brief		set Com_BusTxMsgList ChNo base on Index
+ * @param  		Index :  input parameters
+ *				ChNo : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListChNo(uint8 Index,uint8 ChNo);
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListMsgId
+ * @brief		set Com_BusTxMsgList MsgId base on Index
+ * @param  		Index :  input parameters
+ *				MsgId : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListMsgId(uint8 Index,uint32 MsgId);
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListMsgDlc
+ * @brief		set Com_BusTxMsgList MsgDlc base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgDlc : output parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListMsgDlc(uint8 Index,uint8 MsgDlc);
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListMsgData
+ * @brief		set Com_BusTxMsgList MsgData base on Index
+ * @param  		Index :  input parameters
+ *				ptr_MsgData : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListMsgData(uint8 Index,uint8 *ptr_MsgData);
+
+/****************************************************************************
+ * @function	Com_SetTxMsgListChNoMsgIdDlcData
+ * @brief		set Com_BusTxMsgList ChNo,MsgId,MsgDlc,MsgData base on Index
+ * @param  		Index :  input parameters
+ * 				ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				MsgDlc : input parameters
+ *				ptr_MsgData : input parameters
+ * @retval 		ret : function operate result
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API uint8 Com_SetTxMsgListChNoMsgIdDlcData(uint8 Index,uint8 ChNo,uint32 MsgId,uint8 MsgDlc,uint8 *ptr_MsgData);
+
+/****************************************************************************
+ * @function	Com_ReadTxMsgListSignal
+ * @brief
+ * @param  		Index :  input parameters
+ * 				FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : output parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_ReadTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
+
+/****************************************************************************
+ * @function	Com_WriteTxMsgListSignal
+ * @brief
+ * @param  		Index :  input parameters
+ * 				FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
+
+
+
+
 
 
 #endif /*_COM_H*/

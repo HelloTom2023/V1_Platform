@@ -244,6 +244,74 @@
 #define _BIT31_	(0x80000000)
 #endif
 
+/*bit mask define*/
+#ifndef _MASK_1_BIT_
+#define _MASK_1_BIT_	(0x01)
+#endif
+
+#ifndef _MASK_2_BIT_
+#define _MASK_2_BIT_	(0x03)
+#endif
+
+#ifndef _MASK_3_BIT_
+#define _MASK_3_BIT_	(0x07)
+#endif
+
+#ifndef _MASK_4_BIT_
+#define _MASK_4_BIT_	(0x0F)
+#endif
+
+#ifndef _MASK_5_BIT_
+#define _MASK_5_BIT_	(0x1F)
+#endif
+
+#ifndef _MASK_6_BIT_
+#define _MASK_6_BIT_	(0x3F)
+#endif
+
+#ifndef _MASK_7_BIT_
+#define _MASK_7_BIT_	(0x7F)
+#endif
+
+#ifndef _MASK_8_BIT_
+#define _MASK_8_BIT_	(0xFF)
+#endif
+
+#ifndef _MASK_9_BIT_
+#define _MASK_9_BIT_	(0x01FF)
+#endif
+
+#ifndef _MASK_10_BIT_
+#define _MASK_10_BIT_	(0x03FF)
+#endif
+
+#ifndef _MASK_11_BIT_
+#define _MASK_11_BIT_	(0x07FF)
+#endif
+
+#ifndef _MASK_12_BIT_
+#define _MASK_12_BIT_	(0x0FFF)
+#endif
+
+#ifndef _MASK_13_BIT_
+#define _MASK_13_BIT_	(0x1FFF)
+#endif
+
+#ifndef _MASK_14_BIT_
+#define _MASK_14_BIT_	(0x3FFF)
+#endif
+
+#ifndef _MASK_15_BIT_
+#define _MASK_15_BIT_	(0x7FFF)
+#endif
+
+#ifndef _MASK_16_BIT_
+#define _MASK_16_BIT_	(0xFFFF)
+#endif
+
+
+
+
 
 #endif /*_COMMON_TYPE_H*/
 /*********************************File End*********************************/

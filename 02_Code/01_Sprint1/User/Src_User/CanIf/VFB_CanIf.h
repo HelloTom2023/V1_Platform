@@ -149,31 +149,6 @@
 
 
 
-
-/****************************************************************************
- * @function	CanIf_MemSetValue
- * @brief		set value to ptr_DestData
- * @param  		ptr_DestData :  output parameters , target data pointer
- *				Value : input parameters , needs to be set values
- *				DataLength : input parameters, data length.
- * @retval 		NULL
- * @attention   NULL
-****************************************************************************/
-#define CanIf_MemSetValue(ptr_DestData,Value,DataLength)		CommFunc_MemSetValue(ptr_DestData,Value,DataLength)
-
-/****************************************************************************
- * @function	CanIf_MemCopyData
- * @brief		set value to ptr_DestData
- * @param  		ptr_DestData :  output parameters , target data pointer
- *				ptr_SoureData : output parameters , source data pointer
- *				DataLength : input parameters, data length.
- * @retval 		NULL
- * @attention   NULL
-****************************************************************************/
-#define CanIf_MemCopyData(ptr_DestData,ptr_SoureData,DataLength)		CommFunc_MemCopyData(ptr_DestData,ptr_SoureData,DataLength)
-
-
-
 /*Function declaration AREA*/
 
 
