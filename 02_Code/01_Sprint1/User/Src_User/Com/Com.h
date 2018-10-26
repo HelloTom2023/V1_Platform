@@ -27,7 +27,7 @@
 
 
 /*Macro definition AREA*/
-#define _COM_C	/*define use CanIf.c*/
+#define _COM_C	/*define use Com.c*/
 
 #ifndef _COM_C
 #define COM_API_CALL
@@ -381,7 +381,23 @@ COM_LOCAL_API uint8 Com_ReadTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 S
 ****************************************************************************/
 COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
 
-
+/****************************************************************************
+ * @function	Com_WriteSignalTxImmediately
+ * @brief
+ * @param  		FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_WriteSignalTxImmediately(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
 
 
 

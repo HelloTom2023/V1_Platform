@@ -1,4 +1,14 @@
-﻿Version : V0.0.7
+﻿Version : V0.0.8
+ChangeLog :
+1.Com : Add immediately send message strategy---add some APIs
+		In the current code not used the Com_BusTxMsgList,the array will used poll send strategy.
+2.CanIf : add some APIs,will provide Com modules use
+3.VFB_Com : Mapping APIs between CanIf and Com modules.
+4.ComUser : Create the module
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.10.26
+/*********************************************************************************************************************/
+Version : V0.0.7
 ChangeLog :
 1.Common : delete CommFunc_memset, CommFunc_memcpy function.
 2.Common : add CommFunc_GetBitMask,CommFunc_BitShiftLeft,CommFunc_BitShiftRigth APIs

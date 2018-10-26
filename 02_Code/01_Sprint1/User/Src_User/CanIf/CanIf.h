@@ -318,6 +318,17 @@ CAN_IF_LOCAL_API void CanIf_TxTimerHandleFunction(void);
 CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* ptr_bufNo);
 
 /****************************************************************************
+ * @function	CanIf_GetTxListIndex
+ * @brief  		get CanIf_CanMsgTxList index base on ChNo and MsgId
+ * @param		ptr_Index : output parameters,
+ * 				ChNo : input parameters,
+ * 				MsgId : input parameters.
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetTxListIndex(uint8* ptr_Index, uint8 ChNo, uint32 MsgId);
+
+/****************************************************************************
  * @function	CanIf_SetTxListChNo
  * @brief  		set CanIf_CanMsgTxList ChNo
  * @param		Index : will set CanIf_CanMsgTxList index
@@ -428,6 +439,32 @@ CAN_IF_EXTERN_API uint8 CanIf_SetTxListData(uint8 Index, uint8 *ptr_Data, uint8 
  * @attention   NULL
 ****************************************************************************/
 CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgIdDlcData(uint8 Index, uint32 MsgId,uint8 Dlc, uint8 *ptr_Data);
+
+/****************************************************************************
+ * @function	CanIf_UpdateTxListMsgData
+ * @brief  		update CanIf_CanMsgTxList Data base on ChNo and MsgId
+ * @param		ChNo :
+ * 				MsgId :
+ * 				Dlc :
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgData(uint8 ChNo,uint32 MsgId, uint8 *ptr_Data);
+
+/****************************************************************************
+ * @function	CanIf_UpdateTxListMsgDlcData
+ * @brief  		update CanIf_CanMsgTxList Dlc,Data base on ChNo and MsgId
+ * @param		ChNo :
+ * 				MsgId :
+ * 				Dlc :
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgDlcData(uint8 ChNo,uint32 MsgId,uint8 Dlc, uint8 *ptr_Data);
+
+
 
 
 #endif /*_CAN_IF_H*/

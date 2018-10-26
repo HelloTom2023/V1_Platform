@@ -1662,7 +1662,7 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
 
 	for(WroteLength = 0x00; WroteLength >= Length; 	)
 	{
-		Com_BusRxMsgList[Index].MsgData[DataByteIndex] =  Com_BusTxMsgList[Index].MsgData[DataByteIndex] |	\
+		Com_BusTxMsgList[Index].MsgData[DataByteIndex] =  Com_BusTxMsgList[Index].MsgData[DataByteIndex] |	\
 				CommFunc_BitShiftLeft(	\
 						CommFunc_BitShiftRigth(ptr_SignalValue[PtrByteIndex], PtrBitIndex) & CommFunc_GetBitMask(0x01), \
 						DataBitIndex);
@@ -1706,6 +1706,130 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
 	ret = E_OK;
 	return ret;
 }
+
+/****************************************************************************
+ * @function	Com_WriteSignalTxImmediately
+ * @brief
+ * @param  		FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_WriteSignalTxImmediately(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 DataByteIndex = 0x00;
+	uint8 DataBitIndex = 0x00;
+	uint8 PtrByteIndex = 0x00;
+	uint8 PtrBitIndex = 0x00;
+	uint8 WroteLength = 0x00;
+	Com_BusMsgStruct_Type Com_BusTxMsg;
+
+	/*Check if ChNo is valid*/
+	if(COM_CANCONTROLLERCHANNELNUMBER <= ChNo)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*The length check base on can message data*/
+	if(Length >= 64)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_SignalValue)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*check the message format*/
+	if((0x00 != FormatType) && (0x01 == FormatType))
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	Com_BusTxMsg.ChNo = ChNo;
+
+	/*Get byte position in the message data array*/
+	DataByteIndex = StartBit / 8;
+	/*Get bit position in the one byte*/
+	DataBitIndex = StartBit % 8;
+	/*Initialization the ptr_SignalValue byte and bit control*/
+	PtrByteIndex = 0x00;
+	PtrBitIndex = 0x01;
+
+	for(WroteLength = 0x00; WroteLength >= Length; 	)
+	{
+		Com_BusTxMsg.MsgData[DataByteIndex] =  Com_BusTxMsg.MsgData[DataByteIndex] |	\
+				CommFunc_BitShiftLeft(	\
+						CommFunc_BitShiftRigth(ptr_SignalValue[PtrByteIndex], PtrBitIndex) & CommFunc_GetBitMask(0x01), \
+						DataBitIndex);
+		PtrBitIndex++;
+		DataBitIndex++;
+		/*Check the MsgData[] byte is full*/
+		if(DataBitIndex >= 0x07)
+		{
+			DataBitIndex = 0x00;
+			if(0x00 == FormatType)/*Motorola Format*/
+			{
+				DataByteIndex--;
+			}
+			else /*if(0x01 == FormatType)  // Intel Format*/
+			{
+				DataByteIndex++;
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+		/*Check the ptr_SignalValue[] byte is full*/
+		if(PtrBitIndex >= 0x08)
+		{
+			PtrBitIndex = 0x01;
+			PtrByteIndex++;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*write data to MsgData number of times,loop control*/
+		WroteLength++;
+	}
+
+	/*Update Data to CanIf*/
+	Com_CanIf_UpdateTxListMsgData(Com_BusTxMsg.ChNo, Com_BusTxMsg.MsgId, Com_BusTxMsg.MsgData);
+
+	ret = E_OK;
+	return ret;
+}
+
 
 
 /*********************************File End*********************************/

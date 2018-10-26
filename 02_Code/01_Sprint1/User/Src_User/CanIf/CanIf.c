@@ -1040,6 +1040,64 @@ CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* pt
 }
 
 /****************************************************************************
+ * @function	CanIf_GetTxListIndex
+ * @brief  		get CanIf_CanMsgTxList index base on ChNo and MsgId
+ * @param		ptr_Index : output parameters,
+ * 				ChNo : input parameters,
+ * 				MsgId : input parameters.
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_LOCAL_API uint8 CanIf_GetTxListIndex(uint8* ptr_Index, uint8 ChNo, uint32 MsgId)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 index = 0x00;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_Index)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	if(ChNo >= CANIF_CANCONTROLLERCHANNELNUMBER)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	for(index = 0;  ;index++)
+	{
+		if(0xff == CanIf_CanMsgTxList[index].ChNo)
+		{
+			return E_RET_NOT_FOUND; /*not found*/
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		if( (ChNo == CanIf_CanMsgTxList[index].ChNo ) && (MsgId == CanIf_CanMsgTxList[index].MsgId) )
+		{
+			*ptr_Index = index;
+			return E_OK;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+	}
+
+	return ret;
+}
+
+/****************************************************************************
  * @function	CanIf_SetTxListChNo
  * @brief  		set CanIf_CanMsgTxList ChNo
  * @param		Index : will set CanIf_CanMsgTxList index
@@ -1363,5 +1421,95 @@ CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgIdDlcData(uint8 Index, uint32 MsgId,ui
 
 	return ret;
 }
+
+/****************************************************************************
+ * @function	CanIf_UpdateTxListMsgData
+ * @brief  		update CanIf_CanMsgTxList Data base on ChNo and MsgId
+ * @param		ChNo :
+ * 				MsgId :
+ * 				Dlc :
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgData(uint8 ChNo,uint32 MsgId, uint8 *ptr_Data)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 Index = 0x00;
+
+	/*Check ptr_Data is valid*/
+	if(NULL == ptr_Data)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get TxList Index*/
+	ret = CanIf_GetTxListIndex(&Index, ChNo, MsgId);
+
+	if(E_OK == ret)
+	{
+		/*Update  data*/
+		CanIf_CanMsgTxList[Index].MsgId = MsgId;
+		memcpy(ptr_Data, CanIf_CanMsgTxList[Index].Data, CanIf_CanMsgTxList[Index].Dlc);
+		ret = E_OK;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_UpdateTxListMsgDlcData
+ * @brief  		update CanIf_CanMsgTxList Dlc,Data base on ChNo and MsgId
+ * @param		ChNo :
+ * 				MsgId :
+ * 				Dlc :
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgDlcData(uint8 ChNo,uint32 MsgId,uint8 Dlc, uint8 *ptr_Data)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 DataLength = 0x00;
+	uint8 Index = 0x00;
+
+	/*Check ptr_Data is valid*/
+	if(NULL == ptr_Data)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get TxList Index*/
+	ret = CanIf_GetTxListIndex(&Index, ChNo, MsgId);
+
+	if(E_OK == ret)
+	{
+		/*Update dlc and data*/
+		CanIf_CanMsgTxList[Index].MsgId = MsgId;
+		CanIf_CanMsgTxList[Index].Dlc = Dlc;
+		DataLength = Dlc;
+		memcpy(ptr_Data, CanIf_CanMsgTxList[Index].Data, DataLength);
+		ret = E_OK;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	return ret;
+}
+
 
 /*********************************File End*********************************/

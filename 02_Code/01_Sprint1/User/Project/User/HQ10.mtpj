@@ -151,6 +151,12 @@
       <ParentItem>981bdb39-ec0d-48b5-873f-dfdfdaf7da8a</ParentItem>
       <Property>c782a42e-22dd-48b6-b6c9-1942786e2092</Property>
     </Instance>
+    <Instance Guid="b36651cb-5c08-46f5-9b6c-1ec00e264302">
+      <Name>ComUser</Name>
+      <Type>Category</Type>
+      <ParentItem>981bdb39-ec0d-48b5-873f-dfdfdaf7da8a</ParentItem>
+      <Property>c4679dff-9a2e-4df5-a9de-5723f75d528a</Property>
+    </Instance>
     <Instance Guid="c413d4b7-e5af-4940-aea1-7ee2cf10a8d7">
       <Name>start.s</Name>
       <Type>File</Type>
@@ -805,6 +811,14 @@
       <ParentItem>0fafa467-f08d-4112-9ba2-5f606a4a10e8</ParentItem>
       <Property>1de0fd0c-4998-4d89-a7b0-faf642efc6b1</Property>
     </Instance>
+    <Instance Guid="69ce57ab-3ab0-43f3-9689-c280521ea0d7">
+      <Name>ComUser.c</Name>
+      <Type>File</Type>
+      <RelativePath>..\..\Src_User\ComUser\ComUser.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>b36651cb-5c08-46f5-9b6c-1ec00e264302</ParentItem>
+      <Property>ec1b5b99-35d4-4b17-be8e-7a5417a55436</Property>
+    </Instance>
   </Class>
   <Class Guid="fb98844b-2c27-4275-9804-f6e63e204da0">
     <Instance Guid="fb98844b-2c27-4275-9804-f6e63e204da0">
@@ -1028,6 +1042,9 @@
     <Instance Guid="1de0fd0c-4998-4d89-a7b0-faf642efc6b1">
       <MemoCount>0</MemoCount>
     </Instance>
+    <Instance Guid="ec1b5b99-35d4-4b17-be8e-7a5417a55436">
+      <MemoCount>0</MemoCount>
+    </Instance>
   </Class>
   <Class Guid="78a5c5cd-76cb-4bcc-a031-3020011fbc9a">
     <Instance Guid="c4198c0a-4065-45fe-a399-0c5498cd2ff5">
@@ -1093,6 +1110,9 @@
     <Instance Guid="4d0a8d49-f9e3-4a2e-b92d-29b9c08e8a2b">
       <MemoCount>0</MemoCount>
     </Instance>
+    <Instance Guid="c782a42e-22dd-48b6-b6c9-1942786e2092">
+      <MemoCount>0</MemoCount>
+    </Instance>
     <Instance Guid="1ead1088-ad70-49cc-bcc0-d5f45b4cf1df">
       <MemoCount>0</MemoCount>
     </Instance>
@@ -1105,10 +1125,10 @@
     <Instance Guid="b99648ce-0d4a-4b8a-9464-05b7eec69e7e">
       <MemoCount>0</MemoCount>
     </Instance>
-    <Instance Guid="85c894d5-8e27-428b-a84f-df3957bdfa48">
+    <Instance Guid="62165ce4-5fd3-4e69-9177-4ef5bdb3bd77">
       <MemoCount>0</MemoCount>
     </Instance>
-    <Instance Guid="c782a42e-22dd-48b6-b6c9-1942786e2092">
+    <Instance Guid="c4679dff-9a2e-4df5-a9de-5723f75d528a">
       <MemoCount>0</MemoCount>
     </Instance>
   </Class>
@@ -1309,7 +1329,9 @@
       <SourceItemType76>CSource</SourceItemType76>
       <SourceItemGuid77>b84eef3f-c025-4b1d-9e3d-16faa990dfbc</SourceItemGuid77>
       <SourceItemType77>CSource</SourceItemType77>
-      <SourceItemCount>78</SourceItemCount>
+      <SourceItemGuid78>69ce57ab-3ab0-43f3-9689-c280521ea0d7</SourceItemGuid78>
+      <SourceItemType78>CSource</SourceItemType78>
+      <SourceItemCount>79</SourceItemCount>
       <SectionSourceItemCount>0</SectionSourceItemCount>
       <LastDeviceChangedCounter>5</LastDeviceChangedCounter>
     </Instance>
@@ -2574,6 +2596,10 @@ SelfLib
       <ItemAddTime>636757372081362513</ItemAddTime>
       <ItemAddTimeCount>0</ItemAddTimeCount>
     </Instance>
+    <Instance Guid="69ce57ab-3ab0-43f3-9689-c280521ea0d7">
+      <ItemAddTime>636761844725373967</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
     <Instance Guid="2317529b-91c1-49b6-8351-6d8f51718b0d">
       <TimeTagModified-SourceItem0--0>-8588132143260557058</TimeTagModified-SourceItem0--0>
       <SourceItem0-IsLockedByUser>False</SourceItem0-IsLockedByUser>
@@ -3356,6 +3382,16 @@ SelfLib
       <TimeTagModified-SourceItem77--2>-8586614952773403320</TimeTagModified-SourceItem77--2>
       <SourceItem77-BuildingTarget-2>True</SourceItem77-BuildingTarget-2>
       <SourceItem77-IndividualCompileOption-2>False</SourceItem77-IndividualCompileOption-2>
+      <TimeTagModified-SourceItem78--0>-8586610480129401841</TimeTagModified-SourceItem78--0>
+      <SourceItem78-IsLockedByUser>False</SourceItem78-IsLockedByUser>
+      <SourceItem78-BuildingTarget-0>True</SourceItem78-BuildingTarget-0>
+      <SourceItem78-IndividualCompileOption-0>False</SourceItem78-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem78--1>-8586610480129401841</TimeTagModified-SourceItem78--1>
+      <SourceItem78-BuildingTarget-1>True</SourceItem78-BuildingTarget-1>
+      <SourceItem78-IndividualCompileOption-1>False</SourceItem78-IndividualCompileOption-1>
+      <TimeTagModified-SourceItem78--2>-8586610480129401841</TimeTagModified-SourceItem78--2>
+      <SourceItem78-BuildingTarget-2>True</SourceItem78-BuildingTarget-2>
+      <SourceItem78-IndividualCompileOption-2>False</SourceItem78-IndividualCompileOption-2>
     </Instance>
   </Class>
   <Class Guid="44fa27c9-0aa0-4297-bd3b-2c5c5bdb8881">
