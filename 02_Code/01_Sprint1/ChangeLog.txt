@@ -1,4 +1,12 @@
-﻿Version : V0.0.8
+﻿Version : V0.0.9
+ChangeLog :
+1.Com : Add some APIs,will provide ComUser use
+2.VFB_ComUser : Mapping APIs between ComUser and Com modules.
+3.ComUser : Add Main,RxMain,TxMain function
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.10.26
+/*********************************************************************************************************************/
+Version : V0.0.8
 ChangeLog :
 1.Com : Add immediately send message strategy---add some APIs
 		In the current code not used the Com_BusTxMsgList,the array will used poll send strategy.

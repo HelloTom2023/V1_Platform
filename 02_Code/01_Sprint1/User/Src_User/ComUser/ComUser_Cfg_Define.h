@@ -43,7 +43,7 @@
 /*the function parameters configuration*/
 /*The can controller support max can channel number*/
 #define COM_USER_CANCONTROLLERCHANNELNUMBER						1
-
+#define COM_USER_MESSAGE_FORMAT									(0)	/*Motorola Format*/
 
 
 

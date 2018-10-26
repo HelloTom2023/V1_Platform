@@ -200,6 +200,57 @@ COM_LOCAL_API uint8 Com_SetRxMsgListMsgData(uint8 Index,uint8 *ptr_MsgData);
 ****************************************************************************/
 COM_LOCAL_API uint8 Com_SetRxMsgListChNoMsgIdDlcData(uint8 Index,uint8 ChNo,uint32 MsgId,uint8 MsgDlc,uint8 *ptr_MsgData);
 
+/****************************************************************************
+ * @function	Com_ReadRxMsgListSignal
+ * @brief
+ * @param  		Index :  input parameters
+ * 				FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : output parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_ReadRxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
+
+/****************************************************************************
+ * @function	Com_WriteRxMsgListSignal
+ * @brief
+ * @param  		Index :  input parameters
+ * 				FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_LOCAL_API uint8 Com_WriteRxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
+
+/****************************************************************************
+ * @function	Com_ReadRxSignal
+ * @brief
+ * @param 		FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : output parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_EXTERN_API uint8 Com_ReadRxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
 
 /****************************************************************************
  * @function	Com_CheckTxMsgListIsFull
@@ -382,7 +433,7 @@ COM_LOCAL_API uint8 Com_ReadTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 S
 COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
 
 /****************************************************************************
- * @function	Com_WriteSignalTxImmediately
+ * @function	Com_WriteAndImmediatelyTxSignal
  * @brief
  * @param  		FormatType : input parameters.
  * 							 if the FormatType is 0x01,the can message data format is Intel format
@@ -397,7 +448,7 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
  * 				the parameters ptr_SignalValue can modify to data type automatic application
  * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
 ****************************************************************************/
-COM_LOCAL_API uint8 Com_WriteSignalTxImmediately(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
+COM_LOCAL_API uint8 Com_WriteAndImmediatelyTxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
 
 
 

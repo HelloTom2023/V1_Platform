@@ -42,7 +42,32 @@
 
 
 /*Function declaration AREA*/
+/****************************************************************************
+ * @function	ComUser_MainFunction
+ * @brief  		NULL
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_USER_EXTERN_API void ComUser_MainFunction(void);
 
+/****************************************************************************
+ * @function	ComUser_RxMainFunction
+ * @brief  		NULL
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_USER_EXTERN_API void ComUser_RxMainFunction(void);
+
+/****************************************************************************
+ * @function	ComUser_RxMainFunction
+ * @brief  		NULL
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_USER_EXTERN_API void ComUser_TxMainFunction(void);
 
 
 #endif /*_COM_USER_H*/

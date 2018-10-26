@@ -25,6 +25,69 @@
 
 
 /*Macro definition AREA*/
+/****************************************************************************
+ * @function	ComUser_Com_WriteAndImmediatelyTxSignalCh0
+ * @brief
+ * @param  		FormatType : Use Motorola Format
+ * 				ChNo : Use Ch0
+ * 				MsgId : input parameters
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+#define ComUser_Com_WriteAndImmediatelyTxSignalCh0(MsgId,StartBit,Length,ptr_SignalValue)		Com_WriteSignalTxImmediately(COM_USER_MESSAGE_FORMAT,0x00,MsgId,StartBit,Length,ptr_SignalValue)
+
+/****************************************************************************
+ * @function	ComUser_Com_WriteAndImmediatelyTxSignalCh1
+ * @brief
+ * @param  		FormatType : Use Motorola Format
+ * 				ChNo : Use Ch1
+ * 				MsgId : input parameters
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+#define ComUser_Com_WriteAndImmediatelyTxSignalCh1(MsgId,StartBit,Length,ptr_SignalValue)		Com_WriteSignalTxImmediately(COM_USER_MESSAGE_FORMAT,0x01,MsgId,StartBit,Length,ptr_SignalValue)
+
+/****************************************************************************
+ * @function	Com_ReadRxSignalCh0
+ * @brief
+ * @param 		FormatType : Use Motorola Format
+ * 				ChNo : Use Ch0
+ * 				MsgId : input parameters
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : output parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+#define ComUser_Com_ReadRxSignalCh0(MsgId, StartBit, Length, ptr_SignalValue)		Com_ReadRxSignal(COM_USER_MESSAGE_FORMAT, 0x00, MsgId, StartBit, Length, ptr_SignalValue)
+
+/****************************************************************************
+ * @function	Com_ReadRxSignalCh1
+ * @brief
+ * @param 		FormatType : Use Motorola Format
+ * 				ChNo : Use Ch1
+ * 				MsgId : input parameters
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : output parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+#define ComUser_Com_ReadRxSignalCh1(MsgId, StartBit, Length, ptr_SignalValue)		Com_ReadRxSignal(COM_USER_MESSAGE_FORMAT, 0x01, MsgId, StartBit, Length, ptr_SignalValue)
 
 
 
