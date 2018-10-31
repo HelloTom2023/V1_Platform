@@ -22,7 +22,6 @@
 #include "..\Common\Common.h"
 #include "Com_Type.h"
 #include "Com_Cfg_Define.h"
-#include "Com_Cfg_Table.h"
 #include "VFB_Com.h"
 
 

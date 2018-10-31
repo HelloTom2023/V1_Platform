@@ -25,7 +25,7 @@
 */
 #define _CAN_MODULE_C
 #include "..\..\..\config\inc.h"
-
+#include "..\..\..\Can_V850\VFB_Can_V850.h"
 
 #ifdef CAN_MODULE_ENABLE
 
@@ -1351,7 +1351,8 @@ void CAN0_INTREC(void)
 	//uint8_t bak = RECMK1;
 	//RECMK1 = 1;	/* INTC1REC disable */
 	C0INTS = 0x02;
-	CANbus_RecvInterruptCallBack(CAN_ID0);
+	Can_V850_CanIf_RecvInterruptCallback(CAN_ID0);
+	//CANbus_RecvInterruptCallBack(CAN_ID0);
 	//RECMK1 = bak;	/*recovery INTC1REC  */
 }
 /****************************************************************************

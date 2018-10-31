@@ -1,4 +1,12 @@
-﻿Version : V0.0.9
+﻿Version : V0.0.10
+ChangeLog :
+1.Can_V850 : create modules,and crete vfb file.
+2.CanIf,Com,CanTp : xxx_Cfg_Table.h files shall be define in xxx.c files.beacuse the table only used by xxx.c file.
+3.VFB_Can_V850 : add one API between Can and canif
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.10.31
+/*********************************************************************************************************************/
+Version : V0.0.9
 ChangeLog :
 1.Com : Add some APIs,will provide ComUser use
 2.VFB_ComUser : Mapping APIs between ComUser and Com modules.

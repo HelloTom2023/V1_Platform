@@ -21,7 +21,7 @@
 #include "..\Common\Common.h"
 #include "Com_Cfg_Define.h"
 #include "..\..\..\config\inc.h"
-
+#include "..\CanIf\CanIf.h"
 
 
 /*Macro definition AREA*/

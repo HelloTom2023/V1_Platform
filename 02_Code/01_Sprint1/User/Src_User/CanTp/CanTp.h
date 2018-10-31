@@ -21,7 +21,6 @@
 #include "..\Common\Common.h"
 #include "CanTp_Type.h"
 #include "CanTp_Cfg_Define.h"
-#include "CanTp_Cfg_Table.h"
 #include "VFB_CanTp.h"
 
 

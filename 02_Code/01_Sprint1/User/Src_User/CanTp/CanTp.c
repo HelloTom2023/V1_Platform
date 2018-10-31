@@ -17,7 +17,7 @@
 
 /*Include head files AREA*/
 #include "CanTp.h"
-
+#include "CanTp_Cfg_Table.h" /*The table only used by CanTp.C*/
 
 
 /*Macro definition AREA*/

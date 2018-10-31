@@ -19,7 +19,7 @@
 
 /*Include head files AREA*/
 #include "CanIf.h"
-
+#include "CanIf_Cfg_Table.h" /*The table only used by CanIf.C*/
 
 
 /*Macro definition AREA*/

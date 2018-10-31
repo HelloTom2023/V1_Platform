@@ -19,7 +19,7 @@
 
 /*Include head files AREA*/
 #include "Com.h"
-
+#include "Com_Cfg_Table.h"/*The table only used by Com.C*/
 
 
 /*Macro definition AREA*/

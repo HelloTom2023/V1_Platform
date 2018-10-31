@@ -22,7 +22,6 @@
 #include "..\Common\Common.h"
 #include "CanIf_Type.h"
 #include "CanIf_Cfg_Define.h"
-#include "CanIf_Cfg_Table.h"
 #include "VFB_CanIf.h"
 
 

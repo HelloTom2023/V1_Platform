@@ -157,6 +157,12 @@
       <ParentItem>981bdb39-ec0d-48b5-873f-dfdfdaf7da8a</ParentItem>
       <Property>c4679dff-9a2e-4df5-a9de-5723f75d528a</Property>
     </Instance>
+    <Instance Guid="463ce57b-71f0-478f-a929-b9fbff877bba">
+      <Name>Can_V850</Name>
+      <Type>Category</Type>
+      <ParentItem>981bdb39-ec0d-48b5-873f-dfdfdaf7da8a</ParentItem>
+      <Property>7bf07bd2-17e4-4425-9114-81369ee42927</Property>
+    </Instance>
     <Instance Guid="c413d4b7-e5af-4940-aea1-7ee2cf10a8d7">
       <Name>start.s</Name>
       <Type>File</Type>
@@ -1113,6 +1119,9 @@
     <Instance Guid="c782a42e-22dd-48b6-b6c9-1942786e2092">
       <MemoCount>0</MemoCount>
     </Instance>
+    <Instance Guid="c4679dff-9a2e-4df5-a9de-5723f75d528a">
+      <MemoCount>0</MemoCount>
+    </Instance>
     <Instance Guid="1ead1088-ad70-49cc-bcc0-d5f45b4cf1df">
       <MemoCount>0</MemoCount>
     </Instance>
@@ -1125,10 +1134,10 @@
     <Instance Guid="b99648ce-0d4a-4b8a-9464-05b7eec69e7e">
       <MemoCount>0</MemoCount>
     </Instance>
-    <Instance Guid="62165ce4-5fd3-4e69-9177-4ef5bdb3bd77">
+    <Instance Guid="3869f54f-7c4f-4be6-91a8-f7ea2fc415d2">
       <MemoCount>0</MemoCount>
     </Instance>
-    <Instance Guid="c4679dff-9a2e-4df5-a9de-5723f75d528a">
+    <Instance Guid="7bf07bd2-17e4-4425-9114-81369ee42927">
       <MemoCount>0</MemoCount>
     </Instance>
   </Class>
