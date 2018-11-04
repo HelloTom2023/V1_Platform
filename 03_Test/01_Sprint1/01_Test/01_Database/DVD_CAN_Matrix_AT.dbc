@@ -1,0 +1,285 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Tester DVR RRS PAC GW BCM DVD
+VAL_TABLE_ Vt_DVD_DiagFarmeType 3 "FC" 2 "CF" 1 "FF" 0 "SF" ;
+VAL_TABLE_ Vt_DVR_EnterUpdateModeResult 7 "Reserved" 6 "Update Fail_Other Reason" 5 "Update Fail_Files Erros" 4 "Update Fail_No Files" 3 "Update Fail_No SDcard" 2 "Update Success" 1 "Update Processing" 0 "No Response" ;
+VAL_TABLE_ Vt_DVR_DestinationPageResult 3 "Reserved" 2 "Fail" 1 "Successful" 0 "Invalid" ;
+VAL_TABLE_ Vt_DVR_FactorySetResult 3 "Reserved" 2 "Fail" 1 "Success" 0 "No Response" ;
+VAL_TABLE_ Vt_DVR_SDFormatResult 3 "Format Fail" 2 "Format Success" 1 "Format Processing" 0 "No Response" ;
+VAL_TABLE_ Vt_DVR_CommandResponse 3 "No File" 2 "Fail" 1 "Successful" 0 "No Response" ;
+VAL_TABLE_ Vt_DVR_CommandList 36 "Exit browse mode" 35 "Enter emergency browse mode" 34 "Enter emergency browse mode" 33 "Enter genaral browse mode" 32 "Enter emergency record mode" 31 "Enter pause record mode" 30 "Enter genaral record mode" 29 "1/8" 28 "1/4" 27 "1/2" 26 "1" 25 "Ninth" 24 "Eighth" 23 "Seventh" 22 "Sixth" 21 "Fifth" 20 "Fourth" 19 "Third" 18 "Second" 17 "First" 16 "Reserved" 15 "Reserved" 14 "Next Page" 13 "Prev Page" 12 "Right" 11 "Left" 10 "Down" 9 "Up" 8 "Delete All Files" 7 "Delete File" 6 "Save" 5 "Play Next" 4 "Play Prev" 3 "Exit Play" 2 "Pause" 1 "Play" 0 "No Response" ;
+VAL_TABLE_ Vt_DVR_PhotographResult 3 "Reserved" 2 "Fail" 1 "Successful" 0 "Invalid" ;
+VAL_TABLE_ Vt_DVR_SDcardStatus 7 "Reserved" 6 "SDcard Photo Area Full" 5 "SDcard Emergency Video Area Full" 4 "SDcard Insufficient" 3 "SDcard Not Format" 2 "SDcard Error" 1 "No SDcard" 0 "Normal" ;
+VAL_TABLE_ Vt_DVR_ErrorStatus 1 "Error" 0 "Normal" ;
+VAL_TABLE_ Vt_DVR_SDCapacityStatusAtr 1 "Residual Capacity" 0 "Total Capacity" ;
+VAL_TABLE_ Vt_DVR_SystemSts 15 "Error" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Update Mode" 9 "Pause Video" 8 "Play Video" 7 "Photo Browse" 6 "Emergency Browse" 5 "General Browse" 4 "Emergency Record By Crash" 3 "Emergency Record By User" 2 "Pause Record" 1 "General Record" 0 "Initializing" ;
+VAL_TABLE_ Vt_DVR_PageProperty 3 "Photo Browse" 2 "Emergency Browse" 1 "General Browse" 0 "Initializing" ;
+VAL_TABLE_ Vt_DVR_TapeSetStatus 3 "Reserved" 2 "On Status" 1 "Off Status" 0 "Invalid" ;
+VAL_TABLE_ Vt_DVR_RecordingCycleSetStatus 3 "5min" 2 "3min" 1 "1min" 0 "Invalid" ;
+VAL_TABLE_ Vt_DVR_ResolutionSetStatus 3 "Reserved" 2 "720P" 1 "1080P" 0 "Invalid" ;
+VAL_TABLE_ Vt_ESP_VehicleSpeedValid 1 "Invalid" 0 "Valid" ;
+VAL_TABLE_ Vt_PAC_SystemFailureFlag 1 "Failure" 0 "Not Failure" ;
+VAL_TABLE_ Vt_DVD_LocalTimeValid 1 "Invalid" 0 "Valid" ;
+VAL_TABLE_ Vt_DVD_CurrentLocationValid 1 "Invalid" 0 "Valid" ;
+VAL_TABLE_ Vt_DVD_DVRCommandList 36 "Exit browse mode" 35 "Enter emergency browse mode" 34 "Enter emergency browse mode" 33 "Enter genaral browse mode" 32 "Enter emergency record mode" 31 "Enter pause record mode" 30 "Enter genaral record mode" 29 "1/8" 28 "1/4" 27 "1/2" 26 "1" 25 "Ninth" 24 "Eighth" 23 "Seventh" 22 "Sixth" 21 "Fifth" 20 "Fourth" 19 "Third" 18 "Second" 17 "First" 16 "Reserved" 15 "Reserved" 14 "Next Page" 13 "Prev Page" 12 "Right" 11 "Left" 10 "Down" 9 "Up" 8 "Delete All Files" 7 "Delete File" 6 "Save" 5 "Play Next" 4 "Play Prev" 3 "Exit Play" 2 "Pause" 1 "Play" 0 "No Request" ;
+VAL_TABLE_ Vt_DVD_DVRPageProperty 3 "Photo Browse" 2 "Emergency Browse" 1 "General Browse" 0 "Initializing" ;
+VAL_TABLE_ Vt_DVD_DVRRecordCycleSetReq 3 "Description for the value '0x3'" 2 "3Min Request" 1 "1Min Request" 0 "No Request" ;
+VAL_TABLE_ Vt_DVD_DVRResolutionConfigReq 3 "Reserved" 2 "720P Request" 1 "1080P Request" 0 "No Request" ;
+VAL_TABLE_ Vt_DVD_DVRTapeReq 3 "Reserved" 2 "On Request" 1 "Off Request" 0 "No Requset" ;
+VAL_TABLE_ Vt_DVD_DVRRequestSignal 1 "Request" 0 "No Request" ;
+VAL_TABLE_ Vt_DVD_PACParkingTrackMode 3 "Invalid" 2 "关闭辅助线" 1 "平行模式" 0 "普通模式" ;
+VAL_TABLE_ Vt_RRS_SystemFailureFlag 1 "Failure" 0 "Not Failure" ;
+VAL_TABLE_ Vt_RRS_Status 3 "Invalid" 2 "Active" 1 "Self Checking" 0 "Not Active" ;
+VAL_TABLE_ Vt_RRS_Barrier_Position 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Front Right Sensor" 5 "Front Left Sensor" 4 "Rear Right Sensor" 3 "Rear Right Middle Sensor" 2 "Rear Left Middle Sensor" 1 "Rear Left Sensor" 0 "No Obstacle Detected" ;
+VAL_TABLE_ Vt_RRS_DistanceInfo2 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Reserved" 2 "Distance is from 40cm to 60cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_TABLE_ Vt_RRS_DistanceInfo1 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Distance is from 100cm to 150cm" 2 "Distance is from 40cm to 100cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_TABLE_ Vt_BCM_TirePresureSignalStatus 1 "Unreliable Signal" 0 "Reliable Signal" ;
+VAL_TABLE_ Vt_BCM_SystemFailureWarning 1 "System Error" 0 "No Any Error" ;
+VAL_TABLE_ Vt_BCM_PressureWarning 7 "Reserved" 6 "Sensor Failure" 5 "Sensor Battery Low" 4 "Lost Sensor" 3 "Reserved" 2 "Low Pressure Warning" 1 "High Pressure Warning" 0 "No Warning" ;
+VAL_TABLE_ Vt_BCM_TirePosition 7 "Reseved" 6 "Reseved" 5 "Reseved" 4 "Left Rear Tire" 3 "Rigth Rear Tire" 2 "Rigth Front Tire" 1 "Left Front Tire" 0 "No Any Sersor" ;
+VAL_TABLE_ Vt_BCM_TemperatureWarning 1 "Temperature Warning" 0 "No Temperature Warning" ;
+VAL_TABLE_ Vt_BCM_SignalStatus 1 "Last Signal" 0 "Current Signal" ;
+VAL_TABLE_ Vt_AT_GearForDisplay 15 "Invalid" 14 "Unreliable" 13 "L Range" 12 "2 Range" 11 "S Range" 10 "D Range" 9 "Neuteal" 8 "Reverse" 7 "Parking" 6 "6th Gear" 5 "5th Gear" 4 "4th Gear" 3 "3rd Gear" 2 "2nd Gear" 1 "1st Gear" 0 "Reserved" ;
+
+
+BO_ 1806 DVD_DiagResponse: 8 DVD
+ SG_ DVD_DiagMsgData : 3|60@0+ (1,0) [0|0] ""  Tester
+ SG_ DVD_DiagFarmeType : 7|4@0+ (1,0) [0|3] ""  Tester
+
+BO_ 2015 DVD_DiagFuncReq: 8 Tester
+ SG_ DVD_DiagMsgData : 3|60@0+ (1,0) [0|0] ""  DVD
+ SG_ DVD_DiagFarmeType : 7|4@0+ (1,0) [0|3] ""  DVD
+
+BO_ 1798 DVD_DiagPhyReq: 8 Tester
+ SG_ DVD_DiagMsgData : 3|60@0+ (1,0) [0|0] ""  DVD
+ SG_ DVD_DiagFarmeType : 7|4@0+ (1,0) [0|3] ""  DVD
+
+BO_ 1555 DVR_613: 8 DVR
+ SG_ DVR_EnterUpdateModeResult : 23|3@0+ (1,0) [0|7] ""  DVD
+ SG_ DVR_DestinationPageResult : 9|2@0+ (1,0) [0|3] ""  DVD
+ SG_ DVR_RestoreFactorySettingResult : 11|2@0+ (1,0) [0|3] ""  DVD
+ SG_ DVR_SDFormatResult : 13|2@0+ (1,0) [0|3] ""  DVD
+ SG_ DVR_CommandResponse : 15|2@0+ (1,0) [0|3] ""  DVD
+ SG_ DVR_CommandResponseList : 5|6@0+ (1,0) [0|0] ""  DVD
+ SG_ DVR_PhotographResult : 7|2@0+ (1,0) [0|3] ""  DVD
+
+BO_ 1554 DVR_612: 8 DVR
+ SG_ DVR_CurrentPage : 63|8@0+ (1,0) [0|255] ""  DVD
+ SG_ DVR_TotalPage : 55|8@0+ (1,0) [0|255] ""  DVD
+ SG_ DVR_VersionInfo_InegralPartLow : 35|4@0+ (1,0) [0|9] ""  DVD
+ SG_ DVR_VersionInfo_InegralPartHigh : 39|4@0+ (1,0) [0|9] ""  DVD
+ SG_ DVR_VersionInfo_DecimalPartLow : 43|4@0+ (1,0) [0|9] ""  DVD
+ SG_ DVR_VersionInfo_DecimalPartHigh : 47|4@0+ (1,0) [0|9] ""  DVD
+ SG_ DVR_SDcardStatus : 26|3@0+ (1,0) [0|7] ""  DVD
+ SG_ DVR_ErrorStatus_SystemError : 29|1@0+ (1,0) [0|1] ""  DVD
+ SG_ DVR_ErrorStatus_SDcardError : 31|1@0+ (1,0) [0|1] ""  DVD
+ SG_ DVR_ErrorStatus_PowerError : 28|1@0+ (1,0) [0|1] ""  DVD
+ SG_ DVR_ErrorStatus_KeyError : 30|1@0+ (1,0) [0|1] ""  DVD
+ SG_ DVR_SDCapacityStatusAtr : 27|1@0+ (1,0) [0|1] ""  DVD
+ SG_ DVR_SDCapacityStatus : 11|12@0+ (1,0) [0|0] ""  DVD
+ SG_ DVR_SystemSts : 15|4@0+ (1,0) [0|15] ""  DVD
+ SG_ DVR_TapeSetStatus : 3|2@0+ (1,0) [0|3] ""  DVD
+ SG_ DVR_PageProperty : 1|2@0+ (1,0) [0|3] ""  DVD
+ SG_ DVR_ResolutionSetStatus : 5|2@0+ (1,0) [0|3] ""  DVD
+ SG_ DVR_RecordingCycleSetStatus : 7|2@0+ (1,0) [0|3] ""  DVD
+
+BO_ 800 GW_320: 8 GW
+ SG_ ESP_VehicleSpeed : 12|13@0+ (0.05625,0) [0|299.9813] ""  DVD
+ SG_ ESP_VehicleSpeedValid : 14|1@0+ (1,0) [0|1] ""  DVD
+
+BO_ 976 PAC_3D0: 8 PAC
+ SG_ PAC_SystemFailureFlag : 7|1@0+ (1,0) [0|1] ""  DVD
+
+BO_ 1281 DVD_501: 8 DVD
+ SG_ DVD_LocalTimeValid : 7|1@0+ (1,0) [0|1] ""  DVR
+ SG_ DVD_LocalTimeSecond : 45|6@0+ (1,0) [0|59] ""  DVR
+ SG_ DVD_LocalTimeMonth : 11|4@0+ (1,0) [1|12] ""  DVR
+ SG_ DVD_LocalTimeMinute : 37|6@0+ (1,0) [0|59] ""  DVR
+ SG_ DVD_LocalTimeHour : 28|5@0+ (1,0) [0|23] ""  DVR
+ SG_ DVD_LocalTimeDate : 20|5@0+ (1,0) [1|31] ""  DVR
+ SG_ DVD_LocalTimeYear : 15|4@0+ (1,2013) [2013|2028] ""  DVR
+
+BO_ 1280 DVD_500: 8 DVD
+ SG_ DVD_CurrentLocationValid : 7|1@0+ (1,0) [0|1] ""  DVR
+ SG_ DVD_CurrentLocationLatitude : 35|28@0- (6.7056E-007,0) [-90.00103968768|90.00103901712] ""  DVR
+ SG_ DVD_CurrentLocationLongitude : 4|29@0- (6.7056E-007,0) [-180.00207937536|180.0020787048] ""  DVR
+
+BO_ 760 DVD_2F8: 8 DVD
+ SG_ DVD_DVR_DestinationPage : 31|8@0+ (1,0) [0|255] ""  DVR
+ SG_ DVD_DVR_CommandList : 23|6@0+ (1,0) [0|63] ""  DVR
+ SG_ DVD_DVR_PageProperty : 11|2@0+ (1,0) [0|3] ""  DVR
+ SG_ DVD_DVR_RecordingcycleSetting : 13|2@0+ (1,0) [0|3] ""  DVR
+ SG_ DVD_DVR_ResolutionConfigration : 15|2@0+ (1,0) [0|3] ""  DVR
+ SG_ DVD_DVR_TapeSet : 1|2@0+ (1,0) [0|3] ""  DVR
+ SG_ DVD_DVR_RestoreFactorySetting : 2|1@0+ (1,0) [0|1] ""  DVR
+ SG_ DVD_DVR_SDcardFormat : 4|1@0+ (1,0) [0|1] ""  DVR
+ SG_ DVD_DVR_EnterUpdateMode : 3|1@0+ (1,0) [0|1] ""  DVR
+ SG_ DVD_DVR_ShootControl : 5|1@0+ (1,0) [0|1] ""  DVR
+ SG_ DVD_PAC_ParkingTrackMode : 7|2@0+ (1,0) [0|3] ""  PAC
+
+BO_ 736 RRS_2E0: 6 RRS
+ SG_ RRS_SystemFailureFlag : 59|1@0+ (1,0) [0|1] ""  DVD
+ SG_ RRS_Status : 47|2@0+ (1,0) [0|3] ""  DVD
+ SG_ RRS_Warning_Nearest_Distance : 39|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_Barrier_Position : 35|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_RFMDistance : 27|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_LFMDistance : 31|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_LFCDistance : 19|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_RFCDistance : 23|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_LRCDistance : 11|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_RRCDistance : 15|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_LRMDistance : 3|4@0+ (1,0) [0|15] ""  DVD
+ SG_ RRS_RRMDistance : 7|4@0+ (1,0) [0|15] ""  DVD
+
+BO_ 839 BCM_347: 8 BCM
+ SG_ BCM_TireTemperature : 47|8@0+ (1,-40) [-40|215] "'C"  DVD
+ SG_ BCM_TirePresureSignalStatus : 55|1@0+ (1,0) [0|1] ""  DVD
+ SG_ BCM_TirePosition : 2|3@0+ (1,0) [0|7] ""  DVD
+ SG_ BCM_SystemFailureWarning : 56|1@0+ (1,0) [0|1] ""  DVD
+ SG_ BCM_SignalStatus : 7|1@0+ (1,0) [0|1] ""  DVD
+ SG_ BCM_RRTyrePressure : 31|8@0+ (1.373,0) [0|350.115] "Kpa/Bit"  DVD
+ SG_ BCM_RRTemperatureWarning : 4|1@0+ (1,0) [0|1] ""  DVD
+ SG_ BCM_RRPressureWarning : 63|3@0- (1,0) [0|7] ""  DVD
+ SG_ BCM_RFTyrePressure : 23|8@0+ (1.373,0) [0|350.115] "Kpa/Bit"  DVD
+ SG_ BCM_RFTemperatureWarning : 5|1@0+ (1,0) [0|1] ""  DVD
+ SG_ BCM_RFPressureWarning : 50|3@0- (1,0) [0|7] ""  DVD
+ SG_ BCM_LRTyrePressure : 39|8@0+ (1.373,0) [0|350.115] "Kpa/Bit"  DVD
+ SG_ BCM_LRTemperatureWarning : 3|1@0+ (1,0) [0|1] ""  DVD
+ SG_ BCM_LRPressureWarning : 60|3@0- (1,0) [0|7] ""  DVD
+ SG_ BCM_LFTyrePressure : 15|8@0+ (1.373,0) [0|350.115] "Kpa/Bit"  DVD
+ SG_ BCM_LFTemperatureWarning : 6|1@0+ (1,0) [0|1] ""  DVD
+ SG_ BCM_LFPressureWarning : 54|3@0- (1,0) [0|7] ""  DVD
+
+BO_ 810 GW_32A: 8 GW
+ SG_ AT_GearForDisplay : 55|4@0+ (1,0) [0|15] ""  DVD
+
+
+
+BA_DEF_ SG_  "GenSigSendType" ENUM  "Cyclic","OnWrite","OnWriteWithRepetition","OnChange","OnChangeWithRepetition","IfActive","IfActiveWithRepetition","NoSigSendType";
+BA_DEF_ SG_  "GenSigInactiveValue" INT 0 0;
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 0;
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","not_used","not_used","not_used","not_used","Cyclic","not_used","IfActive","NoMsgSendType";
+BA_DEF_ BU_  "NmStationAddress" HEX 0 0;
+BA_DEF_  "DBName" STRING ;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "GenSigSendType" "Cyclic";
+BA_DEF_DEF_  "GenSigInactiveValue" 0;
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenMsgSendType" "NoMsgSendType";
+BA_DEF_DEF_  "NmStationAddress" 0;
+BA_DEF_DEF_  "DBName" "";
+BA_DEF_DEF_  "BusType" "CAN";
+BA_ "DBName" "DVD_CAN_Matrix";
+BA_ "GenMsgSendType" BO_ 1555 0;
+BA_ "GenMsgCycleTime" BO_ 1555 100;
+BA_ "GenMsgSendType" BO_ 1554 0;
+BA_ "GenMsgCycleTime" BO_ 1554 100;
+BA_ "GenMsgCycleTime" BO_ 800 100;
+BA_ "GenMsgSendType" BO_ 800 0;
+BA_ "GenMsgCycleTime" BO_ 976 200;
+BA_ "GenMsgSendType" BO_ 976 0;
+BA_ "GenMsgCycleTime" BO_ 1281 1000;
+BA_ "GenMsgSendType" BO_ 1281 0;
+BA_ "GenMsgCycleTime" BO_ 1280 1000;
+BA_ "GenMsgSendType" BO_ 1280 0;
+BA_ "GenMsgCycleTime" BO_ 760 100;
+BA_ "GenMsgSendType" BO_ 760 0;
+BA_ "GenMsgCycleTime" BO_ 736 100;
+BA_ "GenMsgCycleTime" BO_ 839 500;
+BA_ "GenMsgSendType" BO_ 839 0;
+BA_ "GenMsgCycleTime" BO_ 810 100;
+BA_ "GenMsgSendType" BO_ 810 0;
+VAL_ 1806 DVD_DiagFarmeType 3 "FC" 2 "CF" 1 "FF" 0 "SF" ;
+VAL_ 2015 DVD_DiagFarmeType 3 "FC" 2 "CF" 1 "FF" 0 "SF" ;
+VAL_ 1798 DVD_DiagFarmeType 3 "FC" 2 "CF" 1 "FF" 0 "SF" ;
+VAL_ 1555 DVR_EnterUpdateModeResult 7 "Reserved" 6 "Update Fail_Other Reason" 5 "Update Fail_Files Erros" 4 "Update Fail_No Files" 3 "Update Fail_No SDcard" 2 "Update Success" 1 "Update Processing" 0 "No Response" ;
+VAL_ 1555 DVR_DestinationPageResult 3 "Reserved" 2 "Fail" 1 "Successful" 0 "Invalid" ;
+VAL_ 1555 DVR_RestoreFactorySettingResult 3 "Reserved" 2 "Fail" 1 "Success" 0 "No Response" ;
+VAL_ 1555 DVR_SDFormatResult 3 "Format Fail" 2 "Format Success" 1 "Format Processing" 0 "No Response" ;
+VAL_ 1555 DVR_CommandResponse 3 "No File" 2 "Fail" 1 "Successful" 0 "No Response" ;
+VAL_ 1555 DVR_CommandResponseList 36 "Exit browse mode" 35 "Enter emergency browse mode" 34 "Enter emergency browse mode" 33 "Enter genaral browse mode" 32 "Enter emergency record mode" 31 "Enter pause record mode" 30 "Enter genaral record mode" 29 "1/8" 28 "1/4" 27 "1/2" 26 "1" 25 "Ninth" 24 "Eighth" 23 "Seventh" 22 "Sixth" 21 "Fifth" 20 "Fourth" 19 "Third" 18 "Second" 17 "First" 16 "Reserved" 15 "Reserved" 14 "Next Page" 13 "Prev Page" 12 "Right" 11 "Left" 10 "Down" 9 "Up" 8 "Delete All Files" 7 "Delete File" 6 "Save" 5 "Play Next" 4 "Play Prev" 3 "Exit Play" 2 "Pause" 1 "Play" 0 "No Response" ;
+VAL_ 1555 DVR_PhotographResult 3 "Reserved" 2 "Fail" 1 "Successful" 0 "Invalid" ;
+VAL_ 1554 DVR_SDcardStatus 7 "Reserved" 6 "SDcard Photo Area Full" 5 "SDcard Emergency Video Area Full" 4 "SDcard Insufficient" 3 "SDcard Not Format" 2 "SDcard Error" 1 "No SDcard" 0 "Normal" ;
+VAL_ 1554 DVR_ErrorStatus_SystemError 1 "Error" 0 "Normal" ;
+VAL_ 1554 DVR_ErrorStatus_SDcardError 1 "Error" 0 "Normal" ;
+VAL_ 1554 DVR_ErrorStatus_PowerError 1 "Error" 0 "Normal" ;
+VAL_ 1554 DVR_ErrorStatus_KeyError 1 "Error" 0 "Normal" ;
+VAL_ 1554 DVR_SDCapacityStatusAtr 1 "Residual Capacity" 0 "Total Capacity" ;
+VAL_ 1554 DVR_SystemSts 15 "Error" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Update Mode" 9 "Pause Video" 8 "Play Video" 7 "Photo Browse" 6 "Emergency Browse" 5 "General Browse" 4 "Emergency Record By Crash" 3 "Emergency Record By User" 2 "Pause Record" 1 "General Record" 0 "Initializing" ;
+VAL_ 1554 DVR_TapeSetStatus 3 "Reserved" 2 "On Status" 1 "Off Status" 0 "Invalid" ;
+VAL_ 1554 DVR_PageProperty 3 "Photo Browse" 2 "Emergency Browse" 1 "General Browse" 0 "Initializing" ;
+VAL_ 1554 DVR_ResolutionSetStatus 3 "Reserved" 2 "720P" 1 "1080P" 0 "Invalid" ;
+VAL_ 1554 DVR_RecordingCycleSetStatus 3 "5min" 2 "3min" 1 "1min" 0 "Invalid" ;
+VAL_ 800 ESP_VehicleSpeedValid 1 "Invalid" 0 "Valid" ;
+VAL_ 976 PAC_SystemFailureFlag 1 "Failure" 0 "Not Failure" ;
+VAL_ 1281 DVD_LocalTimeValid 1 "Invalid" 0 "Valid" ;
+VAL_ 1280 DVD_CurrentLocationValid 1 "Invalid" 0 "Valid" ;
+VAL_ 760 DVD_DVR_CommandList 36 "Exit browse mode" 35 "Enter emergency browse mode" 34 "Enter emergency browse mode" 33 "Enter genaral browse mode" 32 "Enter emergency record mode" 31 "Enter pause record mode" 30 "Enter genaral record mode" 29 "1/8" 28 "1/4" 27 "1/2" 26 "1" 25 "Ninth" 24 "Eighth" 23 "Seventh" 22 "Sixth" 21 "Fifth" 20 "Fourth" 19 "Third" 18 "Second" 17 "First" 16 "Reserved" 15 "Reserved" 14 "Next Page" 13 "Prev Page" 12 "Right" 11 "Left" 10 "Down" 9 "Up" 8 "Delete All Files" 7 "Delete File" 6 "Save" 5 "Play Next" 4 "Play Prev" 3 "Exit Play" 2 "Pause" 1 "Play" 0 "No Request" ;
+VAL_ 760 DVD_DVR_PageProperty 3 "Photo Browse" 2 "Emergency Browse" 1 "General Browse" 0 "Initializing" ;
+VAL_ 760 DVD_DVR_RecordingcycleSetting 3 "Description for the value '0x3'" 2 "3Min Request" 1 "1Min Request" 0 "No Request" ;
+VAL_ 760 DVD_DVR_ResolutionConfigration 3 "Reserved" 2 "720P Request" 1 "1080P Request" 0 "No Request" ;
+VAL_ 760 DVD_DVR_TapeSet 3 "Reserved" 2 "On Request" 1 "Off Request" 0 "No Requset" ;
+VAL_ 760 DVD_DVR_RestoreFactorySetting 1 "Request" 0 "No Request" ;
+VAL_ 760 DVD_DVR_SDcardFormat 1 "Request" 0 "No Request" ;
+VAL_ 760 DVD_DVR_EnterUpdateMode 1 "Request" 0 "No Request" ;
+VAL_ 760 DVD_DVR_ShootControl 1 "Request" 0 "No Request" ;
+VAL_ 760 DVD_PAC_ParkingTrackMode 3 "Invalid" 2 "关闭辅助线" 1 "平行模式" 0 "普通模式" ;
+VAL_ 736 RRS_SystemFailureFlag 1 "Failure" 0 "Not Failure" ;
+VAL_ 736 RRS_Status 3 "Invalid" 2 "Active" 1 "Self Checking" 0 "Not Active" ;
+VAL_ 736 RRS_Warning_Nearest_Distance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Distance is from 100cm to 150cm" 2 "Distance is from 40cm to 100cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_Barrier_Position 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Front Right Sensor" 5 "Front Left Sensor" 4 "Rear Right Sensor" 3 "Rear Right Middle Sensor" 2 "Rear Left Middle Sensor" 1 "Rear Left Sensor" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_RFMDistance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Distance is from 100cm to 150cm" 2 "Distance is from 40cm to 100cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_LFMDistance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Distance is from 100cm to 150cm" 2 "Distance is from 40cm to 100cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_LFCDistance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Reserved" 2 "Distance is from 40cm to 60cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_RFCDistance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Reserved" 2 "Distance is from 40cm to 60cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_LRCDistance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Reserved" 2 "Distance is from 40cm to 60cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_RRCDistance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Reserved" 2 "Distance is from 40cm to 60cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_LRMDistance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Distance is from 100cm to 150cm" 2 "Distance is from 40cm to 100cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 736 RRS_RRMDistance 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Distance is from 100cm to 150cm" 2 "Distance is from 40cm to 100cm" 1 "Distance is less than 40cm" 0 "No Obstacle Detected" ;
+VAL_ 839 BCM_TirePresureSignalStatus 1 "Unreliable Signal" 0 "Reliable Signal" ;
+VAL_ 839 BCM_TirePosition 7 "Reseved" 6 "Reseved" 5 "Reseved" 4 "Left Rear Tire" 3 "Rigth Rear Tire" 2 "Rigth Front Tire" 1 "Left Front Tire" 0 "No Any Sersor" ;
+VAL_ 839 BCM_SystemFailureWarning 1 "System Error" 0 "No Any Error" ;
+VAL_ 839 BCM_SignalStatus 1 "Last Signal" 0 "Current Signal" ;
+VAL_ 839 BCM_RRTemperatureWarning 1 "Temperature Warning" 0 "No Temperature Warning" ;
+VAL_ 839 BCM_RRPressureWarning 7 "Reserved" 6 "Sensor Failure" 5 "Sensor Battery Low" 4 "Lost Sensor" 3 "Reserved" 2 "Low Pressure Warning" 1 "High Pressure Warning" 0 "No Warning" ;
+VAL_ 839 BCM_RFTemperatureWarning 1 "Temperature Warning" 0 "No Temperature Warning" ;
+VAL_ 839 BCM_RFPressureWarning 7 "Reserved" 6 "Sensor Failure" 5 "Sensor Battery Low" 4 "Lost Sensor" 3 "Reserved" 2 "Low Pressure Warning" 1 "High Pressure Warning" 0 "No Warning" ;
+VAL_ 839 BCM_LRTemperatureWarning 1 "Temperature Warning" 0 "No Temperature Warning" ;
+VAL_ 839 BCM_LRPressureWarning 7 "Reserved" 6 "Sensor Failure" 5 "Sensor Battery Low" 4 "Lost Sensor" 3 "Reserved" 2 "Low Pressure Warning" 1 "High Pressure Warning" 0 "No Warning" ;
+VAL_ 839 BCM_LFTemperatureWarning 1 "Temperature Warning" 0 "No Temperature Warning" ;
+VAL_ 839 BCM_LFPressureWarning 7 "Reserved" 6 "Sensor Failure" 5 "Sensor Battery Low" 4 "Lost Sensor" 3 "Reserved" 2 "Low Pressure Warning" 1 "High Pressure Warning" 0 "No Warning" ;
+VAL_ 810 AT_GearForDisplay 15 "Invalid" 14 "Unreliable" 13 "L Range" 12 "2 Range" 11 "S Range" 10 "D Range" 9 "Neuteal" 8 "Reverse" 7 "Parking" 6 "6th Gear" 5 "5th Gear" 4 "4th Gear" 3 "3rd Gear" 2 "2nd Gear" 1 "1st Gear" 0 "Reserved" ;
+

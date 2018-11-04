@@ -1,0 +1,6 @@
+﻿Version : V0.0.1
+ChangeLog :
+1.Create test project and the test project tools is CanOE version11.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.04
+/*********************************************************************************************************************/
