@@ -58,7 +58,7 @@
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-#define CommFunc_BitShiftRigth(data,n)		(data << n)
+#define CommFunc_BitShiftRigth(data,n)		(data >> n)
 
 
 #endif /*_COMMON_FUNCTION_H*/

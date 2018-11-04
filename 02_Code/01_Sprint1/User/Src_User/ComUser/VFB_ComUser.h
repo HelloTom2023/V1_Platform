@@ -21,7 +21,7 @@
 #include "..\Common\Common.h"
 #include "ComUser_Cfg_Define.h"
 #include "..\..\..\config\inc.h"
-
+#include "..\Debug\Debug.h"
 
 
 /*Macro definition AREA*/
@@ -88,6 +88,15 @@
  * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
 ****************************************************************************/
 #define ComUser_Com_ReadRxSignalCh1(MsgId, StartBit, Length, ptr_SignalValue)		Com_ReadRxSignal(COM_USER_MESSAGE_FORMAT, 0x01, MsgId, StartBit, Length, ptr_SignalValue)
+
+/****************************************************************************
+ * @function	ComUser_Debug_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#define ComUser_Debug_OutputInfo(x)		Debug_ComUser_OutputInfo(x)
 
 
 

@@ -163,6 +163,12 @@
       <ParentItem>981bdb39-ec0d-48b5-873f-dfdfdaf7da8a</ParentItem>
       <Property>7bf07bd2-17e4-4425-9114-81369ee42927</Property>
     </Instance>
+    <Instance Guid="75b67695-ac54-4b3e-a9bd-53ba727b1182">
+      <Name>Debug</Name>
+      <Type>Category</Type>
+      <ParentItem>981bdb39-ec0d-48b5-873f-dfdfdaf7da8a</ParentItem>
+      <Property>3afd294d-d741-474c-a1d9-0f14d90ecd06</Property>
+    </Instance>
     <Instance Guid="c413d4b7-e5af-4940-aea1-7ee2cf10a8d7">
       <Name>start.s</Name>
       <Type>File</Type>
@@ -825,6 +831,14 @@
       <ParentItem>b36651cb-5c08-46f5-9b6c-1ec00e264302</ParentItem>
       <Property>ec1b5b99-35d4-4b17-be8e-7a5417a55436</Property>
     </Instance>
+    <Instance Guid="b4b16baa-4a94-4b2f-aec4-20004f85ebe5">
+      <Name>Debug.c</Name>
+      <Type>File</Type>
+      <RelativePath>..\..\Src_User\Debug\Debug.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>75b67695-ac54-4b3e-a9bd-53ba727b1182</ParentItem>
+      <Property>f70ce316-7527-4a9e-967b-ba0fe74d9dd0</Property>
+    </Instance>
   </Class>
   <Class Guid="fb98844b-2c27-4275-9804-f6e63e204da0">
     <Instance Guid="fb98844b-2c27-4275-9804-f6e63e204da0">
@@ -1051,6 +1065,9 @@
     <Instance Guid="ec1b5b99-35d4-4b17-be8e-7a5417a55436">
       <MemoCount>0</MemoCount>
     </Instance>
+    <Instance Guid="f70ce316-7527-4a9e-967b-ba0fe74d9dd0">
+      <MemoCount>0</MemoCount>
+    </Instance>
   </Class>
   <Class Guid="78a5c5cd-76cb-4bcc-a031-3020011fbc9a">
     <Instance Guid="c4198c0a-4065-45fe-a399-0c5498cd2ff5">
@@ -1122,6 +1139,9 @@
     <Instance Guid="c4679dff-9a2e-4df5-a9de-5723f75d528a">
       <MemoCount>0</MemoCount>
     </Instance>
+    <Instance Guid="7bf07bd2-17e4-4425-9114-81369ee42927">
+      <MemoCount>0</MemoCount>
+    </Instance>
     <Instance Guid="1ead1088-ad70-49cc-bcc0-d5f45b4cf1df">
       <MemoCount>0</MemoCount>
     </Instance>
@@ -1134,10 +1154,10 @@
     <Instance Guid="b99648ce-0d4a-4b8a-9464-05b7eec69e7e">
       <MemoCount>0</MemoCount>
     </Instance>
-    <Instance Guid="3869f54f-7c4f-4be6-91a8-f7ea2fc415d2">
+    <Instance Guid="23f7e561-c0bd-4f21-83c2-448119ce75bd">
       <MemoCount>0</MemoCount>
     </Instance>
-    <Instance Guid="7bf07bd2-17e4-4425-9114-81369ee42927">
+    <Instance Guid="3afd294d-d741-474c-a1d9-0f14d90ecd06">
       <MemoCount>0</MemoCount>
     </Instance>
   </Class>
@@ -1340,7 +1360,9 @@
       <SourceItemType77>CSource</SourceItemType77>
       <SourceItemGuid78>69ce57ab-3ab0-43f3-9689-c280521ea0d7</SourceItemGuid78>
       <SourceItemType78>CSource</SourceItemType78>
-      <SourceItemCount>79</SourceItemCount>
+      <SourceItemGuid79>b4b16baa-4a94-4b2f-aec4-20004f85ebe5</SourceItemGuid79>
+      <SourceItemType79>CSource</SourceItemType79>
+      <SourceItemCount>80</SourceItemCount>
       <SectionSourceItemCount>0</SectionSourceItemCount>
       <LastDeviceChangedCounter>5</LastDeviceChangedCounter>
     </Instance>
@@ -2609,6 +2631,10 @@ SelfLib
       <ItemAddTime>636761844725373967</ItemAddTime>
       <ItemAddTimeCount>0</ItemAddTimeCount>
     </Instance>
+    <Instance Guid="b4b16baa-4a94-4b2f-aec4-20004f85ebe5">
+      <ItemAddTime>636769390198209247</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
     <Instance Guid="2317529b-91c1-49b6-8351-6d8f51718b0d">
       <TimeTagModified-SourceItem0--0>-8588132143260557058</TimeTagModified-SourceItem0--0>
       <SourceItem0-IsLockedByUser>False</SourceItem0-IsLockedByUser>
@@ -3401,6 +3427,16 @@ SelfLib
       <TimeTagModified-SourceItem78--2>-8586610480129401841</TimeTagModified-SourceItem78--2>
       <SourceItem78-BuildingTarget-2>True</SourceItem78-BuildingTarget-2>
       <SourceItem78-IndividualCompileOption-2>False</SourceItem78-IndividualCompileOption-2>
+      <TimeTagModified-SourceItem79--0>-8586602934656566561</TimeTagModified-SourceItem79--0>
+      <SourceItem79-IsLockedByUser>False</SourceItem79-IsLockedByUser>
+      <SourceItem79-BuildingTarget-0>True</SourceItem79-BuildingTarget-0>
+      <SourceItem79-IndividualCompileOption-0>False</SourceItem79-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem79--1>-8586602934656566561</TimeTagModified-SourceItem79--1>
+      <SourceItem79-BuildingTarget-1>True</SourceItem79-BuildingTarget-1>
+      <SourceItem79-IndividualCompileOption-1>False</SourceItem79-IndividualCompileOption-1>
+      <TimeTagModified-SourceItem79--2>-8586602934656566561</TimeTagModified-SourceItem79--2>
+      <SourceItem79-BuildingTarget-2>True</SourceItem79-BuildingTarget-2>
+      <SourceItem79-IndividualCompileOption-2>False</SourceItem79-IndividualCompileOption-2>
     </Instance>
   </Class>
   <Class Guid="44fa27c9-0aa0-4297-bd3b-2c5c5bdb8881">

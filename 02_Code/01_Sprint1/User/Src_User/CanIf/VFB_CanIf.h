@@ -23,7 +23,7 @@
 #include "..\..\..\config\inc.h"
 #include "..\CanTp\CanTp.h"
 #include "..\Com\Com.h"
-
+#include "..\Debug\Debug.h"
 
 
 /*Macro definition AREA*/
@@ -147,7 +147,14 @@
 ****************************************************************************/
 #define CanIf_PreCopy(ChNo,MsgId,ptr_Data,Dlc)	E_OK
 
-
+/****************************************************************************
+ * @function	CanIf_Debug_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#define CanIf_Debug_OutputInfo(x)		Debug_CanIf_OutputInfo(x)
 
 /*Function declaration AREA*/
 

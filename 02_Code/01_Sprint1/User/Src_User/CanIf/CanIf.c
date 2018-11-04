@@ -62,7 +62,7 @@ CAN_IF_EXTERN_API void CanIf_Init(void)
 CAN_IF_EXTERN_API void CanIf_MainFunction(void)
 {
 	CanIf_RxMainFunction();
-	CanIf_TxMainFunction();
+	//CanIf_TxMainFunction();
 }
 
 
@@ -82,6 +82,7 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 	/*get hardware buffer index*/
 	BufIndex = CanIf_GetControllerHwMsgBuffIndex(ChNo);
 
+
 	if(BufIndex <= CANIF_CONTROLLERHWBUFFERNUMBER)
 	{
 		CanIf_CanMsgStruct_Type  CanRecvMsg;
@@ -94,6 +95,8 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 		 * When the CANIF_CANMESSAGEIDTYPE is STANDARD,the function parameter has a type mismatch problem.
 		 * */
 		CanIf_GetControllerMsgInfo(ChNo, BufIndex, &CanRecvMsg.CanMsgId, CanRecvMsg.CanData, &CanRecvMsg.CanMsgDlc);
+
+		CanIf_Debug_OutputInfo(_T("ChNo = %d,CanRecvMsg.CanMsgId = 0x%lx,CanRecvMsg.CanMsgDlc = %d\n",ChNo,CanRecvMsg.CanMsgId,CanRecvMsg.CanMsgDlc));
 
 		/*notification application layer callback : PreCopy Function callback*/
 		if(E_OK != CanIf_PreCopy(CanRecvMsg.CanChNo, CanRecvMsg.CanMsgId, CanRecvMsg.CanData, CanRecvMsg.CanMsgDlc))
@@ -276,6 +279,11 @@ CAN_IF_LOCAL_API void CanIf_RxManagementFunction(void)
 		}
 		else
 		{
+			CanIf_Debug_OutputInfo(_T("RxMsg Notification Com Modules:\nCanChNo = %d,CanMsgId = 0x%lx,CanMsgDlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
+								ReadCanRecvMsg.CanChNo,ReadCanRecvMsg.CanMsgId,ReadCanRecvMsg.CanMsgDlc,ReadCanRecvMsg.CanData[0],ReadCanRecvMsg.CanData[1]\
+								,ReadCanRecvMsg.CanData[2],ReadCanRecvMsg.CanData[3],ReadCanRecvMsg.CanData[4],ReadCanRecvMsg.CanData[5]\
+								,ReadCanRecvMsg.CanData[6],ReadCanRecvMsg.CanData[7]));
+
 			/*Notification to communication server layer*/
 			CanIf_Com_RxNotificationFunction(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId, ReadCanRecvMsg.CanData, ReadCanRecvMsg.CanMsgDlc);
 		}

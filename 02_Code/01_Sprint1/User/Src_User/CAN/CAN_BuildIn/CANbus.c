@@ -1,5 +1,8 @@
 #define _CANBUS_C
 #include "..\..\config\inc.h"
+#include "..\..\CanIf\CanIf.h"
+#include "..\..\Com\Com.h"
+#include "..\..\ComUser\ComUser.h"
 
 #ifdef CAN_MODULE_ENABLE
 
@@ -135,21 +138,21 @@ void CANbus_VehicleVariableReset(void)
 #endif
 
 uint8_t EOLArray[] = {0xF7,0x77,0x76,0x76,0x84,0x04,0x34,0x77,0x34,0x77,0x34,0x77,0x00,0x00,0x74,0x74,0xf7};
-//Í¨¹ýÊýÖµÀ´»ñÈ¡Êý×éÖÐµÄË÷Òý.
-//µ±Á½¸öÊý×éµÄÔªËØÏàµÈµÄÊ±ºò,È¡Ç°ÃæµÄË÷ÒýºÅ
+//Í¨ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½.
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½Èµï¿½Ê±ï¿½ï¿½,È¡Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 uint8_t Get_ArrayIndex(uint8_t * pData, uint8_t Value, uint8_t len)
 {
 	uint8_t i = 0;
-	for(i = 0;i < len;i++)//Ë³Ðò±éÀúÖ¸¶¨µÄÄÚ´æÇø...
+	for(i = 0;i < len;i++)//Ë³ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½...
 	{
 		if(*(pData+i) == Value)
 		{
 			return i;
 		}
 	}
-	return 0xff;//Ã»ÓÐ²éÑ¯µ½ÏàµÈµÄÊý¾Ý
+	return 0xff;//Ã»ï¿½Ð²ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½Èµï¿½ï¿½ï¿½ï¿½ï¿½
 }
-//Í¨¹ýË÷ÒýÀ´»ñÈ¡Êý×éÖÐµÄÖµ.
+//Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Öµ.
 uint8_t Get_ArrayValue(uint8_t *pData,uint8_t Index)
 {
 	return *(pData+Index);
@@ -187,7 +190,7 @@ void CAN_LoadDefaultToEepRam(void)
 		l_tBusData.Phone[cnt]="13800138000"[cnt];
 	} 
 
-	//Ôö¼Ó¶ÔÏÂÏßÅäÖÃÊý¾ÝµÄÅÐ¶Ï,ÏÖÔÚ½ö½öÊ¹ÓÃÁËÒ»¸ö×Ö½Ú...
+	//ï¿½ï¿½ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½Ð¶ï¿½,ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½ï¿½...
 	index = Get_ArrayIndex(EOLArray,l_tBusData.DID_F1FA_DATA[0],sizeof(EOLArray)/sizeof(EOLArray[0]));
 	if((0xff == index) ||
 		 ((0xff != index) && 
@@ -208,7 +211,7 @@ void CAN_LoadDefaultToEepRam(void)
 	CANbus_VehicleVariableReset();
 #endif
 
-	//snake20161017 GPSµÄÄ¬ÈÏ²ÎÊý   Ä¬ÈÏ¶¨Î»ÐÅÏ¢Îª½­Î÷ºÃ°ïÊÖÖØÇì°ìÊÂ´¦
+	//snake20161017 GPSï¿½ï¿½Ä¬ï¿½Ï²ï¿½ï¿½ï¿½   Ä¬ï¿½Ï¶ï¿½Î»ï¿½ï¿½Ï¢Îªï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½
 	GpsInfo.Longitude = 106617119;
 	GpsInfo.Latitude= 29667951;
 	GpsInfo.LatitudeFlag = 0;
@@ -376,7 +379,7 @@ void CAN_EepRead(void)
 #define WR_EEP_NO_REQ  1
 #if 1
 //snake 20160515
-//·µ»Ø0,Ð´Èë³É¹¦;·µ»ØÕýÊý,Ð´ÈëÊ§°Ü(ºóÆÚ¿ÉÒÔ×÷ÎªÐ´ÈëÊ§°ÜµÄ´íÎó´úÂë)
+//ï¿½ï¿½ï¿½ï¿½0,Ð´ï¿½ï¿½É¹ï¿½;ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Ð´ï¿½ï¿½Ê§ï¿½ï¿½(ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÐ´ï¿½ï¿½Ê§ï¿½ÜµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 uint8_t CAN_EepStore(uint16_t DID, uint8_t *pData, uint8_t len)
 {
 	uint8_t EepStoreStep=WR_EEP_NO_REQ;
@@ -565,7 +568,7 @@ uint8_t CANTask_Init(void)
     SystemStatus.ACC = 3;
     SystemStatus.SpiReady = 0;
 
-	//¿ìËÙ¿ª¹ØACC»òÕßBATTµÄÊ±ºò,ÐèÒªÖØÐÂ½øÐÐ³õÊ¼»¯....
+	//ï¿½ï¿½ï¿½Ù¿ï¿½ï¿½ï¿½ACCï¿½ï¿½ï¿½ï¿½BATTï¿½ï¿½Ê±ï¿½ï¿½,ï¿½ï¿½Òªï¿½ï¿½ï¿½Â½ï¿½ï¿½Ð³ï¿½Ê¼ï¿½ï¿½....
 	Mult_Struct.AccState = 0;//snake20160926
 	Mult_Struct.AccStateBK = 0;
 	Mult_Struct.IllState = 0;
@@ -584,10 +587,10 @@ uint8_t CANTask_Init(void)
     NM_InterfaceInit();
     IL_CanNM_Init();
 	TaskCAN_debug(_T("CANTask_Init......Open NM_ENABLE_MACRO,init NM!!!!\n"));
-#else  //snake2016116 ½â¾ö²»´øÍøÂç¹ÜÀí¹¦ÄÜµÄÊ±ºò,ACC OFF,¿ªÆôBATT,Ö÷»ú²»½øÈëË¯ÃßµÄÎÊÌâ
+#else  //snake2016116 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Üµï¿½Ê±ï¿½ï¿½,ACC OFF,ï¿½ï¿½ï¿½ï¿½BATT,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¯ï¿½ßµï¿½ï¿½ï¿½ï¿½ï¿½
 	CANbus_DefaultInit(CAN_ID_BODY);		
 	CANbus_StartupHandler(CAN_ID_BODY);
-	//CANUser_StartSendInitMsg(CAN_ID_BODY);//»áÓÐCAN±¨ÎÄ·¢³ö...
+	//CANUser_StartSendInitMsg(CAN_ID_BODY);//ï¿½ï¿½ï¿½ï¿½CANï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½...
 	//CANUser_TryToSendCANMsg(CAN_ID_BODY);
 	TaskCAN_debug(_T("CANTask_Init......Close NM_ENABLE_MACRO,init canbus!!!!\n"));
 #endif
@@ -1130,7 +1133,7 @@ void CANTask_OtherMsgHandler(tMSG_BUF* Msg)
             if(CanPMState.SysWorkState == 1)
             {
                 //CANTask_SendPMReqest(OP_PM_STATE_WAIT_SLEEP);
-		   PM_EnterMode(PM_MODE_OFF); //bolte ¸ßÑ¹Ö±½Ó½ø´ý»úÄ£Ê½
+		   PM_EnterMode(PM_MODE_OFF); //bolte ï¿½ï¿½Ñ¹Ö±ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 	
             }
             CanPMState.state = CAN_PM_UNNORMAL;
@@ -1180,7 +1183,7 @@ uint8_t CANTask_GetSysACCState(void)
 {
     if(CANTask_BusConnectFlag())
     	{
-   		 if(1 == CANTask_GetRemoteStartState())		// BOLTE:¶Ô²ßÔ¶³ÌÆô¶¯HUÆô¶¯£¬Ô¶³ÌÆô¶¯ÒªÇóHU±£³ÖË¯Ãß
+   		 if(1 == CANTask_GetRemoteStartState())		// BOLTE:ï¿½Ô²ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½HUï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½HUï¿½ï¿½ï¿½ï¿½Ë¯ï¿½ï¿½
        		 return 0;
     	}
     if(CanPMState.LocalACC)		/*local ACC first */
@@ -1282,19 +1285,19 @@ uint8_t CANTask_GetBusSleepState(void)
 		return 1;
     }*/
     #ifdef D_ILL_WAKEUP
-    if((IllState ==1) && (IO_Get(IO_IDX_LOCAL_ACC,PIN_INPUT,TRUE)==0))// Ð¡µÆ¿ªµÄÊ±ºò,¹ØACC  snake20160921
+    if((IllState ==1) && (IO_Get(IO_IDX_LOCAL_ACC,PIN_INPUT,TRUE)==0))// Ð¡ï¿½Æ¿ï¿½ï¿½ï¿½Ê±ï¿½ï¿½,ï¿½ï¿½ACC  snake20160921
 		return 2;
 	#endif
 	
     if(INH == 0)
     {
-        /*×ÔACC OFFÆðÊ±¼ä³¬Ê±ºó£¬²ÅÄÜ¹»È·ÈÏINH = 0;*/
-        /*µ±Ç°Ê±¼äÎª6s, ×ÔACC OFF·¢ËÍOP_PM_STATE_WAIT_SLEEPÆðÉèÖÃ
-           ³¬Ê±Ê±¼ä¡£Ö÷Òª½â¾öACC OFFºÜ¿ì×ÜÏßÐÝÃß£¬Õû»úÀ´²»¼°
-           ¼ÇÒäµÄÎÊÌâ¡£Ê±¼äÖµ¿ÉÒÔÔÚºêACCOFF_TIMEOUT_SÖÐÉèÖÃ*/
+        /*ï¿½ï¿½ACC OFFï¿½ï¿½Ê±ï¿½ä³¬Ê±ï¿½ó£¬²ï¿½ï¿½Ü¹ï¿½È·ï¿½ï¿½INH = 0;*/
+        /*ï¿½ï¿½Ç°Ê±ï¿½ï¿½Îª6s, ï¿½ï¿½ACC OFFï¿½ï¿½ï¿½ï¿½OP_PM_STATE_WAIT_SLEEPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+           ï¿½ï¿½Ê±Ê±ï¿½ä¡£ï¿½ï¿½Òªï¿½ï¿½ï¿½ACC OFFï¿½Ü¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+           ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¡£Ê±ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Úºï¿½ACCOFF_TIMEOUT_Sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
            /*//snake20161019
-           //ÒòÎª³õÊ¼»¯ÉèÖÃÎª0,ËùÒÔÔÚÓÐµÄÊ±ºò,»¹Ã»ÓÐÀ´µÃ¼°ÉèÖÃCanPMState.ACCOffTimer1SµçÔ´¼ì²âÒý½Å¾Í·¢ÉúÁË±ä»¯,
-           //µ¼ÖÂ,¹Ø»úÊ±¼äÌ«¶Ì,Ã»ÓÐ°´ÕÕÑÓÊ±µÄÁ÷³Ì½øÐÐÑÓ³Ù¹Ø»ú...ËùÒÔÔÚ½«ÑÓÊ±Ê±¼äµÄÅÐ¶Ï±êÖ¾ÉèÖÃÎª1
+           //ï¿½ï¿½Îªï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª0,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Ê±ï¿½ï¿½,ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½CanPMState.ACCOffTimer1Sï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¾Í·ï¿½ï¿½ï¿½ï¿½Ë±ä»¯,
+           //ï¿½ï¿½ï¿½ï¿½,ï¿½Ø»ï¿½Ê±ï¿½ï¿½Ì«ï¿½ï¿½,Ã»ï¿½Ð°ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½Ó³Ù¹Ø»ï¿½...ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½Ê±Ê±ï¿½ï¿½ï¿½ï¿½Ð¶Ï±ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½Îª1
            */
         if(CanPMState.ACCOffTimer1S == 1)
         {
@@ -1476,7 +1479,7 @@ void CANTask_PmRoutine(void)
         }
         break;
     case CAN_PM_WAIT_HALFSLEEP:
-#if 0		//ÔÚWAIT_SLEEPÄ£Ê½ÏÂ£¬²»½øÐÐ×ÜÏßÐÝÃß¹Ø»ú²Ù×÷¡£2016-5-29 byzwl
+#if 0		//ï¿½ï¿½WAIT_SLEEPÄ£Ê½ï¿½Â£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¹Ø»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2016-5-29 byzwl
         if(IOStatus == 0)
         {
             CANTask_SendPMReqest(OP_PM_STATE_OFF);
@@ -1524,7 +1527,7 @@ void CANTask_PmRoutine(void)
 	        {
 	            if(CANTask_GetSysACCState() ==0)
 				{
-					if(pData->CarAVMReq == 1) // ÔÚÈ«¾°Ä£Ê½¹ØACC£¬ÍË³öÈ«¾°Ä£Ê½
+					if(pData->CarAVMReq == 1) // ï¿½ï¿½È«ï¿½ï¿½Ä£Ê½ï¿½ï¿½ACCï¿½ï¿½ï¿½Ë³ï¿½È«ï¿½ï¿½Ä£Ê½
 					{
 						CANUser_SetAvmOutCmd();
 					}
@@ -1534,7 +1537,7 @@ void CANTask_PmRoutine(void)
 					CanPMState.ACCOffTimer1S = ACCOFF_TIMEOUT_S;/*ACC OFF timer-out = 6S*/
 					CanPMState.Timer10ms = 10;
 				}
-				//ÐèÒªÔö¼ÓÔÚILL¿ªµÄÇé¿öÏÂ,¿ªACCµÄÂß¼­ snake20160816
+				//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ILLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ACCï¿½ï¿½ï¿½ß¼ï¿½ snake20160816
 				
 	            CanPMState.AccoffNotSleepFlag = 0;
 	        }
@@ -1687,14 +1690,14 @@ void CANTask_PmRoutine(void)
 		}
 		break;
 
-	case CAN_PM_WAIT_HALFSLEEP://¿ªÐ¡µÆµÄÊ±ºò,¹Ø±ÕACCµÄ×´Ì¬....½øÈë²¢Í£ÁôÔÚWAIT_SLEEPÄ£Ê½...
-		if(CanPMState.LocalACC) //¿ªACC,ÁÁÆÁ,¿ª»ú
+	case CAN_PM_WAIT_HALFSLEEP://ï¿½ï¿½Ð¡ï¿½Æµï¿½Ê±ï¿½ï¿½,ï¿½Ø±ï¿½ACCï¿½ï¿½×´Ì¬....ï¿½ï¿½ï¿½ë²¢Í£ï¿½ï¿½ï¿½ï¿½WAIT_SLEEPÄ£Ê½...
+		if(CanPMState.LocalACC) //ï¿½ï¿½ACC,ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½
 		{
 			CANTask_SendPMReqest(OP_PM_STATE_ON);
 			CanPMState.state = CAN_PM_NORMAL;
 		}
 
-		//if(IO_Get(IO_IDX_ILL_DET,PIN_INPUT,FALSE) == 0)//¹ØILL
+		//if(IO_Get(IO_IDX_ILL_DET,PIN_INPUT,FALSE) == 0)//ï¿½ï¿½ILL
 		if(!SystemStatus.ILL)
 		{
 			if(l_tPwrCB.eMode != PM_MODE_WAIT_SLEEP)
@@ -1750,7 +1753,7 @@ void CANTask_PmRoutine(void)
 			}
 		}
 		break;
-    case CAN_PM_SLEEP://¹Ø±ÕACCÖ®ºó,´ý»úµÄÊ±ºòµÄ×´Ì¬....
+    case CAN_PM_SLEEP://ï¿½Ø±ï¿½ACCÖ®ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½×´Ì¬....
 		/*
 	 if(CanPMState.LocalACC == 1)
 	  {
@@ -1772,10 +1775,10 @@ void CANTask_PmRoutine(void)
 
 		if(IOStatus==2)
 		{
-			CANTask_StartWork();//½«CAN»½ÐÑ...
+			CANTask_StartWork();//ï¿½ï¿½CANï¿½ï¿½ï¿½ï¿½...
 			CANTask_SendPMReqest(OP_PM_STATE_ON);
 			CanPMState.state = CAN_PM_HALFSLEEP;
-			PanelLed_SwitchDeal(ON);//½«POWER¼üµãÁÁ
+			PanelLed_SwitchDeal(ON);//ï¿½ï¿½POWERï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			TaskCAN_debug(_T("---In Sleep State:ILL ON Wake Up DVD!!!!\n\n"));
 		}
 		else
@@ -1788,12 +1791,12 @@ void CANTask_PmRoutine(void)
 			}
 			else
 			{
-				//¼ì²â1041µÄINHÒý½Å
+				//ï¿½ï¿½ï¿½1041ï¿½ï¿½INHï¿½ï¿½ï¿½ï¿½
 				if((IO_Get(IO_IDX_ACC_WAKE,PIN_INPUT,TRUE) == 1) && (CanPMState.WaitTimer1S == 0))
 				{
 					HMIStatusFlag.g_tCanbusWakeUpFlag = 1;
 					CANTask_StartWork();
-					//can±¨ÎÄÊÕ·¢ disable
+					//canï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ disable
 					#ifdef UDS_ENABLE_MACRO
 					UdsAppInfo.subControlType = COMM_DSRX_DSTX;
 					UdsAppInfo.CommunicationType = COMM_TYPE_NCM_NWMCM;
@@ -1816,7 +1819,7 @@ void CANTask_PmRoutine(void)
 			}
 		}
 	break;
-	case CAN_PM_HALFSLEEP://Ð¡µÆ»½ÐÑÕû»úµÄµÈ´ý×´Ì¬....
+	case CAN_PM_HALFSLEEP://Ð¡ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÈ´ï¿½×´Ì¬....
 		if(CanPMState.LocalACC == 1)
 		{
 			CANTask_StartWork();
@@ -1914,9 +1917,9 @@ void CANTask_PMMsgHandler(tMSG_BUF* Msg)
     CanPMState.SysPmState =(uint8_t) Msg->iSid;
 
 	/*
-	//½«¾­Î³¶ÈÐÅÏ¢,´æ´¢ÔÚno_initµÄÊý¾Ý¿éÖÐ,²»Ð´Èëµ½EEPROMÖÐ...
-	//snake20161017 ¶ÏµçÖ®Ç°,½øÐÐEEPROMµÄÐ´Èë...
-	//Ö»ÓÐÔÚ½øÈëWAIT_SLEEP(Á½·ÖÖÓºóµôµç)µÄÊ±ºò,²ÅÐ´EEPROM..·ÀÖ¹,Òì³£µôµç»òÕßÆäËûÇé¿ö,·¢ÆðÁËÐ´ÇëÇó,µ«ÊÇÓÉÓÚÐ¾Æ¬¶Ïµçµ¼ÖÂ,Ð´´íÎó...
+	//ï¿½ï¿½ï¿½ï¿½Î³ï¿½ï¿½ï¿½ï¿½Ï¢,ï¿½æ´¢ï¿½ï¿½no_initï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½,ï¿½ï¿½Ð´ï¿½ëµ½EEPROMï¿½ï¿½...
+	//snake20161017 ï¿½Ïµï¿½Ö®Ç°,ï¿½ï¿½ï¿½ï¿½EEPROMï¿½ï¿½Ð´ï¿½ï¿½...
+	//Ö»ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½WAIT_SLEEP(ï¿½ï¿½ï¿½ï¿½ï¿½Óºï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½Ê±ï¿½ï¿½,ï¿½ï¿½Ð´EEPROM..ï¿½ï¿½Ö¹,ï¿½ì³£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¾Æ¬ï¿½Ïµçµ¼ï¿½ï¿½,Ð´ï¿½ï¿½ï¿½ï¿½...
 	if(Msg->iSid == OP_PM_STATE_WAIT_SLEEP)
 	{
 		uint8_t EepStoreStep=WR_EEP_NO_REQ;
@@ -2238,7 +2241,7 @@ void CANTask_VehicleMsgHandler(uint8_t *pMsg)
 	case OP_CAN_RX_ACR_OPEN_AVM:
 		 index=0x2b;
 		break;		
-/**************Ö÷¶¯°²È«**************/		
+/**************ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«**************/		
 	case OP_CAN_RX_ACC_OBJ_ENABLE:
 		index = 0x2c;
 		break;
@@ -2341,8 +2344,8 @@ void CANTask_DTVMsgHandler(uint8_t* pMsg)
 void CANTask_EOLMsgHandler(uint8_t *pMsg)
 {
 /*
-  *	 ²»¹ÜÊÇÀ´×ÔÕï¶ÏÒÇµÄ»¹ÊÇÀ´×ÔAPU¸ø³öµÄÅäÖÃ£¬´¦Àí·½Ê½
-  *	ÊÇÒ»ÑùµÄ£¬¶¼Òª±£´æµ½ÏµÍ³ÖÐÈ¥¡£
+  *	 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÇµÄ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½APUï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½Ê½
+  *	ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½æµ½ÏµÍ³ï¿½ï¿½È¥ï¿½ï¿½
   */
   	#if (PROJECT_CODE == CHANGAN_S401)
 		UdsFbl_StoreDIDToSystem(DID_ID_F1F8, pMsg, DID_F1F8_LENGTH);
@@ -2350,8 +2353,8 @@ void CANTask_EOLMsgHandler(uint8_t *pMsg)
 		UdsFbl_StoreDIDToSystem(DID_ID_F1FA, pMsg, DID_F1FA_LENGTH);
 	#endif
 /*
-  *	½«»ñÈ¡µÄÊý¾ÝÒª¸üÐÂµ½UDS FBLÕï¶ÏÇøµÄÊý¾Ý½á¹¹ÖÐ£¬
-  *   ÒÔ±ãÓÚÕï¶ÏÒÇÖ´ÐÐ¶ÁÈ¡²Ù×÷¡£
+  *	ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Âµï¿½UDS FBLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½Ð£ï¿½
+  *   ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ð¶ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   */
        UdsFbl_LoadSysData(&l_tBusData);
 }
@@ -2560,16 +2563,16 @@ static void CANTask_MsgHandler(tMSG_BUF* Msg)
         CANTask_OtherMsgHandler(Msg);
         break;
 
-    case MS_OTHER_AVM://snake20160808  Ã¤Çø
+    case MS_OTHER_AVM://snake20160808  Ã¤ï¿½ï¿½
     {
 		CarAVMDataStruct *pData = pCAN_GetAVMData();
 
 		/*
-		if(!l_tMediaCB.uDevFlag.field.bUnLocked)//snake20160927 delete Í¬ÒâÖ®Ç°Ò²¿ÉÒÔ½øÈëÃ¤Çø...
+		if(!l_tMediaCB.uDevFlag.field.bUnLocked)//snake20160927 delete Í¬ï¿½ï¿½Ö®Ç°Ò²ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½Ã¤ï¿½ï¿½...
 		{
 			return;
 		}*/
-		if(!HMIStatusFlag.g_tUpdataReverseParameter)//ÔÚµ¹³µµÄÊ±ºò,²»ÏìÓ¦Ã¤Çø°´¼ü...
+		if(!HMIStatusFlag.g_tUpdataReverseParameter)//ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ó¦Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...
 		if(1==CanPMState.SysWorkState)	
 		{
 			fTw8836.ADI7186OVERLAYDisable = 0;
@@ -2584,7 +2587,7 @@ static void CANTask_MsgHandler(tMSG_BUF* Msg)
 				else if(g_tMcuDevState.uDetect.bits.Blind_Flag == 0)
 				{
 					pData->BlindReq=1;
-					_SendMsgToSRC(MS_INPUT_UI,UICC_STOP_SEEK,NULL);//snake20161007 ½øÈëÃ¤ÇøµÄÊ±ºòÍ£Ö¹ÊÕÒô»úµÄËÑË÷¶¯×÷
+					_SendMsgToSRC(MS_INPUT_UI,UICC_STOP_SEEK,NULL);//snake20161007 ï¿½ï¿½ï¿½ï¿½Ã¤ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				}				
 			}
 			else if( Msg->iSid == OP_AVM_RELEASE) 
@@ -2730,7 +2733,7 @@ void CANTask_SetAmpPower(void)
 {
 	uint8_t msg[5];
 	
-	if(CANTask_GetSysACCState() ==1)//acc  ¿ª
+	if(CANTask_GetSysACCState() ==1)//acc  ï¿½ï¿½
 	{
 		CanPMState.SetAmpOffCnt=0;
 		CanPMState.SetAmpOnCnt++;
@@ -2740,13 +2743,13 @@ void CANTask_SetAmpPower(void)
 
 		if((CanPMState.SetAmpOnCnt%2)&&(CanPMState.SetAmpOnCnt<10))
 		{
-			//ÍâÖÃ¹¦·Å½ø¾²Òô
+			//ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½Å½ï¿½ï¿½ï¿½ï¿½ï¿½
 			CANUser_SetAmpCmd(AMP_TYPE_MUTE, AMP_MUTE_ON);
 		}
 
 		 if((CanPMState.SetAmpOnCnt%2)&&(CanPMState.SetAmpOnCnt>10))
 		{
-	                //ÍâÖÃ¹¦·Å½â¾²Òô
+	                //ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½Å½â¾²ï¿½ï¿½
 	                if(l_tMediaCB.uDevFlag.field.bDevConnect==0)
 	                {
 				CANUser_SetAmpCmd(AMP_TYPE_MUTE, AMP_MUTE_ON);
@@ -2770,14 +2773,14 @@ void CANTask_SetAmpPower(void)
 		}
 	}
 	
-	if(CANTask_GetSysACCState() ==0)//acc ¹Ø
+	if(CANTask_GetSysACCState() ==0)//acc ï¿½ï¿½
 	{
 		CanPMState.SetAmpOnCnt=0;
 		CanPMState.SetAmpOffCnt++;
 		
 		if(CanPMState.SetAmpOffCnt%2)
 		{
-	                //ÍâÖÃ¹¦·Å½ø¾²Òô
+	                //ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½Å½ï¿½ï¿½ï¿½ï¿½ï¿½
 			CANUser_SetAmpCmd(AMP_TYPE_MUTE, AMP_MUTE_ON);
 		}
 		else
@@ -2816,6 +2819,7 @@ void CANbus_Task(EVENT iEvt,eTASK_STATE eState)
         if(QUE_ERR_NONE == OS_GetMsgDir(&g_tCanTaskCB,&tMsg))
         {
             CANTask_MsgHandler(&tMsg);
+
         }
         else
         {
@@ -2839,10 +2843,14 @@ void CANbus_Task(EVENT iEvt,eTASK_STATE eState)
             CANUser_TaskTickHook(2);
             IO_Scan(IO_IDX_LOCAL_ACC, PIN_INPUT);
             CANTask_Manager();
+
+            CanIf_MainFunction();
+            ComUser_MainFunction();
+
 #ifdef NM_ENABLE_MACRO
             NM_AppMsgHandler(CAN_ID_BODY);
 #else
-		#ifdef UDS_ENABLE_MACRO //snake20161012 ¹Ø±ÕÁËÍøÂç¹ÜÀí,Ò²ÒªÔËÐÐuds
+		#ifdef UDS_ENABLE_MACRO //snake20161012 ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Ò²Òªï¿½ï¿½ï¿½ï¿½uds
 			Uds_ProtocolStackMain();
 		#endif
 #endif
@@ -2865,7 +2873,7 @@ void CANbus_Task(EVENT iEvt,eTASK_STATE eState)
                 CanPMState.Timer1S++;
 
 				//snake20170418
-				//ÁÙÊ±Ôö¼Ó,ÔÚÃ»ÓÐÕÒµ½ÕæÕýµÄÔ­ÒòÖ®Ç°ÁÙÊ±ÔÚÕâ¸öÃ¿1SÖÓ·¢ÆðÒ»´Î·¢ËÍÇëÇó.
+				//ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Ö®Ç°ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿1Sï¿½Ó·ï¿½ï¿½ï¿½Ò»ï¿½Î·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 				CANUser_SendMsg500();
 				CANUser_SendMsg501();
 				
@@ -2879,7 +2887,7 @@ void CANbus_Task(EVENT iEvt,eTASK_STATE eState)
             }
 		if(CanPmEnterStandbyFlg)
 		{
-			if(++CanPmRecTimer >= 1250)	// 2ms*1250 = 2.5s ÐÅºÅ¶ªÊ§2.5S£¬×Ô¶¯¿ª»ú
+			if(++CanPmRecTimer >= 1250)	// 2ms*1250 = 2.5s ï¿½ÅºÅ¶ï¿½Ê§2.5Sï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
 				CanPmRecTimer = 0;
 				CanPmEnterStandbyFlg = 0;
@@ -2934,7 +2942,7 @@ bool CANbus_TaskCreate(void)
 
     CAN0_LocalWakeup(0,1);
     CANTask_PMInit();
-	BusEepManager.Cnt = 0; //¶ÁÈ¡´ÎÊýµÄ³õÊ¼»¯....
+	BusEepManager.Cnt = 0; //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½Ê¼ï¿½ï¿½....
     l_tBusData.iCheckSum = 0x00;
     if(EEP_DATA_NOERR == EEP_CreateEepDataBlock(&l_tEepBusCB,&lc_tEepBusCB))
     {

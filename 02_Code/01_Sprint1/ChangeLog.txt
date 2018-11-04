@@ -1,4 +1,13 @@
-﻿Version : V0.0.10
+﻿Version : V0.0.11
+ChangeLog :
+1.Add canoe simulation project
+2.Debug : create modules and add some Api provided other modules use.
+3.Canbus : mapping CanIf and ComUser modules main function to Canbus Task.---->Temporary strategy
+4.CanIf : Fix Com_ReadRxMsgListSignal bugs.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.04
+/*********************************************************************************************************************/
+Version : V0.0.10
 ChangeLog :
 1.Can_V850 : create modules,and crete vfb file.
 2.CanIf,Com,CanTp : xxx_Cfg_Table.h files shall be define in xxx.c files.beacuse the table only used by xxx.c file.

@@ -49,9 +49,24 @@ COM_USER_EXTERN_API void ComUser_MainFunction(void)
  * @retval		NULL
  * @attention   NULL
 ****************************************************************************/
+uint8 Dvr_CurrentPage_bk = 0x00;
+uint8 Dvr_TotalPage_bk = 0x00;
 COM_USER_EXTERN_API void ComUser_RxMainFunction(void)
 {
+	uint8 Dvr_CurrentPage = 0x00;
+	uint8 Dvr_TotalPage = 0x00;
 
+	/*Read DVR_CurrentPage signal value*/
+	ComUser_Com_ReadRxSignalCh0(0x612,56,8,&Dvr_CurrentPage);
+	/*Read DVR_TotalPage signal value*/
+	ComUser_Com_ReadRxSignalCh0(0x612,48,8,&Dvr_TotalPage);
+
+	if((Dvr_CurrentPage_bk != Dvr_CurrentPage) || (Dvr_TotalPage_bk != Dvr_TotalPage))
+	{
+		Dvr_CurrentPage_bk = Dvr_CurrentPage;
+		Dvr_TotalPage_bk = Dvr_TotalPage;
+		ComUser_Debug_OutputInfo(_T("Dvr_TotalPage = %d,Dvr_CurrentPage = %d\n",Dvr_TotalPage,Dvr_CurrentPage));
+	}
 }
 
 /****************************************************************************

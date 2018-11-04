@@ -22,7 +22,7 @@
 #include "Com_Cfg_Define.h"
 #include "..\..\..\config\inc.h"
 #include "..\CanIf\CanIf.h"
-
+#include "..\Debug\Debug.h"
 
 /*Macro definition AREA*/
 /****************************************************************************
@@ -48,6 +48,15 @@
  * @attention   NULL
 ****************************************************************************/
 #define Com_CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data)		CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data)
+
+/****************************************************************************
+ * @function	CanIf_Debug_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#define Com_Debug_OutputInfo(x)		Debug_Com_OutputInfo(x)
 
 
 /*Function declaration AREA*/

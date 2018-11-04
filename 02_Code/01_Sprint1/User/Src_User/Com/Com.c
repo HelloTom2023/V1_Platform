@@ -85,6 +85,8 @@ COM_EXTERN_API uint8 Com_RxNotificationFunction(uint8 ChNo,uint32 MsgId,uint8* p
 			 * Propose :
 			 * The length of the user defined Com_BusRxMsgList array should be more than the the ecu will send the message number.
 			 * */
+			Com_Debug_OutputInfo(_T("Com Recv Msg:\nChNo = %d,MsgId = 0x%lx,Dlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
+					ChNo,MsgId,Dlc,ptr_Data[0],ptr_Data[1],ptr_Data[2],ptr_Data[3],ptr_Data[4],ptr_Data[5],ptr_Data[6],ptr_Data[7]));
 
 			Com_SetRxMsgListChNoMsgIdDlcData(Index, ChNo, MsgId, Dlc, ptr_Data);
 			//Com_SetRxMsgListUpdate(Index,0x01);
@@ -664,6 +666,13 @@ COM_LOCAL_API uint8 Com_SetRxMsgListChNoMsgIdDlcData(uint8 Index,uint8 ChNo,uint
 	Com_BusRxMsgList[Index].MsgDlc = MsgDlc;
 	memcpy(Com_BusRxMsgList[Index].MsgData, ptr_MsgData, 8);
 
+
+	Com_Debug_OutputInfo(_T("SetRxMsgList:Index = %d\nChNo = %d,MsgId = 0x%lx,Dlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
+			Index,Com_BusRxMsgList[Index].ChNo,Com_BusRxMsgList[Index].MsgId,Com_BusRxMsgList[Index].MsgDlc,Com_BusRxMsgList[Index].MsgData[0],\
+			Com_BusRxMsgList[Index].MsgData[1],Com_BusRxMsgList[Index].MsgData[2],Com_BusRxMsgList[Index].MsgData[3],Com_BusRxMsgList[Index].MsgData[4],\
+			Com_BusRxMsgList[Index].MsgData[5],Com_BusRxMsgList[Index].MsgData[6],Com_BusRxMsgList[Index].MsgData[7]));
+
+
 	ret = E_OK;
 	return ret;
 }
@@ -739,19 +748,19 @@ COM_LOCAL_API uint8 Com_ReadRxMsgListSignal(uint8 Index,uint8 FormatType,uint8 S
 	DataBitIndex = StartBit % 8;
 	/*Initialization the ptr_SignalValue byte and bit control*/
 	PtrByteIndex = 0x00;
-	PtrBitIndex = 0x01;
+	PtrBitIndex = 0x00;
 
-	for(ReadLength = 0x00; ReadLength >=Length; 	)
+	for(ReadLength = 0x00; ReadLength < Length; 	)
 	{
-
 		ptr_SignalValue[PtrByteIndex] = ptr_SignalValue[PtrByteIndex] | 	\
 				CommFunc_BitShiftLeft(	\
 						(CommFunc_BitShiftRigth(Com_BusRxMsgList[Index].MsgData[DataByteIndex],DataBitIndex) & CommFunc_GetBitMask(0x01)),	\
 						PtrBitIndex);
+
 		PtrBitIndex++;
 		DataBitIndex++;
 		/*Check the MsgData[] byte is full*/
-		if(DataBitIndex >= 0x07)
+		if(DataBitIndex >= 0x08)/*DataBitIndex range is 0~7*/
 		{
 			DataBitIndex = 0x00;
 			if(0x00 == FormatType)/*Motorola Format*/
@@ -768,9 +777,9 @@ COM_LOCAL_API uint8 Com_ReadRxMsgListSignal(uint8 Index,uint8 FormatType,uint8 S
 			/*Doing nothing*/
 		}
 		/*Check the ptr_SignalValue[] byte is full*/
-		if(PtrBitIndex >= 0x08)
+		if(PtrBitIndex >= 0x08)/*PtrBitIndex range is 0~7*/
 		{
-			PtrBitIndex = 0x01;
+			PtrBitIndex = 0x00;
 			PtrByteIndex++;
 		}
 		else
@@ -859,7 +868,7 @@ COM_LOCAL_API uint8 Com_WriteRxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
 	PtrByteIndex = 0x00;
 	PtrBitIndex = 0x01;
 
-	for(WroteLength = 0x00; WroteLength >= Length; 	)
+	for(WroteLength = 0x00; WroteLength < Length; 	)
 	{
 		Com_BusRxMsgList[Index].MsgData[DataByteIndex] =  Com_BusRxMsgList[Index].MsgData[DataByteIndex] |	\
 				CommFunc_BitShiftLeft(	\
@@ -928,7 +937,7 @@ COM_EXTERN_API uint8 Com_ReadRxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,u
 
 	if(E_OK == ret)
 	{
-		ret = Com_WriteRxMsgListSignal(Index,FormatType,StartBit,Length,ptr_SignalValue);
+		ret = Com_ReadRxMsgListSignal(Index,FormatType,StartBit,Length,ptr_SignalValue);
 	}
 	else
 	{
