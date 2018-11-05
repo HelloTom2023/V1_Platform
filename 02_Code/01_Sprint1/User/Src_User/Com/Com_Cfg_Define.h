@@ -43,8 +43,8 @@
 /*the function parameters configuration*/
 /*The can controller support max can channel number*/
 #define COM_CANCONTROLLERCHANNELNUMBER						1
-
-
+#define COM_RXLIST_NUMBER									(Com_CanIf_GetRxListElementNumber)
+#define COM_TXLIST_NUMBER									(Com_CanIf_GetTxListElementNumber)
 
 
 #endif /*_COM_CFG_DEFINE_H*/

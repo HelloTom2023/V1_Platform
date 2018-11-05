@@ -50,6 +50,24 @@
 #define Com_CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data)		CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data)
 
 /****************************************************************************
+ * @function	Com_CanIf_GetRxListElementNumber
+ * @brief  		get CanIf_CanMsgTxList Data element number
+ * @param
+ * @retval		ret : Data element number
+ * @attention   NULL
+****************************************************************************/
+#define Com_CanIf_GetRxListElementNumber		CanIf_GetRxListElementNumber
+
+/****************************************************************************
+ * @function	Com_CanIf_GetTxListElementNumber
+ * @brief  		get CanIf_CanMsgTxList Data element number
+ * @param
+ * @retval		ret : Data element number
+ * @attention   NULL
+****************************************************************************/
+#define Com_CanIf_GetTxListElementNumber		CanIf_GetTxListElementNumber
+
+/****************************************************************************
  * @function	CanIf_Debug_OutputInfo
  * @brief
  * @param

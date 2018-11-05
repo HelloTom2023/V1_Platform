@@ -85,8 +85,10 @@ COM_EXTERN_API uint8 Com_RxNotificationFunction(uint8 ChNo,uint32 MsgId,uint8* p
 			 * Propose :
 			 * The length of the user defined Com_BusRxMsgList array should be more than the the ecu will send the message number.
 			 * */
-			Com_Debug_OutputInfo(_T("Com Recv Msg:\nChNo = %d,MsgId = 0x%lx,Dlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
+
+			/*Com_Debug_OutputInfo(_T("Com Recv Msg:\nChNo = %d,MsgId = 0x%lx,Dlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
 					ChNo,MsgId,Dlc,ptr_Data[0],ptr_Data[1],ptr_Data[2],ptr_Data[3],ptr_Data[4],ptr_Data[5],ptr_Data[6],ptr_Data[7]));
+			*/
 
 			Com_SetRxMsgListChNoMsgIdDlcData(Index, ChNo, MsgId, Dlc, ptr_Data);
 			//Com_SetRxMsgListUpdate(Index,0x01);
@@ -666,13 +668,6 @@ COM_LOCAL_API uint8 Com_SetRxMsgListChNoMsgIdDlcData(uint8 Index,uint8 ChNo,uint
 	Com_BusRxMsgList[Index].MsgDlc = MsgDlc;
 	memcpy(Com_BusRxMsgList[Index].MsgData, ptr_MsgData, 8);
 
-
-	Com_Debug_OutputInfo(_T("SetRxMsgList:Index = %d\nChNo = %d,MsgId = 0x%lx,Dlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
-			Index,Com_BusRxMsgList[Index].ChNo,Com_BusRxMsgList[Index].MsgId,Com_BusRxMsgList[Index].MsgDlc,Com_BusRxMsgList[Index].MsgData[0],\
-			Com_BusRxMsgList[Index].MsgData[1],Com_BusRxMsgList[Index].MsgData[2],Com_BusRxMsgList[Index].MsgData[3],Com_BusRxMsgList[Index].MsgData[4],\
-			Com_BusRxMsgList[Index].MsgData[5],Com_BusRxMsgList[Index].MsgData[6],Com_BusRxMsgList[Index].MsgData[7]));
-
-
 	ret = E_OK;
 	return ret;
 }
@@ -733,7 +728,7 @@ COM_LOCAL_API uint8 Com_ReadRxMsgListSignal(uint8 Index,uint8 FormatType,uint8 S
 	}
 
 	/*check the message format*/
-	if((0x00 != FormatType) && (0x01 == FormatType))
+	if((0x00 != FormatType) && (0x01 != FormatType))
 	{
 		return E_PARAM_RANGE_OVERFLOW;
 	}
@@ -1688,7 +1683,7 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
 	}
 
 	/*check the message format*/
-	if((0x00 != FormatType) && (0x01 == FormatType))
+	if((0x00 != FormatType) && (0x01 != FormatType))
 	{
 		return E_PARAM_RANGE_OVERFLOW;
 	}
@@ -1703,18 +1698,18 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
 	DataBitIndex = StartBit % 8;
 	/*Initialization the ptr_SignalValue byte and bit control*/
 	PtrByteIndex = 0x00;
-	PtrBitIndex = 0x01;
+	PtrBitIndex = 0x00;
 
-	for(WroteLength = 0x00; WroteLength >= Length; 	)
+	/*clear the signal value*/
+	for(WroteLength = 0x00; WroteLength < Length; 	)
 	{
-		Com_BusTxMsgList[Index].MsgData[DataByteIndex] =  Com_BusTxMsgList[Index].MsgData[DataByteIndex] |	\
-				CommFunc_BitShiftLeft(	\
-						CommFunc_BitShiftRigth(ptr_SignalValue[PtrByteIndex], PtrBitIndex) & CommFunc_GetBitMask(0x01), \
-						DataBitIndex);
+		Com_BusTxMsgList[Index].MsgData[DataByteIndex] =  Com_BusTxMsgList[Index].MsgData[DataByteIndex] &	\
+				(~(CommFunc_BitShiftLeft(CommFunc_GetBitMask(0x01), DataBitIndex)));
+
 		PtrBitIndex++;
 		DataBitIndex++;
 		/*Check the MsgData[] byte is full*/
-		if(DataBitIndex >= 0x07)
+		if(DataBitIndex >= 0x08)
 		{
 			DataBitIndex = 0x00;
 			if(0x00 == FormatType)/*Motorola Format*/
@@ -1733,7 +1728,62 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
 		/*Check the ptr_SignalValue[] byte is full*/
 		if(PtrBitIndex >= 0x08)
 		{
-			PtrBitIndex = 0x01;
+			PtrBitIndex = 0x00;
+			PtrByteIndex++;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*write data to MsgData number of times,loop control*/
+		WroteLength++;
+	}
+
+	/*Com_Debug_OutputInfo(_T("Clean : MsgId = 0x%lx,Data = %x %x %x %x %x %x %x %x\n",Com_BusTxMsgList[Index].MsgId,\
+				Com_BusTxMsgList[Index].MsgData[0],Com_BusTxMsgList[Index].MsgData[1],Com_BusTxMsgList[Index].MsgData[2],Com_BusTxMsgList[Index].MsgData[3],	\
+				Com_BusTxMsgList[Index].MsgData[4],Com_BusTxMsgList[Index].MsgData[5],Com_BusTxMsgList[Index].MsgData[6],Com_BusTxMsgList[Index].MsgData[7]));
+	 */
+
+	/*Get byte position in the message data array*/
+	DataByteIndex = StartBit / 8;
+	/*Get bit position in the one byte*/
+	DataBitIndex = StartBit % 8;
+	/*Initialization the ptr_SignalValue byte and bit control*/
+	PtrByteIndex = 0x00;
+	PtrBitIndex = 0x00;
+
+	/*write the signal value*/
+	for(WroteLength = 0x00; WroteLength < Length; 	)
+	{
+		Com_BusTxMsgList[Index].MsgData[DataByteIndex] =  Com_BusTxMsgList[Index].MsgData[DataByteIndex] |	\
+				CommFunc_BitShiftLeft(	\
+						(CommFunc_BitShiftRigth(ptr_SignalValue[PtrByteIndex], PtrBitIndex) & CommFunc_GetBitMask(0x01)), \
+						DataBitIndex);
+
+		PtrBitIndex++;
+		DataBitIndex++;
+		/*Check the MsgData[] byte is full*/
+		if(DataBitIndex >= 0x08)
+		{
+			DataBitIndex = 0x00;
+			if(0x00 == FormatType)/*Motorola Format*/
+			{
+				DataByteIndex--;
+			}
+			else /*if(0x01 == FormatType)  // Intel Format*/
+			{
+				DataByteIndex++;
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+		/*Check the ptr_SignalValue[] byte is full*/
+		if(PtrBitIndex >= 0x08)
+		{
+			PtrBitIndex = 0x00;
 			PtrByteIndex++;
 		}
 		else
@@ -1747,13 +1797,17 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
 
 	/*Set TxMsgList Data update flag*/
 	Com_SetTxMsgListUpdate(Index, 0x01);
-
+/*
+	Com_Debug_OutputInfo(_T("write : MsgId = 0x%lx,Data = %x %x %x %x %x %x %x %x\n",Com_BusTxMsgList[Index].MsgId,\
+			Com_BusTxMsgList[Index].MsgData[0],Com_BusTxMsgList[Index].MsgData[1],Com_BusTxMsgList[Index].MsgData[2],Com_BusTxMsgList[Index].MsgData[3],	\
+			Com_BusTxMsgList[Index].MsgData[4],Com_BusTxMsgList[Index].MsgData[5],Com_BusTxMsgList[Index].MsgData[6],Com_BusTxMsgList[Index].MsgData[7]));
+*/
 	ret = E_OK;
 	return ret;
 }
 
 /****************************************************************************
- * @function	Com_WriteAndImmediatelyTxSignal
+ * @function	Com_WriteSignalTxImmediately
  * @brief
  * @param  		FormatType : input parameters.
  * 							 if the FormatType is 0x01,the can message data format is Intel format
@@ -1768,110 +1822,46 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
  * 				the parameters ptr_SignalValue can modify to data type automatic application
  * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
 ****************************************************************************/
-COM_LOCAL_API uint8 Com_WriteAndImmediatelyTxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
+COM_EXTERN_API uint8 Com_WriteSignalTxImmediately(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
 {
 	uint8 ret = E_NOT_OK;
-	uint8 DataByteIndex = 0x00;
-	uint8 DataBitIndex = 0x00;
-	uint8 PtrByteIndex = 0x00;
-	uint8 PtrBitIndex = 0x00;
-	uint8 WroteLength = 0x00;
-	Com_BusMsgStruct_Type Com_BusTxMsg;
+	uint8 Index = 0x00;
+	Com_BusMsgStruct_Type Com_BusTxMsgInfo;
 
-	/*Check if ChNo is valid*/
-	if(COM_CANCONTROLLERCHANNELNUMBER <= ChNo)
+	ret = Com_GetTxMsgListIndex(ChNo,MsgId,&Index);
+
+	/*
+	 * write signal to the Tx Message List.
+	 * */
+	if(E_RET_NOT_FOUND == ret)
 	{
-		return E_PARAM_RANGE_OVERFLOW;
+		Com_SetTxMsgListMsgId(Index,ChNo);
+		Com_SetTxMsgListMsgId(Index,MsgId);
 	}
 	else
 	{
 		/*Doing nothing*/
 	}
 
-	/*The length check base on can message data*/
-	if(Length >= 64)
+	if( (E_OK == ret) || (E_RET_NOT_FOUND == ret))
 	{
-		return E_PARAM_RANGE_OVERFLOW;
+		ret = Com_WriteTxMsgListSignal(Index,FormatType,StartBit,Length,ptr_SignalValue);
 	}
 	else
 	{
 		/*Doing nothing*/
 	}
 
-	/*Check pointer is NULL*/
-	if(NULL == ptr_SignalValue)
-	{
-		return E_PARAM_NULLPTR;
-	}
-	else
-	{
-		/*Doing nothing*/
-	}
+	/*Get Tx Message List*/
+	Com_GetTxMsgListChNoMsgIdDlcData(Index, &Com_BusTxMsgInfo.ChNo, &Com_BusTxMsgInfo.MsgId, \
+			&Com_BusTxMsgInfo.MsgDlc, Com_BusTxMsgInfo.MsgData);
 
-	/*check the message format*/
-	if((0x00 != FormatType) && (0x01 == FormatType))
-	{
-		return E_PARAM_RANGE_OVERFLOW;
-	}
-	else
-	{
-		/*Doing nothing*/
-	}
-
-	Com_BusTxMsg.ChNo = ChNo;
-
-	/*Get byte position in the message data array*/
-	DataByteIndex = StartBit / 8;
-	/*Get bit position in the one byte*/
-	DataBitIndex = StartBit % 8;
-	/*Initialization the ptr_SignalValue byte and bit control*/
-	PtrByteIndex = 0x00;
-	PtrBitIndex = 0x01;
-
-	for(WroteLength = 0x00; WroteLength >= Length; 	)
-	{
-		Com_BusTxMsg.MsgData[DataByteIndex] =  Com_BusTxMsg.MsgData[DataByteIndex] |	\
-				CommFunc_BitShiftLeft(	\
-						CommFunc_BitShiftRigth(ptr_SignalValue[PtrByteIndex], PtrBitIndex) & CommFunc_GetBitMask(0x01), \
-						DataBitIndex);
-		PtrBitIndex++;
-		DataBitIndex++;
-		/*Check the MsgData[] byte is full*/
-		if(DataBitIndex >= 0x07)
-		{
-			DataBitIndex = 0x00;
-			if(0x00 == FormatType)/*Motorola Format*/
-			{
-				DataByteIndex--;
-			}
-			else /*if(0x01 == FormatType)  // Intel Format*/
-			{
-				DataByteIndex++;
-			}
-		}
-		else
-		{
-			/*Doing nothing*/
-		}
-		/*Check the ptr_SignalValue[] byte is full*/
-		if(PtrBitIndex >= 0x08)
-		{
-			PtrBitIndex = 0x01;
-			PtrByteIndex++;
-		}
-		else
-		{
-			/*Doing nothing*/
-		}
-
-		/*write data to MsgData number of times,loop control*/
-		WroteLength++;
-	}
-
+	Com_Debug_OutputInfo(_T("ret = %d....Com_WriteSignalTxImmediately : MsgId = 0x%lx,Data = %x %x %x %x %x %x %x %x\n",ret,Com_BusTxMsgInfo.MsgId,\
+			Com_BusTxMsgInfo.MsgData[0],Com_BusTxMsgInfo.MsgData[1],Com_BusTxMsgInfo.MsgData[2],Com_BusTxMsgInfo.MsgData[3],Com_BusTxMsgInfo.MsgData[4],
+			Com_BusTxMsgInfo.MsgData[5],Com_BusTxMsgInfo.MsgData[6],Com_BusTxMsgInfo.MsgData[7]));
 	/*Update Data to CanIf*/
-	Com_CanIf_UpdateTxListMsgData(Com_BusTxMsg.ChNo, Com_BusTxMsg.MsgId, Com_BusTxMsg.MsgData);
+	Com_CanIf_UpdateTxListMsgData(Com_BusTxMsgInfo.ChNo, Com_BusTxMsgInfo.MsgId, Com_BusTxMsgInfo.MsgData);
 
-	ret = E_OK;
 	return ret;
 }
 

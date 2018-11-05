@@ -40,7 +40,7 @@
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-#define CommFunc_GetBitMask(n)		((1<<(n))-1)
+#define CommFunc_GetBitMask(n)		( ( 1<<(n) ) - 1)
 
 /****************************************************************************
  * @function	CommFunc_BitShiftLeft
@@ -49,7 +49,7 @@
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-#define CommFunc_BitShiftLeft(data,n)		(data << n)
+#define CommFunc_BitShiftLeft(data,n)		((data) << (n))
 
 /****************************************************************************
  * @function	CommFunc_BitShiftRigth
@@ -58,7 +58,7 @@
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-#define CommFunc_BitShiftRigth(data,n)		(data >> n)
+#define CommFunc_BitShiftRigth(data,n)		((data) >> (n))
 
 
 #endif /*_COMMON_FUNCTION_H*/

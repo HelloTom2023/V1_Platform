@@ -53,6 +53,9 @@ uint8 Dvr_CurrentPage_bk = 0x00;
 uint8 Dvr_TotalPage_bk = 0x00;
 COM_USER_EXTERN_API void ComUser_RxMainFunction(void)
 {
+	/*Send signal*/
+	static uint8 DVD_DVR_CommandList = 0x00;
+	/*Recv signal */
 	uint8 Dvr_CurrentPage = 0x00;
 	uint8 Dvr_TotalPage = 0x00;
 
@@ -63,9 +66,15 @@ COM_USER_EXTERN_API void ComUser_RxMainFunction(void)
 
 	if((Dvr_CurrentPage_bk != Dvr_CurrentPage) || (Dvr_TotalPage_bk != Dvr_TotalPage))
 	{
+		DVD_DVR_CommandList++;
+
 		Dvr_CurrentPage_bk = Dvr_CurrentPage;
 		Dvr_TotalPage_bk = Dvr_TotalPage;
-		ComUser_Debug_OutputInfo(_T("Dvr_TotalPage = %d,Dvr_CurrentPage = %d\n",Dvr_TotalPage,Dvr_CurrentPage));
+		ComUser_Debug_OutputInfo(_T("Recv Signal : Dvr_TotalPage = %d,Dvr_CurrentPage = %d\n",Dvr_TotalPage,Dvr_CurrentPage));
+
+		ComUser_Com_WriteImmediatelyTxSignalCh0(0x2F8,18,6,&DVD_DVR_CommandList);
+
+		ComUser_Debug_OutputInfo(_T("Send Signal : DVD_DVR_CommandList = %d \n",DVD_DVR_CommandList));
 	}
 }
 

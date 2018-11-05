@@ -1,4 +1,14 @@
-﻿Version : V0.0.11
+﻿Version : V0.0.12
+ChangeLog :
+1.CanIf : Add CanIf_GetRxListElementNumber and CanIf_GetRxListElementNumber APIs.---->will implement Com modules TX and Rx list length Automatic generated base on CanIf Rx and Tx list
+2.CanIf : Fix some send message strategy bug.
+3.Code ： Delete the send message request function of the old code
+4.Com : Fix some send message strategy bug.---->the send strategy of message is not perfect.In the future,we will optimization it.
+5.ComUser : add tx test code.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.05
+/*********************************************************************************************************************/
+Version : V0.0.11
 ChangeLog :
 1.Add canoe simulation project
 2.Debug : create modules and add some Api provided other modules use.

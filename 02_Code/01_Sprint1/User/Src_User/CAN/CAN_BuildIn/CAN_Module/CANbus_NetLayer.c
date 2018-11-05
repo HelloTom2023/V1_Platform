@@ -216,7 +216,7 @@ uint8_t CANbus_NetLayerPeriodicSendMsg(CanMsgStruct *pTxMsg, uint16_t cycleTime)
 					//pPool->curtime = cycleTime;
 					pPool->curtime = CANbus_NetLayerGetInitTime(index);
 				}
-				CANbus_MsgSetDat(pTxMsg->CAN_Id, pPool->bufNo, pTxMsg->Data);
+				/*CANbus_MsgSetDat(pTxMsg->CAN_Id, pPool->bufNo, pTxMsg->Data);*/
 				return 0;
 			}
 		}
@@ -232,8 +232,8 @@ uint8_t CANbus_NetLayerPeriodicSendMsg(CanMsgStruct *pTxMsg, uint16_t cycleTime)
 			pPool->curtime = CANbus_NetLayerGetInitTime(index);
 			pPool->FrameId = pTxMsg->CANMsgId;
 			pPool->validFlag = 1;
-			CANbus_MsgSetIdDataDlc(pTxMsg->CAN_Id, pPool->bufNo, 
-								pTxMsg->CANMsgId, pTxMsg->Data, pTxMsg->CANMsgDlc);
+			/*CANbus_MsgSetIdDataDlc(pTxMsg->CAN_Id, pPool->bufNo,
+								pTxMsg->CANMsgId, pTxMsg->Data, pTxMsg->CANMsgDlc);*/
 			return 0;
 		}
 	}
@@ -252,8 +252,8 @@ void CANbus_NetLayerOneShotSendMsg(CanMsgStruct *pTxMsg)
 	{
 		CANbusMsgSendCnt[pTxMsg->CAN_Id]++;
 	}
-	CANbus_MsgSetIdDataDlc(pTxMsg->CAN_Id, 0, pTxMsg->CANMsgId, pTxMsg->Data, pTxMsg->CANMsgDlc);
-	CANbus_MsgTxReq(pTxMsg->CAN_Id, 0);
+	/*CANbus_MsgSetIdDataDlc(pTxMsg->CAN_Id, 0, pTxMsg->CANMsgId, pTxMsg->Data, pTxMsg->CANMsgDlc);
+	CANbus_MsgTxReq(pTxMsg->CAN_Id, 0);*/
 }
 /****************************************************************************
  * @function	CANbus_NetLayerStopAllSend
@@ -324,8 +324,8 @@ void CANbus_NetLayerSendManager(uint8_t chno)
 			{
 				if(TRUE == Uds_GetMsgTransEnableState(MSG_NCM, MSG_TRANS_TX))
 				{
-					CANbus_MsgSendReqCallBack(chno, pPool->FrameId);
-					CANbus_MsgTxReq(chno, pPool->bufNo);
+					/*CANbus_MsgSendReqCallBack(chno, pPool->FrameId);
+					CANbus_MsgTxReq(chno, pPool->bufNo);*/
 					
 					pPool->curtime = pPool->cycle;
 					return ;

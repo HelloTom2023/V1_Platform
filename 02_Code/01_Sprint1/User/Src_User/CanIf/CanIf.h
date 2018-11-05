@@ -42,6 +42,7 @@ CanIf_CanMsgStruct_Type CanIf_CanRecvMsgBuff[CANIF_RECEIVEBUFFERNUMBER];
 CanIf_BuffControlInformation_Type CanIf_CanRecvMsgBuffCtrInfo;
 CanIf_CanMsgTxManagementControlInfomation_Type CanIf_CanTxMsgCtrInfo;
 
+
 /*Function declaration AREA*/
 /****************************************************************************
  * @function	CanIf_Init
@@ -180,6 +181,15 @@ CAN_IF_LOCAL_API uint8 CanIf_OverloadMsgTimeoutTimer(uint8 ChNo, uint32 MsgId);
 CAN_IF_LOCAL_API void CanIf_RxTimerHandleFunction(void);
 
 /****************************************************************************
+ * @function	CanIf_GetRxListElementNumber
+ * @brief  		get CanIf_CanMsgRxList Data element number
+ * @param
+ * @retval		ret : Data element number
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetRxListElementNumber(void);
+
+/****************************************************************************
  * @function	CanIf_GetRxListIndex
  * @brief  		get CanIf_CanMsgRxList index base on ChNo and MsgId
  * @param		ptr_Index : output parameters,
@@ -315,6 +325,15 @@ CAN_IF_LOCAL_API void CanIf_TxTimerHandleFunction(void);
  * @attention   NULL
 ****************************************************************************/
 CAN_IF_LOCAL_API void CanIf_CanControllerTxHardwareBuffIndexVaildCheck(uint8* ptr_bufNo);
+
+/****************************************************************************
+ * @function	CanIf_GetTxListElementNumber
+ * @brief  		get CanIf_CanMsgTxList Data element number
+ * @param
+ * @retval		ret : Data element number
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetTxListElementNumber(void);
 
 /****************************************************************************
  * @function	CanIf_GetTxListIndex

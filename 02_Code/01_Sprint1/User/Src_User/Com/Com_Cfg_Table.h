@@ -26,11 +26,14 @@
 /*Note :
  * the length if this array should be the same as the number of message that need to be received
  * */
-Com_BusMsgStruct_Type Com_BusRxMsgList[10];/*the communication receive message number*/
+//Com_BusMsgStruct_Type Com_BusRxMsgList[COM_RXLIST_NUMBER];/*the communication receive message number*/
+Com_BusMsgStruct_Type Com_BusRxMsgList[10];
 /*Note :
  * the length if this array should be the same as the number of message that need to be sent
  * */
-Com_BusMsgStruct_Type Com_BusTxMsgList[10];/*the communication send message number*/
+//Com_BusMsgStruct_Type Com_BusTxMsgList[COM_TXLIST_NUMBER];/*the communication send message number*/
+Com_BusMsgStruct_Type Com_BusTxMsgList[10];
+
 
 #endif /*_COM_CFG_TABLE_H*/
 /*********************************File End*********************************/

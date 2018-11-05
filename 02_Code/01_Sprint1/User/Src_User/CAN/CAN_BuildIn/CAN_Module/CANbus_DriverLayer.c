@@ -1365,6 +1365,7 @@ void CAN0_INTREC(void)
 void CAN0_INTTRX(void)
 {
 	CANbus_Ch0SendInterruptCallBack();
+
 	C0INTS = 0x01;
 }
 /****************************************************************************
