@@ -1,4 +1,13 @@
-﻿Version : V0.0.12
+﻿Version : V0.0.13
+ChangeLog :
+1.CanIf : Add CanIf_GetTxListMsgData and CanIf_GetTxListMsgDlcData APIs.---->provide Com call.
+2.Com : Optimize the function that is Com_ImmediatelyWriteTxSignal.
+3.Com : Add Main function ,Tx main function, Rx main function and Init function.
+4.Com : Add Tx polling strategy.---->Implement Tx main function
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.07
+/*********************************************************************************************************************/
+Version : V0.0.12
 ChangeLog :
 1.CanIf : Add CanIf_GetRxListElementNumber and CanIf_GetRxListElementNumber APIs.---->will implement Com modules TX and Rx list length Automatic generated base on CanIf Rx and Tx list
 2.CanIf : Fix some send message strategy bug.

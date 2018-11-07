@@ -463,7 +463,6 @@ CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgIdDlcData(uint8 Index, uint32 MsgId,ui
  * @brief  		update CanIf_CanMsgTxList Data base on ChNo and MsgId
  * @param		ChNo :
  * 				MsgId :
- * 				Dlc :
  * 				ptr_Data :
  * @retval		ret : operation return value
  * @attention   NULL
@@ -481,6 +480,30 @@ CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgData(uint8 ChNo,uint32 MsgId, uint8
  * @attention   NULL
 ****************************************************************************/
 CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgDlcData(uint8 ChNo,uint32 MsgId,uint8 Dlc, uint8 *ptr_Data);
+
+/****************************************************************************
+ * @function	CanIf_GetTxListMsgData
+ * @brief  		get CanIf_CanMsgTxList Data base on ChNo and MsgId
+ * @param		ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				ptr_Data : output parameters
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetTxListMsgData(uint8 ChNo,uint32 MsgId, uint8 *ptr_Data);
+
+/****************************************************************************
+ * @function	CanIf_GetTxListMsgDlcData
+ * @brief  		get CanIf_CanMsgTxList Dlc,Data base on ChNo and MsgId
+ * @param		ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				ptr_Dlc : output parameters
+ * 				ptr_Data : output parameters
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetTxListMsgDlcData(uint8 ChNo,uint32 MsgId,uint8 *ptr_Dlc, uint8 *ptr_Data);
+
 
 
 

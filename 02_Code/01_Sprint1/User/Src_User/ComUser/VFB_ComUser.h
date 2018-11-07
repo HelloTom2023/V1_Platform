@@ -27,7 +27,7 @@
 
 /*Macro definition AREA*/
 /****************************************************************************
- * @function	ComUser_Com_WriteImmediatelyTxSignalCh0
+ * @function	ComUser_Com_ImmediatelyWriteTxSignalCh0
  * @brief
  * @param  		FormatType : Use Motorola Format
  * 				ChNo : Use Ch0
@@ -40,10 +40,10 @@
  * 				the parameters ptr_SignalValue can modify to data type automatic application
  * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
 ****************************************************************************/
-#define ComUser_Com_WriteImmediatelyTxSignalCh0(MsgId,StartBit,Length,ptr_SignalValue)		Com_WriteSignalTxImmediately(COM_USER_MESSAGE_FORMAT,0x00,MsgId,StartBit,Length,ptr_SignalValue)
+#define ComUser_Com_ImmediatelyWriteTxSignalCh0(MsgId,StartBit,Length,ptr_SignalValue)		Com_ImmediatelyWriteTxSignal(COM_USER_MESSAGE_FORMAT,0x00,MsgId,StartBit,Length,ptr_SignalValue)
 
 /****************************************************************************
- * @function	ComUser_Com_WriteImmediatelyTxSignalCh0
+ * @function	ComUser_Com_ImmediatelyWriteTxSignalCh1
  * @brief
  * @param  		FormatType : Use Motorola Format
  * 				ChNo : Use Ch1
@@ -56,7 +56,7 @@
  * 				the parameters ptr_SignalValue can modify to data type automatic application
  * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
 ****************************************************************************/
-#define ComUser_Com_WriteImmediatelyTxSignalCh1(MsgId,StartBit,Length,ptr_SignalValue)		Com_WriteSignalTxImmediately(COM_USER_MESSAGE_FORMAT,0x01,MsgId,StartBit,Length,ptr_SignalValue)
+#define ComUser_Com_ImmediatelyWriteTxSignalCh1(MsgId,StartBit,Length,ptr_SignalValue)		Com_ImmediatelyWriteTxSignal(COM_USER_MESSAGE_FORMAT,0x01,MsgId,StartBit,Length,ptr_SignalValue)
 
 /****************************************************************************
  * @function	Com_ReadRxSignalCh0

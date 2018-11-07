@@ -42,6 +42,51 @@
 
 /*Function declaration AREA*/
 /****************************************************************************
+ * @function	Com_Init
+ * @brief
+ * @param  		NULL
+ * @retval 		ret : function execute result
+ * @attention   NULL
+****************************************************************************/
+COM_EXTERN_API void Com_Init(void);
+
+/****************************************************************************
+ * @function	Com_MainFunction
+ * @brief
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_EXTERN_API void Com_MainFunction(void);
+
+/****************************************************************************
+ * @function	Com_RxMainFunction
+ * @brief
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_EXTERN_API void Com_RxMainFunction(void);
+
+/****************************************************************************
+ * @function	Com_TxMainFunction
+ * @brief
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_EXTERN_API void Com_TxMainFunction(void);
+
+/****************************************************************************
+ * @function	Com_TxManagementFunction
+ * @brief
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API void Com_TxManagementFunction(void);
+
+/****************************************************************************
  * @function	Com_RecvNotificationFunction
  * @brief		transmit application message to communication server layer
  * @param  		ChNo :  input parameters , CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
@@ -447,7 +492,7 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
  * 				the parameters ptr_SignalValue can modify to data type automatic application
  * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
 ****************************************************************************/
-COM_EXTERN_API uint8 Com_WriteSignalTxImmediately(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
+COM_EXTERN_API uint8 Com_ImmediatelyWriteTxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue);
 
 
 

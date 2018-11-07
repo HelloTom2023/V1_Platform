@@ -1466,7 +1466,6 @@ CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgIdDlcData(uint8 Index, uint32 MsgId,ui
  * @brief  		update CanIf_CanMsgTxList Data base on ChNo and MsgId
  * @param		ChNo :
  * 				MsgId :
- * 				Dlc :
  * 				ptr_Data :
  * @retval		ret : operation return value
  * @attention   NULL
@@ -1550,5 +1549,88 @@ CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgDlcData(uint8 ChNo,uint32 MsgId,uin
 	return ret;
 }
 
+/****************************************************************************
+ * @function	CanIf_GetTxListMsgData
+ * @brief  		get CanIf_CanMsgTxList Data base on ChNo and MsgId
+ * @param		ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				ptr_Data : output parameters
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetTxListMsgData(uint8 ChNo,uint32 MsgId, uint8 *ptr_Data)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 Index = 0x00;
+
+	/*Check ptr_Data is valid*/
+	if(NULL == ptr_Data)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get TxList Index*/
+	ret = CanIf_GetTxListIndex(&Index, ChNo, MsgId);
+
+	if(E_OK == ret)
+	{
+		/*Update  data*/
+		memcpy(ptr_Data, CanIf_CanMsgTxList[Index].Data, CanIf_CanMsgTxList[Index].Dlc);
+		ret = E_OK;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetTxListMsgDlcData
+ * @brief  		get CanIf_CanMsgTxList Dlc,Data base on ChNo and MsgId
+ * @param		ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				ptr_Dlc : output parameters
+ * 				ptr_Data : output parameters
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetTxListMsgDlcData(uint8 ChNo,uint32 MsgId,uint8 *ptr_Dlc, uint8 *ptr_Data)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 Index = 0x00;
+
+	/*Check ptr_Data is valid*/
+	if(NULL == ptr_Data)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get TxList Index*/
+	ret = CanIf_GetTxListIndex(&Index, ChNo, MsgId);
+
+	if(E_OK == ret)
+	{
+		/*Update dlc and data*/
+		*ptr_Dlc = CanIf_CanMsgTxList[Index].Dlc;
+		memcpy(CanIf_CanMsgTxList[Index].Data, ptr_Data,CanIf_CanMsgTxList[Index].Dlc);
+		ret = E_OK;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	return ret;
+}
 
 /*********************************File End*********************************/

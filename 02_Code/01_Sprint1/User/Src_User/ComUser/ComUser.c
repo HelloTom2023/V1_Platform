@@ -72,7 +72,7 @@ COM_USER_EXTERN_API void ComUser_RxMainFunction(void)
 		Dvr_TotalPage_bk = Dvr_TotalPage;
 		ComUser_Debug_OutputInfo(_T("Recv Signal : Dvr_TotalPage = %d,Dvr_CurrentPage = %d\n",Dvr_TotalPage,Dvr_CurrentPage));
 
-		ComUser_Com_WriteImmediatelyTxSignalCh0(0x2F8,18,6,&DVD_DVR_CommandList);
+		ComUser_Com_ImmediatelyWriteTxSignalCh0(0x2F8,18,6,&DVD_DVR_CommandList);
 
 		ComUser_Debug_OutputInfo(_T("Send Signal : DVD_DVR_CommandList = %d \n",DVD_DVR_CommandList));
 	}

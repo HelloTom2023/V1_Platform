@@ -32,6 +32,114 @@
 
 /*Function implement AREA*/
 /****************************************************************************
+ * @function	Com_Init
+ * @brief
+ * @param  		NULL
+ * @retval 		ret : function execute result
+ * @attention   NULL
+****************************************************************************/
+COM_EXTERN_API void Com_Init(void)
+{
+
+}
+
+/****************************************************************************
+ * @function	Com_MainFunction
+ * @brief
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_EXTERN_API void Com_MainFunction(void)
+{
+	Com_RxMainFunction();
+	Com_TxMainFunction();
+}
+
+/****************************************************************************
+ * @function	Com_RxMainFunction
+ * @brief
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_EXTERN_API void Com_RxMainFunction(void)
+{
+
+}
+
+/****************************************************************************
+ * @function	Com_TxMainFunction
+ * @brief
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_EXTERN_API void Com_TxMainFunction(void)
+{
+	Com_TxManagementFunction();
+}
+
+/****************************************************************************
+ * @function	Com_TxManagementFunction
+ * @brief
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_LOCAL_API void Com_TxManagementFunction(void)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 Index = 0x00;
+	uint8 TxListLength = sizeof(Com_BusTxMsgList)/sizeof(Com_BusMsgStruct_Type);
+	uint8 DataUpdateFlag = 0x00;
+	Com_BusMsgStruct_Type Com_BusTxMsgInfo;
+
+	for(Index = 0x00; Index < TxListLength; Index++)
+	{
+		/*Get Update flag */
+		ret = Com_GetTxMsgListUpdate(Index,&DataUpdateFlag);
+
+		/*check the result*/
+		if(E_OK != ret)
+		{
+			/*Reserved : after add DET module*/
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*Check update flag*/
+		if(0x01 == DataUpdateFlag)
+		{
+			ret = Com_GetTxMsgListChNoMsgIdDlcData(Index, &Com_BusTxMsgInfo.ChNo, &Com_BusTxMsgInfo.MsgId, \
+						&Com_BusTxMsgInfo.MsgDlc, Com_BusTxMsgInfo.MsgData);
+			if(E_OK == ret)
+			{
+				ret = Com_CanIf_UpdateTxListMsgData(Com_BusTxMsgInfo.ChNo, Com_BusTxMsgInfo.MsgId, Com_BusTxMsgInfo.MsgData);
+				if(E_OK == ret)
+				{
+					Com_SetTxMsgListUpdate(Index, 0x00);/*Clear the update flag*/
+				}
+				else
+				{
+					/*doing nothing*/
+				}
+			}
+			else
+			{
+				/*Doing nothing*/
+			}
+		}
+		else/*Have new data */
+		{
+			/*Reserved : after add DET module*/
+		}
+	}
+}
+
+/****************************************************************************
  * @function	Com_RxNotificationFunction
  * @brief		transmit application message to communication server layer
  * @param  		ChNo :  input parameters , CAN channel index(if the mcu only one Can controller,the param shall setting to 0)
@@ -1807,8 +1915,9 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
 }
 
 /****************************************************************************
- * @function	Com_WriteSignalTxImmediately
- * @brief
+ * @function	Com_WriteTxSignal
+ * @brief		1.the function called by com application.And set signal to Tx message list.
+ * 				2.In the main function,will polling get tx message list and send to down layer(canif module)
  * @param  		FormatType : input parameters.
  * 							 if the FormatType is 0x01,the can message data format is Intel format
  * 							 if the FormatType is 0x00,the can message data format is Motorola format
@@ -1822,7 +1931,7 @@ COM_LOCAL_API uint8 Com_WriteTxMsgListSignal(uint8 Index,uint8 FormatType,uint8 
  * 				the parameters ptr_SignalValue can modify to data type automatic application
  * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
 ****************************************************************************/
-COM_EXTERN_API uint8 Com_WriteSignalTxImmediately(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
+COM_EXTERN_API uint8 Com_WriteTxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
 {
 	uint8 ret = E_NOT_OK;
 	uint8 Index = 0x00;
@@ -1852,13 +1961,179 @@ COM_EXTERN_API uint8 Com_WriteSignalTxImmediately(uint8 FormatType,uint8 ChNo,ui
 		/*Doing nothing*/
 	}
 
-	/*Get Tx Message List*/
-	Com_GetTxMsgListChNoMsgIdDlcData(Index, &Com_BusTxMsgInfo.ChNo, &Com_BusTxMsgInfo.MsgId, \
-			&Com_BusTxMsgInfo.MsgDlc, Com_BusTxMsgInfo.MsgData);
+	return ret;
+}
 
-	Com_Debug_OutputInfo(_T("ret = %d....Com_WriteSignalTxImmediately : MsgId = 0x%lx,Data = %x %x %x %x %x %x %x %x\n",ret,Com_BusTxMsgInfo.MsgId,\
+/****************************************************************************
+ * @function	Com_ImmediatelyWriteTxSignal
+ * @brief		1.If used this function,the signal direct write to can if tx message list.and not store the Com Tx message list.
+ * 				2.
+ * @param  		FormatType : input parameters.
+ * 							 if the FormatType is 0x01,the can message data format is Intel format
+ * 							 if the FormatType is 0x00,the can message data format is Motorola format
+ * 				ChNo : input parameters
+ * 				MsgId : input parameters
+ * 				StartBit : input parameters
+ * 				Length : input parameters
+ *				ptr_SignalValue : input parameters
+ * @retval 		ret : function operate result
+ * @attention   The function can improved in the future.
+ * 				the parameters ptr_SignalValue can modify to data type automatic application
+ * 				You can define the ptr_SignalValue data type is void,but the input parameters data type support uint8 or uint16 and etc.
+****************************************************************************/
+COM_EXTERN_API uint8 Com_ImmediatelyWriteTxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,uint8 StartBit,uint8 Length,uint8 *ptr_SignalValue)
+{
+	uint8 ret = E_NOT_OK;
+	Com_BusMsgStruct_Type Com_BusTxMsgInfo;
+	uint8 DataByteIndex = 0x00;
+	uint8 DataBitIndex = 0x00;
+	uint8 PtrByteIndex = 0x00;
+	uint8 PtrBitIndex = 0x00;
+	uint8 WroteLength = 0x00;
+
+	/*The length check base on can message data*/
+	if(Length >= 64)
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check pointer is NULL*/
+	if(NULL == ptr_SignalValue)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*check the message format*/
+	if((0x00 != FormatType) && (0x01 != FormatType))
+	{
+		return E_PARAM_RANGE_OVERFLOW;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	Com_BusTxMsgInfo.ChNo = ChNo;
+	Com_BusTxMsgInfo.MsgId = MsgId;
+	/*get canif tx list data base on ChNo and MsgId*/
+	Com_CanIf_GetTxListMsgDlcData(Com_BusTxMsgInfo.ChNo, Com_BusTxMsgInfo.MsgId, &Com_BusTxMsgInfo.MsgDlc, Com_BusTxMsgInfo.MsgData);
+
+	/*Get byte position in the message data array*/
+	DataByteIndex = StartBit / 8;
+	/*Get bit position in the one byte*/
+	DataBitIndex = StartBit % 8;
+	/*Initialization the ptr_SignalValue byte and bit control*/
+	PtrByteIndex = 0x00;
+	PtrBitIndex = 0x00;
+
+	/*clear the signal value*/
+	for(WroteLength = 0x00; WroteLength < Length; 	)
+	{
+		Com_BusTxMsgInfo.MsgData[DataByteIndex] =  Com_BusTxMsgInfo.MsgData[DataByteIndex] &	\
+				(~(CommFunc_BitShiftLeft(CommFunc_GetBitMask(0x01), DataBitIndex)));
+
+		PtrBitIndex++;
+		DataBitIndex++;
+		/*Check the MsgData[] byte is full*/
+		if(DataBitIndex >= 0x08)
+		{
+			DataBitIndex = 0x00;
+			if(0x00 == FormatType)/*Motorola Format*/
+			{
+				DataByteIndex--;
+			}
+			else /*if(0x01 == FormatType)  // Intel Format*/
+			{
+				DataByteIndex++;
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+		/*Check the ptr_SignalValue[] byte is full*/
+		if(PtrBitIndex >= 0x08)
+		{
+			PtrBitIndex = 0x00;
+			PtrByteIndex++;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*write data to MsgData number of times,loop control*/
+		WroteLength++;
+	}
+
+	/*Com_Debug_OutputInfo(_T("Clean : MsgId = 0x%lx,Data = %x %x %x %x %x %x %x %x\n",Com_BusTxMsgList[Index].MsgId,\
+				Com_BusTxMsgList[Index].MsgData[0],Com_BusTxMsgList[Index].MsgData[1],Com_BusTxMsgList[Index].MsgData[2],Com_BusTxMsgList[Index].MsgData[3],	\
+				Com_BusTxMsgList[Index].MsgData[4],Com_BusTxMsgList[Index].MsgData[5],Com_BusTxMsgList[Index].MsgData[6],Com_BusTxMsgList[Index].MsgData[7]));
+	 */
+
+	/*Get byte position in the message data array*/
+	DataByteIndex = StartBit / 8;
+	/*Get bit position in the one byte*/
+	DataBitIndex = StartBit % 8;
+	/*Initialization the ptr_SignalValue byte and bit control*/
+	PtrByteIndex = 0x00;
+	PtrBitIndex = 0x00;
+
+	/*write the signal value*/
+	for(WroteLength = 0x00; WroteLength < Length; 	)
+	{
+		Com_BusTxMsgInfo.MsgData[DataByteIndex] =  Com_BusTxMsgInfo.MsgData[DataByteIndex] |	\
+				CommFunc_BitShiftLeft(	\
+						(CommFunc_BitShiftRigth(ptr_SignalValue[PtrByteIndex], PtrBitIndex) & CommFunc_GetBitMask(0x01)), \
+						DataBitIndex);
+
+		PtrBitIndex++;
+		DataBitIndex++;
+		/*Check the MsgData[] byte is full*/
+		if(DataBitIndex >= 0x08)
+		{
+			DataBitIndex = 0x00;
+			if(0x00 == FormatType)/*Motorola Format*/
+			{
+				DataByteIndex--;
+			}
+			else /*if(0x01 == FormatType)  // Intel Format*/
+			{
+				DataByteIndex++;
+			}
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+		/*Check the ptr_SignalValue[] byte is full*/
+		if(PtrBitIndex >= 0x08)
+		{
+			PtrBitIndex = 0x00;
+			PtrByteIndex++;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
+		/*write data to MsgData number of times,loop control*/
+		WroteLength++;
+	}
+
+	/*Com_Debug_OutputInfo(_T("ret = %d....Com_WriteSignalTxImmediately : MsgId = 0x%lx,Data = %x %x %x %x %x %x %x %x\n",ret,Com_BusTxMsgInfo.MsgId,\
 			Com_BusTxMsgInfo.MsgData[0],Com_BusTxMsgInfo.MsgData[1],Com_BusTxMsgInfo.MsgData[2],Com_BusTxMsgInfo.MsgData[3],Com_BusTxMsgInfo.MsgData[4],
 			Com_BusTxMsgInfo.MsgData[5],Com_BusTxMsgInfo.MsgData[6],Com_BusTxMsgInfo.MsgData[7]));
+	 */
+
 	/*Update Data to CanIf*/
 	Com_CanIf_UpdateTxListMsgData(Com_BusTxMsgInfo.ChNo, Com_BusTxMsgInfo.MsgId, Com_BusTxMsgInfo.MsgData);
 
