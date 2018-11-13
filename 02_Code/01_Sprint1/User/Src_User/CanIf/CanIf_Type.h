@@ -54,10 +54,13 @@ typedef enum CanIf_MsgMode_Type_Tag
 	CANIF_MSG_MODE_NONE
 }CanIf_MsgMode_Type;
 
+/*imeout signal substitute value mode*/
+#define CANIF_TIMEOUT_SIGNAL_VALUE_MODE_INIT		(0x00U)
+#define CANIF_TIMEOUT_SIGNAL_VALUE_MODE_REPLACE		(0x01U)
 /*Can interface layer message check mode*/
-#define CANIF_CHECK_MODE_ID					(0x01)
-#define CANIF_CHECK_MODE_DLC				(0x02)
-#define CANIF_CHECK_MODE_TIMEOUT			(0x04)
+#define CANIF_CHECK_MODE_TIMEOUT_SIGNAL_VALUE		(0x01)
+#define CANIF_CHECK_MODE_DLC						(0x02)
+#define CANIF_CHECK_MODE_TIMEOUT					(0x04)
 
 typedef struct CanIf_CanMsgRxManagementDataBuffer_Type_Tag
 {
@@ -65,12 +68,14 @@ typedef struct CanIf_CanMsgRxManagementDataBuffer_Type_Tag
 	uint8 ChNo;
 	CanIf_MsgValid_Type MsgValid;	/*when the message is valid can be check.*/
 	CanIf_MsgMode_Type MsgRxMode;	/*when the message is periodic can be time out check.*/
-	uint8 MsgCheckMode; 			/*bit0:SoftFilter, bit1:DLC check, bit2:timeout check*/
-	uint8 MsgCheckRet;				/*0:check result is ok, 1:check result is not ok.    bit0:SoftFilter result, bit1:DLC check result, bit2:timeout check result*/
+	uint8 MsgCheckMode; 			/*bit0:Timeout signal substitute value mode [0:if the message timeout,get init value; 1:if the message timeout ,get last value],
+	 	 	 	 	 	 	 	 	 *bit1:DLC check, bit2:timeout check*/
+	uint8 MsgCheckRet;				/*0:check result is ok, 1:check result is not ok.    bit0:Reserved, bit1:DLC check result, bit2:timeout check result*/
 	uint16 Timeout;
 	uint16 CurrentTime;
 	uint32 MsgId;
 	uint8 Dlc;
+	uint8 Data[8];					/*Init value*/
 }CanIf_CanMsgRxManagementDataBuffer_Type;
 
 

@@ -1,4 +1,11 @@
-﻿Version : V0.0.13
+﻿Version : V0.0.14
+ChangeLog :
+1.CanIf : modify software filter strategy.
+2.CanIf : add message timeout behavior strategy.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.13
+/*********************************************************************************************************************/
+Version : V0.0.13
 ChangeLog :
 1.CanIf : Add CanIf_GetTxListMsgData and CanIf_GetTxListMsgDlcData APIs.---->provide Com call.
 2.Com : Optimize the function that is Com_ImmediatelyWriteTxSignal.

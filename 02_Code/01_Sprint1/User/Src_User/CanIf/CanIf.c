@@ -245,6 +245,7 @@ CAN_IF_LOCAL_API void CanIf_RxManagementFunction(void)
 
 		/*have other idea : in the receive interrupt callback function check message.*/
 		/*Message id check*/
+#if(CANIF_MESSAGEIDCHECK == ENABLE)
 		if(E_OK != CanIf_MsgIdCheck(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId) )
 		{
 			return;
@@ -253,6 +254,7 @@ CAN_IF_LOCAL_API void CanIf_RxManagementFunction(void)
 		{
 			/*Doing nothing*/
 		}
+#endif
 
 		/*overload the message timeout timer*/
 		CanIf_OverloadMsgTimeoutTimer(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId);
@@ -327,27 +329,6 @@ CAN_IF_LOCAL_API uint8 CanIf_MsgIdCheck(uint8 ChNo, uint32 MsgId)
 		/*doing nothing*/
 	}
 
-	/*Check MsgCheckMode*/
-	if(CANIF_CHECK_MODE_ID == (CanIf_CanMsgRxList[index].MsgCheckMode & CANIF_CHECK_MODE_ID) )
-	{
-		/*compare the message id*/
-		if(MsgId == CanIf_CanMsgRxList[index].MsgId)
-		{
-			CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet & (~CANIF_CHECK_MODE_ID);
-			ret = E_OK;
-		}
-		else
-		{
-			CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet | CANIF_CHECK_MODE_ID;
-			ret = E_NOT_OK;
-		}
-	}
-	else
-	{
-		CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet & (~CANIF_CHECK_MODE_ID);
-		/*if you message not support message id check,return E_OK*/
-		ret = E_OK;
-	}
 	return ret;
 }
 
@@ -463,6 +444,17 @@ CAN_IF_LOCAL_API void CanIf_MsgTimeoutCheck(void)
 		if(0x00 == CanIf_CanMsgRxList[index].CurrentTime)
 		{
 			CanIf_CanMsgRxList[index].MsgCheckRet = CanIf_CanMsgRxList[index].MsgCheckRet | CANIF_CHECK_MODE_TIMEOUT;
+
+			/*Check the timeout signal value mode*/
+			if(CANIF_TIMEOUT_SIGNAL_VALUE_MODE_INIT == (CanIf_CanMsgRxList[index].MsgCheckMode & CANIF_CHECK_MODE_TIMEOUT_SIGNAL_VALUE))
+			{
+				/*get the message init value and notification to com modules*/
+				CanIf_Com_RxNotificationFunction(CanIf_CanMsgRxList[index].ChNo, CanIf_CanMsgRxList[index].MsgId, CanIf_CanMsgRxList[index].Data, CanIf_CanMsgRxList[index].Dlc);
+			}
+			else
+			{
+				/*Doing nothing*/
+			}
 		}
 		else
 		{

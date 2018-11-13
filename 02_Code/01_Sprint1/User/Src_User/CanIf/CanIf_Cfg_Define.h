@@ -55,6 +55,8 @@
 #define CANIF_CONRTOLLERTYPE								CAN
 /*The can interface layer can message id type.STANDARD : 11Bit, EXPANSION : 29Bit*/
 #define CANIF_CANMESSAGEIDTYPE								EXPANSION
+/*Software filter enable switch*/
+#define CANIF_MESSAGEIDCHECK								ENABLE
 /*Diagnostic message channel id*/
 #define CANIF_DIAG_CHANNEL_ADDR								(0)
 /*Diagnostic physical message id*/
