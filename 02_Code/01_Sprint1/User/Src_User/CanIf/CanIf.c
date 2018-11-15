@@ -880,6 +880,34 @@ CAN_IF_LOCAL_API uint8 CanIf_GetRxListDlc(uint8 Index, uint32* ptr_Dlc)
 }
 
 /****************************************************************************
+ * @function	CanIf_GetRxListCheckRet_Timeout
+ * @brief
+ * @param		Index : input parameters,
+ * 				ptr_TimeoutFlag : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetRxListCheckRet_Timeout(uint8 Index, uint8* ptr_TimeoutFlag)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_TimeoutFlag)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	*ptr_TimeoutFlag = CommFunc_BitShiftRigth(CanIf_CanMsgRxList[Index].MsgCheckRet,3) & 0x01;
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
  * @function	CanIf_SetRxListCurrentTime
  * @brief  		set CanIf_CanMsgRxList CurrentTime base on Index
  * @param		Index : input parameters,
@@ -895,7 +923,6 @@ CAN_IF_LOCAL_API uint8 CanIf_SetRxListCurrentTime(uint8 Index, uint16 CurrentTim
 
 	return ret;
 }
-
 
 /****************************************************************************
  * @function	CanIf_TxMainFunction

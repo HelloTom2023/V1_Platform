@@ -91,6 +91,16 @@
 #define Com_CanIf_GetTxListElementNumber		CanIf_GetTxListElementNumber
 
 /****************************************************************************
+ * @function	CanIf_GetRxListCheckRet_Timeout
+ * @brief
+ * @param		Index : input parameters,
+ * 				ptr_TimeoutFlag : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+#define CanIf_GetRxMessageCheckResult_Timeout(uIndex,ptr_TimeoutFlag)		CanIf_GetRxListCheckRet_Timeout(uIndex,ptr_TimeoutFlag)
+
+/****************************************************************************
  * @function	CanIf_Debug_OutputInfo
  * @brief
  * @param

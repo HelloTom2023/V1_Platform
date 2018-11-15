@@ -90,6 +90,11 @@
 #define E_ARRAY_EMPTY						(9)
 #endif
 
+/*The macro indication the bus message is timeout*/
+#ifndef E_MSG_TIMEOUT
+#define E_MSG_TIMEOUT						(10U)
+#endif
+
 /*boolean type*/
 #ifndef TRUE
 #define TRUE	(1)

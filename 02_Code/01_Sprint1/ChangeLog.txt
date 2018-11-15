@@ -1,4 +1,11 @@
-﻿Version : V0.0.14
+﻿Version : V0.0.15
+ChangeLog :
+1.CanIf : add CanIf_GetRxListCheckRet_Timeout function,provide to Com .
+2.Com : add message timeout strategy in Com_ReadRxSignal function.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.15
+/*********************************************************************************************************************/
+Version : V0.0.14
 ChangeLog :
 1.CanIf : modify software filter strategy.
 2.CanIf : add message timeout behavior strategy.
