@@ -1038,7 +1038,6 @@ COM_EXTERN_API uint8 Com_ReadRxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,u
 	uint8 MsgCheckRet = 0x00;
 
 	ret = Com_GetRxMsgListIndex(ChNo,MsgId,&Index);
-
 	if(E_OK != ret)
 	{
 		return ret;
@@ -1048,14 +1047,16 @@ COM_EXTERN_API uint8 Com_ReadRxSignal(uint8 FormatType,uint8 ChNo,uint32 MsgId,u
 		/*Doing nothing*/
 	}
 
-	ret = CanIf_GetRxMessageCheckResult_Timeout(Index,&MsgCheckRet);
-	if(0x01 == MsgCheckRet)
+	/*get the message timout result*/
+	ret = Com_CanIf_GetRxMessageCheckRet_Timeout(ChNo,MsgId,&MsgCheckRet);
+	ret = Com_ReadRxMsgListSignal(Index,FormatType,StartBit,Length,ptr_SignalValue);
+	if(0x01 == MsgCheckRet)/*If the check result is timeout,set timeout flag*/
 	{
-		ret = Com_ReadRxMsgListSignal(Index,FormatType,StartBit,Length,ptr_SignalValue);
+		ret = E_MSG_TIMEOUT;
 	}
 	else
 	{
-		ret = E_MSG_TIMEOUT;
+		/*Doing nothing*/
 	}
 
 	return ret;

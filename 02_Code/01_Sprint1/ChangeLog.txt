@@ -1,4 +1,15 @@
-﻿Version : V0.0.15
+﻿Version : V0.0.16
+ChangeLog :
+1.ComUser : add ComUser_Init function.
+2.CanIf : fix bug : not get the message timeout result.modify CanIf_GetRxListCheckRet_Timeout function.
+3.CanIf : add CanIf_GetRxMessageCheckRet_Timeout API.base on ChNo and MsgId to get meessage timeout check result.
+4.CanIf : modify the CanIf_CanMsgRxList configuration parameters.
+5.Com : fix bug : not get the message timeout result. modify Com_ReadRxSignal function. message check timeout strategy.
+6.ComUser : Add some test code.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.16
+/*********************************************************************************************************************/
+Version : V0.0.15
 ChangeLog :
 1.CanIf : add CanIf_GetRxListCheckRet_Timeout function,provide to Com .
 2.Com : add message timeout strategy in Com_ReadRxSignal function.

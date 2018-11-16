@@ -887,7 +887,7 @@ CAN_IF_LOCAL_API uint8 CanIf_GetRxListDlc(uint8 Index, uint32* ptr_Dlc)
  * @retval		ret : function operate reslut
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_GetRxListCheckRet_Timeout(uint8 Index, uint8* ptr_TimeoutFlag)
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListCheckRet_Timeout(uint8 Index, uint8* ptr_TimeoutFlag)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -901,8 +901,45 @@ CAN_IF_EXTERN_API uint8 CanIf_GetRxListCheckRet_Timeout(uint8 Index, uint8* ptr_
 		/*Doing nothing*/
 	}
 
-	*ptr_TimeoutFlag = CommFunc_BitShiftRigth(CanIf_CanMsgRxList[Index].MsgCheckRet,3) & 0x01;
+	*ptr_TimeoutFlag = CommFunc_BitShiftRigth(CanIf_CanMsgRxList[Index].MsgCheckRet,2) & 0x01;
 	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanIf_GetRxMessageCheckRet_Timeout
+ * @brief		get the receive message timeout check result  base on ChNo and MsgId
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters,
+ * 				ptr_TimeoutFlag : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetRxMessageCheckRet_Timeout(uint8 ChNo, uint32 MsgId,uint8* ptr_TimeoutFlag)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 Index = 0x00;
+
+	/*check input parameters is valid*/
+	if(NULL == ptr_TimeoutFlag)
+	{
+		return E_PARAM_NULLPTR;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	ret = CanIf_GetRxListIndex(&Index,ChNo,MsgId);
+	if(E_OK == ret )
+	{
+		ret = CanIf_GetRxListCheckRet_Timeout(Index,ptr_TimeoutFlag);
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
 
 	return ret;
 }

@@ -30,6 +30,18 @@
 
 /*Function implement AREA*/
 /****************************************************************************
+ * @function	ComUser_Init
+ * @brief  		NULL
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_USER_EXTERN_API void ComUser_Init(void)
+{
+
+}
+
+/****************************************************************************
  * @function	ComUser_MainFunction
  * @brief  		NULL
  * @param		NULL
@@ -51,6 +63,8 @@ COM_USER_EXTERN_API void ComUser_MainFunction(void)
 ****************************************************************************/
 uint8 Dvr_CurrentPage_bk = 0x00;
 uint8 Dvr_TotalPage_bk = 0x00;
+uint8 ReadSignalRet_Dvr_CurrentPage_bk = 0x00;
+uint8 ProcessCounter = 0x00;
 COM_USER_EXTERN_API void ComUser_RxMainFunction(void)
 {
 	/*Send signal*/
@@ -58,11 +72,40 @@ COM_USER_EXTERN_API void ComUser_RxMainFunction(void)
 	/*Recv signal */
 	uint8 Dvr_CurrentPage = 0x00;
 	uint8 Dvr_TotalPage = 0x00;
+	uint8 ReadSignalRet_Dvr_CurrentPage = 0x00;
+
 
 	/*Read DVR_CurrentPage signal value*/
-	ComUser_Com_ReadRxSignalCh0(0x612,56,8,&Dvr_CurrentPage);
+	ReadSignalRet_Dvr_CurrentPage = ComUser_Com_ReadRxSignalCh0(0x612,56,8,&Dvr_CurrentPage);
 	/*Read DVR_TotalPage signal value*/
 	ComUser_Com_ReadRxSignalCh0(0x612,48,8,&Dvr_TotalPage);
+
+	if(ReadSignalRet_Dvr_CurrentPage_bk != ReadSignalRet_Dvr_CurrentPage)
+	{
+		ReadSignalRet_Dvr_CurrentPage_bk = ReadSignalRet_Dvr_CurrentPage;
+
+		if(0x0a == ReadSignalRet_Dvr_CurrentPage)
+		{
+			ComUser_Debug_OutputInfo(_T("Message DVR612 is timeout!!!\n"));
+			ComUser_Debug_OutputInfo(_T("timeout value : Dvr_CurrentPage = %x\n",Dvr_CurrentPage));
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	ProcessCounter++;
+	if(ProcessCounter >= 250)
+	{
+		ProcessCounter = 0x00;
+		ComUser_Debug_OutputInfo(_T("Signal value : Dvr_TotalPage = %d,Dvr_CurrentPage = %d,ReadSignalRet_Dvr_CurrentPage = %x\n",\
+				Dvr_TotalPage,Dvr_CurrentPage,ReadSignalRet_Dvr_CurrentPage));
+	}
 
 	if((Dvr_CurrentPage_bk != Dvr_CurrentPage) || (Dvr_TotalPage_bk != Dvr_TotalPage))
 	{

@@ -91,14 +91,15 @@
 #define Com_CanIf_GetTxListElementNumber		CanIf_GetTxListElementNumber
 
 /****************************************************************************
- * @function	CanIf_GetRxListCheckRet_Timeout
- * @brief
- * @param		Index : input parameters,
+ * @function	CanIf_GetRxMessageCheckRet_Timeout
+ * @brief		get the receive message timeout check result  base on ChNo and MsgId
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters,
  * 				ptr_TimeoutFlag : output parameters,
  * @retval		ret : function operate reslut
  * @attention   NULL
 ****************************************************************************/
-#define CanIf_GetRxMessageCheckResult_Timeout(uIndex,ptr_TimeoutFlag)		CanIf_GetRxListCheckRet_Timeout(uIndex,ptr_TimeoutFlag)
+#define  Com_CanIf_GetRxMessageCheckRet_Timeout(ChNo,MsgId,ptr_TimeoutFlag)		CanIf_GetRxMessageCheckRet_Timeout(ChNo,MsgId,ptr_TimeoutFlag)
 
 /****************************************************************************
  * @function	CanIf_Debug_OutputInfo

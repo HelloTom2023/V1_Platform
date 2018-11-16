@@ -43,6 +43,15 @@
 
 /*Function declaration AREA*/
 /****************************************************************************
+ * @function	ComUser_Init
+ * @brief  		NULL
+ * @param		NULL
+ * @retval		NULL
+ * @attention   NULL
+****************************************************************************/
+COM_USER_EXTERN_API void ComUser_Init(void);
+
+/****************************************************************************
  * @function	ComUser_MainFunction
  * @brief  		NULL
  * @param		NULL

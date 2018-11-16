@@ -288,7 +288,18 @@ CAN_IF_LOCAL_API uint8 CanIf_GetRxListDlc(uint8 Index, uint32* ptr_Dlc);
  * @retval		ret : function operate reslut
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_GetRxListCheckRet_Timeout(uint8 Index, uint8* ptr_TimeoutFlag);
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListCheckRet_Timeout(uint8 Index, uint8* ptr_TimeoutFlag);
+
+/****************************************************************************
+ * @function	CanIf_GetRxMessageCheckRet_Timeout
+ * @brief		get the receive message timeout check result  base on ChNo and MsgId
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters,
+ * 				ptr_TimeoutFlag : output parameters,
+ * @retval		ret : function operate reslut
+ * @attention   NULL
+****************************************************************************/
+CAN_IF_EXTERN_API uint8 CanIf_GetRxMessageCheckRet_Timeout(uint8 ChNo, uint32 MsgId,uint8* ptr_TimeoutFlag);
 
 /****************************************************************************
  * @function	CanIf_SetRxListCurrentTime
