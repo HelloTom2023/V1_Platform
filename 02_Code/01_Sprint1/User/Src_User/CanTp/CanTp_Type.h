@@ -50,12 +50,9 @@ typedef struct CanTp_CanMsgStruct_Type_Tag
 typedef struct CanTp_ProtocolDataUnitStruct_Type_Tag
 {
 	uint8 BusChannel;
-	uint8 ReqMsgType;
-#if(CANTP_CONRTOLLERTYPE == CAN)
+	uint8 PduType; /*0: request pdu; 1: response pdu*/
+	uint8 MsgType; /*0: physical ; 1: function . when the pdutype is 0x00,this parameter is valid*/
 	uint8 DataLength;
-#else
-	uint8 DataLength;
-#endif
 	uint8 *ReqData;
 }CanTp_ProtocolDataUnitStruct_Type;
 
@@ -65,7 +62,7 @@ typedef struct CanTp_ProtocolDataUnitStruct_Type_Tag
  * */
 typedef struct CanTp_RecvPduControlInformation_Type_Tag
 {
-	uint8 RecvLockFlag; /*0:idle,1:running,2:done*/
+	uint8 RecvLockFlag; /*0:idle, wait receive ,1:Receiving ,2:done,receive complete*/
 	uint8 BusChannel;
 	uint8 FrameType;
 	uint8 ReqMsgType;

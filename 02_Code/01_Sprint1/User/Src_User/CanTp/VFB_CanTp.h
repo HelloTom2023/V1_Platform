@@ -19,14 +19,21 @@
 
 /*Include head files AREA*/
 #include "..\Common\Common.h"
-
+#include "..\Debug\Debug.h"
 
 /*Macro definition AREA*/
 
 
 
 /*Function declaration AREA*/
-
+/****************************************************************************
+ * @function	CanTp_Debug_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#define CanTp_Debug_OutputInfo(x)		Debug_CanTp_OutputInfo(x)
 
 
 

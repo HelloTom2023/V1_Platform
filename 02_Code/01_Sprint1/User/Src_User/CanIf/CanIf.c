@@ -95,9 +95,9 @@ CAN_IF_EXTERN_API uint8 CanIf_RecvInterruptCallback(uint8 ChNo)
 		 * */
 		CanIf_GetControllerMsgInfo(ChNo, BufIndex, &CanRecvMsg.CanMsgId, CanRecvMsg.CanData, &CanRecvMsg.CanMsgDlc);
 
-		/*
-		 * CanIf_Debug_OutputInfo(_T("ChNo = %d,CanRecvMsg.CanMsgId = 0x%lx,CanRecvMsg.CanMsgDlc = %d\n",ChNo,CanRecvMsg.CanMsgId,CanRecvMsg.CanMsgDlc));
-		 */
+
+		CanIf_Debug_OutputInfo(_T("ChNo = %d,CanRecvMsg.CanMsgId = 0x%lx,CanRecvMsg.CanMsgDlc = %d\n",ChNo,CanRecvMsg.CanMsgId,CanRecvMsg.CanMsgDlc));
+
 
 		/*notification application layer callback : PreCopy Function callback*/
 		if(E_OK != CanIf_PreCopy(CanRecvMsg.CanChNo, CanRecvMsg.CanMsgId, CanRecvMsg.CanData, CanRecvMsg.CanMsgDlc))
@@ -269,13 +269,18 @@ CAN_IF_LOCAL_API void CanIf_RxManagementFunction(void)
 			/*Doing nothing*/
 		}
 
-		if((CANIF_DIAG_CHANNEL_ADDR != ReadCanRecvMsg.CanChNo) &&
-				((CANIF_DIAG_PHY_ADDR == ReadCanRecvMsg.CanMsgId) || (CANIF_DIAG_FUNC_ADDR == ReadCanRecvMsg.CanMsgId)))
+		if( (CANIF_DIAG_PHY_ADDR == ReadCanRecvMsg.CanMsgId) || (CANIF_DIAG_FUNC_ADDR == ReadCanRecvMsg.CanMsgId) )
 		{
+			CanIf_Debug_OutputInfo(_T("Recv Diag Msg Notification CanTp Modules:\nCanChNo = %d,CanMsgId = 0x%lx,CanMsgDlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
+					ReadCanRecvMsg.CanChNo,ReadCanRecvMsg.CanMsgId,ReadCanRecvMsg.CanMsgDlc,ReadCanRecvMsg.CanData[0],ReadCanRecvMsg.CanData[1]\
+					,ReadCanRecvMsg.CanData[2],ReadCanRecvMsg.CanData[3],ReadCanRecvMsg.CanData[4],ReadCanRecvMsg.CanData[5]\
+					,ReadCanRecvMsg.CanData[6],ReadCanRecvMsg.CanData[7]));
+
+
 			/*Notification to CAN Transport Layer*/
 			CanIf_CanTp_RecvNotificationFunction(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId, ReadCanRecvMsg.CanData, ReadCanRecvMsg.CanMsgDlc);
 		}
-		else if((CANIF_NM_CHANNEL_ADDR != ReadCanRecvMsg.CanChNo) && (CANIF_NM_BASE_ADDR == (ReadCanRecvMsg.CanMsgId & CANIF_NM_MASK_CODE) ) )
+		else if( (CANIF_NM_BASE_ADDR == (ReadCanRecvMsg.CanMsgId & CANIF_NM_MASK_CODE)) )
 		{
 			/*Notification to can network managements layer*/
 

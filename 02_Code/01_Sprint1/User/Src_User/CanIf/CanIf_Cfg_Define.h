@@ -60,7 +60,7 @@
 /*Diagnostic message channel id*/
 #define CANIF_DIAG_CHANNEL_ADDR								(0)
 /*Diagnostic physical message id*/
-#define CANIF_DIAG_PHY_ADDR									(0x7A0)
+#define CANIF_DIAG_PHY_ADDR									(0x706)
 /*Diagnostic function message id*/
 #define CANIF_DIAG_FUNC_ADDR								(0x7DF)
 /*Network managements message channel id*/

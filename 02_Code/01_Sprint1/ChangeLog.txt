@@ -1,4 +1,13 @@
-﻿Version : V0.0.16
+﻿Version : V0.1.0
+ChangeLog :
+1.CanIf : in the CanIf_RxManagementFunction,delete ChNo Check,because in the message id check function can be check the channel.
+2.CanTf : CANIF_DIAG_PHY_ADDR setting to 0x706.
+3.Debug : add can tp modules output log function.
+4.CanTp : Modifty some code.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.19
+/*********************************************************************************************************************/
+Version : V0.0.16
 ChangeLog :
 1.ComUser : add ComUser_Init function.
 2.CanIf : fix bug : not get the message timeout result.modify CanIf_GetRxListCheckRet_Timeout function.

@@ -92,5 +92,19 @@
 #define Debug_ComUser_OutputInfo(x)
 #endif
 
+/****************************************************************************
+ * @function	Debug_CanTp_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#if (DEBUG_CANTP == ON)
+#define Debug_CanTp_OutputInfo(x)		(x)
+#else
+#define Debug_CanTp_OutputInfo(x)
+#endif
+
+
 #endif /*_DEBUG_H*/
 /*********************************File End*********************************/

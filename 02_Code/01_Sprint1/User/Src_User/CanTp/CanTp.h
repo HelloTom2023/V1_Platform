@@ -41,8 +41,6 @@
 
 /*Variable Define AREA*/
 //CanTp_CanMsgStruct_Type CanTp_CanRcvMsgBuffer[CANTP_RECEIVEBUFFERNUMBER];
-CanTp_ProtocolDataUnitStruct_Type CanTp_RecvPduMsgStrBuffer[CANTP_RECEIVEBUFFERNUMBER];
-CanTp_ProtocolDataUnitStruct_Type CanTp_RecvPduMsgStr;
 CanTp_RecvPduControlInformation_Type CanTp_RecvPduCtrInfo;
 
 /*Function declaration AREA*/
@@ -78,6 +76,21 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint16 MsgId, ui
 CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
 #endif
 
+/****************************************************************************
+ * @function	CanTp_RxIndicationFunctionFF
+ * @brief  		Indication the can transport to receive can message with first frame
+ * @param  		ChNo: input parameters,CAN channel index.
+ *				MsgId : input parameters,the can message id
+ *				ptr_Data : input parameters,the can message data
+ *				Dlc : input parameters,the can message data length
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+#if (CANTP_CANMESSAGEIDTYPE == STANDARD)
+CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint16 MsgId, uint8* ptr_Data, uint8 Dlc);
+#else
+CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
+#endif
 
 #endif /*_CAN_TP_H*/
 /*********************************File End*********************************/

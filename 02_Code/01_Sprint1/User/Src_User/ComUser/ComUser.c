@@ -64,7 +64,7 @@ COM_USER_EXTERN_API void ComUser_MainFunction(void)
 uint8 Dvr_CurrentPage_bk = 0x00;
 uint8 Dvr_TotalPage_bk = 0x00;
 uint8 ReadSignalRet_Dvr_CurrentPage_bk = 0x00;
-uint8 ProcessCounter = 0x00;
+uint16 ProcessCounter = 0x00;
 COM_USER_EXTERN_API void ComUser_RxMainFunction(void)
 {
 	/*Send signal*/
@@ -100,7 +100,7 @@ COM_USER_EXTERN_API void ComUser_RxMainFunction(void)
 	}
 
 	ProcessCounter++;
-	if(ProcessCounter >= 250)
+	if(ProcessCounter >= 5000)
 	{
 		ProcessCounter = 0x00;
 		ComUser_Debug_OutputInfo(_T("Signal value : Dvr_TotalPage = %d,Dvr_CurrentPage = %d,ReadSignalRet_Dvr_CurrentPage = %x\n",\
