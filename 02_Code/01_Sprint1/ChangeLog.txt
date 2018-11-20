@@ -1,4 +1,11 @@
-﻿Version : V0.1.0
+﻿Version : V0.1.1
+ChangeLog :
+1.CanIf : modify the CanIf_RxManagementFunction notification strategy. so modify CanIf_CanMsgRxManagementDataBuffer_Type and CanIf_CanMsgTxManagementDataBuffer_Type.
+2.CanTp : add init function,because shall be init pointer.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.20
+/*********************************************************************************************************************/
+Version : V0.1.0
 ChangeLog :
 1.CanIf : in the CanIf_RxManagementFunction,delete ChNo Check,because in the message id check function can be check the channel.
 2.CanTf : CANIF_DIAG_PHY_ADDR setting to 0x706.

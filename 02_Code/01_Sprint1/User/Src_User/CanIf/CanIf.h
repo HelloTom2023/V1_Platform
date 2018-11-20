@@ -211,14 +211,15 @@ CAN_IF_LOCAL_API uint8 CanIf_GetRxListIndex(uint8* ptr_Index, uint8 ChNo, uint32
 CAN_IF_LOCAL_API uint8 CanIf_GetRxListChNo(uint8 Index, uint8* ptr_ChNo);
 
 /****************************************************************************
- * @function	CanIf_GetRxListMsgValid
- * @brief  		get CanIf_CanMsgRxList MsgValid base on Index
- * @param		Index : input parameters,
- * 				ptr_MsgValid : output parameters,
+ * @function	CanIf_GetRxListMsgType
+ * @brief  		get CanIf_CanMsgRxList MsgType base on ChNo and MsgId
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters,
+ * 				ptr_MsgType : output parameters,
  * @retval		ret : function operate reslut
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgValid(uint8 Index, uint8* ptr_MsgValid);
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgType(uint8 ChNo, uint32 MsgId, uint8* ptr_MsgType);
 
 /****************************************************************************
  * @function	CanIf_GetRxListMsgRxMode
@@ -378,14 +379,14 @@ CAN_IF_LOCAL_API uint8 CanIf_GetTxListIndex(uint8* ptr_Index, uint8 ChNo, uint32
 CAN_IF_EXTERN_API uint8 CanIf_SetTxListChNo(uint8 Index, uint8 ChNo);
 
 /****************************************************************************
- * @function	CanIf_SetTxListMsgValid
- * @brief  		set CanIf_CanMsgTxList MsgValid
+ * @function	CanIf_SetTxListMsgType
+ * @brief  		set CanIf_CanMsgTxList MsgType
  * @param		Index : will set CanIf_CanMsgTxList index
- * 				MsgValid :
+ * 				MsgType :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgValid(uint8 Index, uint8 MsgValid);
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgType(uint8 Index, uint8 MsgType);
 
 /****************************************************************************
  * @function	CanIf_SetTxListMsgTxMode

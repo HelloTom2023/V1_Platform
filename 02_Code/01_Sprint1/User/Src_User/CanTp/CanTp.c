@@ -30,6 +30,19 @@
 
 /*Function implement AREA*/
 /****************************************************************************
+ * @function	CanTp_InitFunction
+ * @brief  		init cantp parameters
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_TP_EXTERN_API void CanTp_InitFunction(void)
+{
+	/*Init CanTp_RecvPduCtrInfo*/
+	CanTp_RecvPduCtrInfo.ReqData = CanTp_RecvPudBuffer;
+}
+
+/****************************************************************************
  * @function	CanTp_RxIndicationFunction
  * @brief  		Indication the can to receive can message
  * @param  		ChNo: input parameters,CAN channel index.
@@ -48,6 +61,16 @@ CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint32 MsgId, uin
 	uint8 ret = E_NOT_OK;
 	uint8 ret_subfunc = E_OK;
 
+#if 1 /*Debug used*/
+	static uint8 init_flag = 0x00;
+
+	if(init_flag == 0x00)
+	{
+		CanTp_InitFunction();
+		init_flag = 0x01;
+	}
+#endif
+
 	/*Check the input pointer is NULL*/
 	if(NULL == ptr_Data)
 	{
@@ -59,6 +82,9 @@ CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint32 MsgId, uin
 		/*doing nothing*/
 	}
 
+
+	CanTp_Debug_OutputInfo(_T("CanTp Notification Recv Data:\nCanChNo = %d,CanMsgId = 0x%lx,CanMsgDlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
+			ChNo,MsgId,Dlc,ptr_Data[0],ptr_Data[1],ptr_Data[2],ptr_Data[3],ptr_Data[4],ptr_Data[5],ptr_Data[6],ptr_Data[7]));
 
 
 	/*Check the buffer is idle*/
@@ -138,7 +164,10 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, ui
 	if((DataLength >= 1) && (DataLength <= 7))
 	{
 		CanTp_ProtocolDataUnitStruct_Type CanTp_DcmPdu;
+		uint8 ReqDataArray[7];
 		uint8 i = 0x00;
+
+		CanTp_DcmPdu.ReqData = ReqDataArray;
 
 		CanTp_RecvPduCtrInfo.TotalDataLength = DataLength;
 		CanTp_RecvPduCtrInfo.RecvDataLength = DataLength;
@@ -146,12 +175,12 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, ui
 
 		CanTp_DcmPdu.BusChannel = ChNo;
 		CanTp_DcmPdu.PduType = 0x00;
-		CanTp_DcmPdu.MsgType = CanTp_RecvPduCtrInfo.ReqMsgType;
+		CanTp_DcmPdu.ReqType = CanTp_RecvPduCtrInfo.ReqMsgType;
 		CanTp_DcmPdu.DataLength = CanTp_RecvPduCtrInfo.TotalDataLength;
 		memcpy(CanTp_DcmPdu.ReqData, CanTp_RecvPduCtrInfo.ReqData, CanTp_DcmPdu.DataLength);
 
-		CanTp_Debug_OutputInfo(_T("BusChannel = %d,PduType = 0x%d,MsgType = 0x%x,DataLength = %d,ReqData : [",\
-				CanTp_DcmPdu.BusChannel,CanTp_DcmPdu.PduType,CanTp_DcmPdu.MsgType,CanTp_DcmPdu.DataLength));
+		CanTp_Debug_OutputInfo(_T("Diag Info:BusChannel = %d,PduType = 0x%d,ReqType = 0x%x,DataLength = %d,ReqData : [",\
+				CanTp_DcmPdu.BusChannel,CanTp_DcmPdu.PduType,CanTp_DcmPdu.ReqType,CanTp_DcmPdu.DataLength));
 		for(i = 0x00; i<DataLength; i++)
 		{
 			CanTp_Debug_OutputInfo(_T("0x%x ",CanTp_DcmPdu.ReqData[i]));

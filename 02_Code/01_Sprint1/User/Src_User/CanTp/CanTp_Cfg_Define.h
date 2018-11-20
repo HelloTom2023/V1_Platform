@@ -47,12 +47,14 @@
 #define CANTP_CONRTOLLERTYPE								CAN
 /*The can transport layer can message id type.STANDARD : 11Bit, EXPANSION : 29Bit*/
 #define CANTP_CANMESSAGEIDTYPE								EXPANSION
-
-
+/*receive diagnostic pdu buffer size*/
+#define CANTP_RXDIAGPDUBUFFER_SIZE							(128)
+/*send diagnostic pdu buffer size*/
+#define CANTP_TXDIAGPDUBUFFER_SIZE							(128)
 /*Diagnostic message channel id*/
 #define CANTP_DIAG_CHANNEL_ADDR								(0)
 /*Diagnostic physical message id*/
-#define CANTP_DIAG_PHY_ADDR									(0x7A0)
+#define CANTP_DIAG_PHY_ADDR									(0x706)
 /*Diagnostic function message id*/
 #define CANTP_DIAG_FUNC_ADDR								(0x7DF)
 

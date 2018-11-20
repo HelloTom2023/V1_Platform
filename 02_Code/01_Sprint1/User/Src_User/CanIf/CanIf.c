@@ -236,12 +236,27 @@ CAN_IF_LOCAL_API void CanIf_RxMainFunction(void)
 CAN_IF_LOCAL_API void CanIf_RxManagementFunction(void)
 {
 	CanIf_CanMsgStruct_Type ReadCanRecvMsg;
+	CanIf_MsgType_Type RecvMsgType = CANIF_MSG_TYPE_NONE;
+	uint8 ret = E_NOT_OK;
 
 	/*check the can receive message buffer is new data*/
 	if(CanIf_CanRecvMsgBuffCtrInfo.ReadIndex != CanIf_CanRecvMsgBuffCtrInfo.WriteIndex)
 	{
 		/*Read data and notification to Can Transport layer*/
 		CanIf_ReadRecvBuffer(&ReadCanRecvMsg.CanChNo, &ReadCanRecvMsg.CanMsgId , ReadCanRecvMsg.CanData , &ReadCanRecvMsg.CanMsgDlc);
+
+		/*Handle network message*/
+		if( (CANIF_NM_BASE_ADDR == (ReadCanRecvMsg.CanMsgId & CANIF_NM_MASK_CODE)) )
+		{
+			/*Check the Network message and Notification to can network managements layer*/
+
+			return ;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
 
 		/*have other idea : in the receive interrupt callback function check message.*/
 		/*Message id check*/
@@ -269,21 +284,22 @@ CAN_IF_LOCAL_API void CanIf_RxManagementFunction(void)
 			/*Doing nothing*/
 		}
 
-		if( (CANIF_DIAG_PHY_ADDR == ReadCanRecvMsg.CanMsgId) || (CANIF_DIAG_FUNC_ADDR == ReadCanRecvMsg.CanMsgId) )
+		/*
+		 * if the message id check is OK.the function will return E_OK.
+		 * if the system not enable message id check function,only the diagnostic message notification to CanTp.the other message will notification to com modules.
+		 * */
+		ret = CanIf_GetRxListMsgType(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId,&RecvMsgType);
+
+		if((E_OK == ret ) && (CANIF_MSG_TYPE_DIAG == RecvMsgType))
 		{
-			CanIf_Debug_OutputInfo(_T("Recv Diag Msg Notification CanTp Modules:\nCanChNo = %d,CanMsgId = 0x%lx,CanMsgDlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
+			/*CanIf_Debug_OutputInfo(_T("Recv Diag Msg Notification CanTp Modules:\nCanChNo = %d,CanMsgId = 0x%lx,CanMsgDlc = %d,Data = 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",	\
 					ReadCanRecvMsg.CanChNo,ReadCanRecvMsg.CanMsgId,ReadCanRecvMsg.CanMsgDlc,ReadCanRecvMsg.CanData[0],ReadCanRecvMsg.CanData[1]\
 					,ReadCanRecvMsg.CanData[2],ReadCanRecvMsg.CanData[3],ReadCanRecvMsg.CanData[4],ReadCanRecvMsg.CanData[5]\
-					,ReadCanRecvMsg.CanData[6],ReadCanRecvMsg.CanData[7]));
+					,ReadCanRecvMsg.CanData[6],ReadCanRecvMsg.CanData[7]));*/
 
 
 			/*Notification to CAN Transport Layer*/
 			CanIf_CanTp_RecvNotificationFunction(ReadCanRecvMsg.CanChNo, ReadCanRecvMsg.CanMsgId, ReadCanRecvMsg.CanData, ReadCanRecvMsg.CanMsgDlc);
-		}
-		else if( (CANIF_NM_BASE_ADDR == (ReadCanRecvMsg.CanMsgId & CANIF_NM_MASK_CODE)) )
-		{
-			/*Notification to can network managements layer*/
-
 		}
 		else
 		{
@@ -325,7 +341,7 @@ CAN_IF_LOCAL_API uint8 CanIf_MsgIdCheck(uint8 ChNo, uint32 MsgId)
 	}
 
 	/*check the message is valid*/
-	if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+	if(CANIF_MSG_TYPE_NONE == CanIf_CanMsgRxList[index].MsgType)
 	{
 		return E_MSG_INVALID;
 	}
@@ -363,7 +379,7 @@ CAN_IF_LOCAL_API uint8 CanIf_MsgDlcCheck(uint8 ChNo, uint32 MsgId,uint8 Dlc)
 	}
 
 	/*check the message is valid*/
-	if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+	if(CANIF_MSG_TYPE_NONE == CanIf_CanMsgRxList[index].MsgType)
 	{
 		return E_MSG_INVALID;
 	}
@@ -412,7 +428,7 @@ CAN_IF_LOCAL_API void CanIf_MsgTimeoutCheck(void)
 	for(index = 0 ; index < RxListLength ; index++)
 	{
 		/*check the message is valid*/
-		if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+		if(CANIF_MSG_TYPE_NONE == CanIf_CanMsgRxList[index].MsgType)
 		{
 			/*if the message is invalid,break current loop,and start next loop*/
 			continue;
@@ -493,7 +509,7 @@ CAN_IF_LOCAL_API uint8 CanIf_OverloadMsgTimeoutTimer(uint8 ChNo, uint32 MsgId)
 	}
 
 	/*check the message is valid*/
-	if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+	if(CANIF_MSG_TYPE_NONE == CanIf_CanMsgRxList[index].MsgType)
 	{
 		return E_MSG_INVALID;
 	}
@@ -545,7 +561,7 @@ CAN_IF_LOCAL_API void CanIf_RxTimerHandleFunction(void)
 	for(index = 0 ; index < RxListLength ; index++)
 	{
 		/*check the message is valid*/
-		if(CANIF_MSG_VALID != CanIf_CanMsgRxList[index].MsgValid)
+		if(CANIF_MSG_TYPE_NONE == CanIf_CanMsgRxList[index].MsgType)
 		{
 			/*if the message is invalid,break current loop,and start next loop*/
 			continue;
@@ -689,19 +705,21 @@ CAN_IF_LOCAL_API uint8 CanIf_GetRxListChNo(uint8 Index, uint8* ptr_ChNo)
 }
 
 /****************************************************************************
- * @function	CanIf_GetRxListMsgValid
- * @brief  		get CanIf_CanMsgRxList MsgValid base on Index
- * @param		Index : input parameters,
- * 				ptr_MsgValid : output parameters,
+ * @function	CanIf_GetRxListMsgType
+ * @brief  		get CanIf_CanMsgRxList MsgType base on ChNo and MsgId
+ * @param		ChNo : input parameters,
+ * 				MsgId : input parameters,
+ * 				ptr_MsgType : output parameters,
  * @retval		ret : function operate reslut
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgValid(uint8 Index, uint8* ptr_MsgValid)
+CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgType(uint8 ChNo, uint32 MsgId, uint8* ptr_MsgType)
 {
 	uint8 ret = E_NOT_OK;
+	uint8 index = 0x00;
 
 	/*check input parameters is valid*/
-	if(NULL == ptr_MsgValid)
+	if(NULL == ptr_MsgType)
 	{
 		return E_PARAM_NULLPTR;
 	}
@@ -710,7 +728,18 @@ CAN_IF_LOCAL_API uint8 CanIf_GetRxListMsgValid(uint8 Index, uint8* ptr_MsgValid)
 		/*Doing nothing*/
 	}
 
-	*ptr_MsgValid = CanIf_CanMsgRxList[Index].MsgValid;
+	/*get the message id in RxList index*/
+	ret = CanIf_GetRxListIndex(&index,ChNo,MsgId);
+	if(E_OK != ret)
+	{
+		return ret;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	*ptr_MsgType = CanIf_CanMsgRxList[index].MsgType;
 	ret = E_OK;
 
 	return ret;
@@ -1000,7 +1029,7 @@ CAN_IF_LOCAL_API void CanIf_TxManagementFunction(void)
 		return;
 	}
 	/*Check if the message is valid*/
-	else if(CANIF_MSG_VALID == CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgValid)
+	else if(CANIF_MSG_TYPE_NONE != CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgType)
 	{
 		if(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].CurrentTime >= CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].CycleTime)
 		{
@@ -1075,7 +1104,7 @@ CAN_IF_LOCAL_API void CanIf_TxTimerHandleFunction(void)
 			break;
 		}
 		/*Check if the message is valid*/
-		else if(CANIF_MSG_VALID == CanIf_CanMsgTxList[index].MsgValid)
+		else if(CANIF_MSG_TYPE_NONE != CanIf_CanMsgTxList[index].MsgType)
 		{
 			if( (CANIF_MSG_MODE_PERIODIC == CanIf_CanMsgTxList[index].MsgTxMode) \
 					|| (CANIF_MSG_MODE_MIXED == CanIf_CanMsgTxList[index].MsgTxMode) )/*Periodic or Mixed*/
@@ -1232,14 +1261,14 @@ CAN_IF_EXTERN_API uint8 CanIf_SetTxListChNo(uint8 Index, uint8 ChNo)
 }
 
 /****************************************************************************
- * @function	CanIf_SetTxListMsgValid
- * @brief  		set CanIf_CanMsgTxList MsgValid
+ * @function	CanIf_SetTxListMsgType
+ * @brief  		set CanIf_CanMsgTxList MsgType
  * @param		Index : will set CanIf_CanMsgTxList index
- * 				MsgValid :
+ * 				MsgType :
  * @retval		ret : operation return value
  * @attention   NULL
 ****************************************************************************/
-CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgValid(uint8 Index, uint8 MsgValid)
+CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgType(uint8 Index, uint8 MsgType)
 {
 	uint8 ret = E_NOT_OK;
 
@@ -1251,7 +1280,7 @@ CAN_IF_EXTERN_API uint8 CanIf_SetTxListMsgValid(uint8 Index, uint8 MsgValid)
 	else
 	{
 		/*it will add check data vaild rules.*/
-		CanIf_CanMsgTxList[Index].MsgValid = MsgValid;
+		CanIf_CanMsgTxList[Index].MsgType = MsgType;
 		ret = E_OK;
 	}
 	return ret;

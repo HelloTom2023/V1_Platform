@@ -42,8 +42,18 @@
 /*Variable Define AREA*/
 //CanTp_CanMsgStruct_Type CanTp_CanRcvMsgBuffer[CANTP_RECEIVEBUFFERNUMBER];
 CanTp_RecvPduControlInformation_Type CanTp_RecvPduCtrInfo;
+uint8 CanTp_RecvPudBuffer[CANTP_RXDIAGPDUBUFFER_SIZE];
 
 /*Function declaration AREA*/
+/****************************************************************************
+ * @function	CanTp_InitFunction
+ * @brief  		init cantp parameters
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_TP_EXTERN_API void CanTp_InitFunction(void);
+
 /****************************************************************************
  * @function	CanTp_RxIndicationFunction
  * @brief  		Indication the can to receive can message

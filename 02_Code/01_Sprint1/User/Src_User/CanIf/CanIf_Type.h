@@ -39,12 +39,13 @@ typedef struct CanIf_CanMsgStruct_Type_Tag
 #endif
 }CanIf_CanMsgStruct_Type;
 
-typedef enum CanIf_MsgValid_Type_Tag
+typedef enum CanIf_MsgType_Type_Tag
 {
-	CANIF_MSG_INVALID,
-	CANIF_MSG_VALID,
-	CANIF_MSG_NONE
-}CanIf_MsgValid_Type;
+	CANIF_MSG_TYPE_APP,
+	CANIF_MSG_TYPE_DIAG,
+	CANIF_MSG_TYPE_NM,
+	CANIF_MSG_TYPE_NONE
+}CanIf_MsgType_Type;
 
 typedef enum CanIf_MsgMode_Type_Tag
 {
@@ -66,7 +67,7 @@ typedef struct CanIf_CanMsgRxManagementDataBuffer_Type_Tag
 {
 	uint8 Index;
 	uint8 ChNo;
-	CanIf_MsgValid_Type MsgValid;	/*when the message is valid can be check.*/
+	CanIf_MsgType_Type MsgType;		/*the parameters show the message type. when the message type is not CANIF_MSG_TYPE_NONE can be check.*/
 	CanIf_MsgMode_Type MsgRxMode;	/*when the message is periodic can be time out check.*/
 	uint8 MsgCheckMode; 			/*bit0:Timeout signal substitute value mode [0:if the message timeout,get init value; 1:if the message timeout ,get last value],
 	 	 	 	 	 	 	 	 	 *bit1:DLC check, bit2:timeout check*/
@@ -83,7 +84,7 @@ typedef struct CanIf_CanMsgTxManagementDataBuffer_Type_Tag
 {
 	uint8 Index;
 	uint8 ChNo;
-	CanIf_MsgValid_Type MsgValid;	/*when the message is valid can be tx.*/
+	CanIf_MsgType_Type MsgType;	 /*when the message type is not CANIF_MSG_TYPE_NONE can be tx.*/
 	CanIf_MsgMode_Type MsgTxMode;
 	uint16 CycleTime;
 	uint16 CurrentTime;

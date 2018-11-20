@@ -51,9 +51,9 @@ typedef struct CanTp_ProtocolDataUnitStruct_Type_Tag
 {
 	uint8 BusChannel;
 	uint8 PduType; /*0: request pdu; 1: response pdu*/
-	uint8 MsgType; /*0: physical ; 1: function . when the pdutype is 0x00,this parameter is valid*/
+	uint8 ReqType; /*0: physical ; 1: function . when the pdutype is 0x00,this parameter is valid*/
 	uint8 DataLength;
-	uint8 *ReqData;
+	uint8 *ReqData;/*note : if you want to use the data element,you will init the pointer*/
 }CanTp_ProtocolDataUnitStruct_Type;
 
 /*
@@ -77,7 +77,7 @@ typedef struct CanTp_RecvPduControlInformation_Type_Tag
 #else
 	uint8 RecvDataLength;
 #endif
-	uint8 *ReqData; /*需要注意,这个指针的地址问题*/
+	uint8 *ReqData; /*note : if you want to use the data element,you will init the pointer*/
 }CanTp_RecvPduControlInformation_Type;
 
 typedef struct CanTp_BuffControlInformation_Type_Tag
