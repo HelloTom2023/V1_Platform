@@ -95,6 +95,20 @@
 #define E_MSG_TIMEOUT						(10U)
 #endif
 
+/*diagnostic message id format error*/
+#ifndef E_MSG_FORMAT_ERROR
+#define E_MSG_FORMAT_ERROR					(11U)
+#endif
+
+/*diagnostic message id type error*/
+#ifndef E_MSG_TYPE_ERROR
+#define E_MSG_TYPE_ERROR					(12U)
+#endif
+
+#ifndef E_WRONG_SN
+#define E_WRONG_SN							(13U)
+#endif
+
 /*boolean type*/
 #ifndef TRUE
 #define TRUE	(1)

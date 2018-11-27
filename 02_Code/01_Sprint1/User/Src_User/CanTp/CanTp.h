@@ -102,5 +102,30 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint16 MsgId, ui
 CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
 #endif
 
+/****************************************************************************
+ * @function	CanTp_RxIndicationFunctionCF
+ * @brief  		Indication the can transport to receive can message with consecutive frame
+ * @param  		ChNo: input parameters,CAN channel index.
+ *				MsgId : input parameters,the can message id
+ *				ptr_Data : input parameters,the can message data
+ *				Dlc : input parameters,the can message data length
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionCF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
+
+/****************************************************************************
+ * @function	CanTp_RxIndicationFunctionFC
+ * @brief  		Indication the can transport to receive can message with Flow control frame
+ * @param  		ChNo: input parameters,CAN channel index.
+ *				MsgId : input parameters,the can message id
+ *				ptr_Data : input parameters,the can message data
+ *				Dlc : input parameters,the can message data length
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFC(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
+
+
 #endif /*_CAN_TP_H*/
 /*********************************File End*********************************/

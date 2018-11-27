@@ -1,4 +1,12 @@
-﻿Version : V0.1.1
+﻿Version : V0.1.2
+ChangeLog :
+1.CanTp : add some function : CanTp_RxIndicationFunctionCF and CanTp_RxIndicationFunctionFC
+2.CanTp : create CanTp_ProtocolControlUnitStruct_Type and modify CanTp_RecvPduControlInformation_Type
+3.Common : add some define
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.27
+/*********************************************************************************************************************/
+Version : V0.1.1
 ChangeLog :
 1.CanIf : modify the CanIf_RxManagementFunction notification strategy. so modify CanIf_CanMsgRxManagementDataBuffer_Type and CanIf_CanMsgTxManagementDataBuffer_Type.
 2.CanTp : add init function,because shall be init pointer.

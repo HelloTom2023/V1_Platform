@@ -43,9 +43,28 @@ typedef struct CanTp_CanMsgStruct_Type_Tag
 #endif
 }CanTp_CanMsgStruct_Type;
 
+typedef enum CanTp_FlowStatus_Type_Tag
+{
+	CANTP_FS_TYPE_CTS 	= 0,
+	CANTP_FS_TYPE_WT  	= 1,
+	CANTP_FS_TYPE_OVFLW = 2,
+	CANTP_FS_TYPE_NONE	= 3
+}CanTp_FlowStatus_Type;
+
 /*
- * Diagnostic protocol data unit structure
- * include :
+ * Diagnostic protocol control unit structure
+ *
+ * */
+typedef struct CanTp_ProtocolControlUnitStruct_Type_Tag
+{
+	uint8 SN;					/*Sequence Number,the parameters located is Consecutive frame.*/
+	CanTp_FlowStatus_Type FS; 	/*Flow Status. 0:ContinueToSend(CTS), 1:Wait(WT), 2:Overflow(OVFLW)*/
+	uint8 BS; 					/*Block Size*/
+	uint8 STmin;				/*Separation Time*/
+}CanTp_ProtocolControlUnitStruct_Type;
+
+/*
+ *
  * */
 typedef struct CanTp_ProtocolDataUnitStruct_Type_Tag
 {
@@ -66,6 +85,7 @@ typedef struct CanTp_RecvPduControlInformation_Type_Tag
 	uint8 BusChannel;
 	uint8 FrameType;
 	uint8 ReqMsgType;
+	uint8 SN;			/*Sequence Number,the parameters located is Consecutive frame.*/
 	uint32 MsgId;
 #if(CANTP_CONRTOLLERTYPE == CAN)
 	uint8 TotalDataLength;

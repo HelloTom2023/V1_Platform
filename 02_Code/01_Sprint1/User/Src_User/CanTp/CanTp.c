@@ -26,7 +26,7 @@
 
 
 /*Variable declaration AREA*/
-
+static CanTp_ProtocolControlUnitStruct_Type CanTp_ProtocolControlUnit;
 
 /*Function implement AREA*/
 /****************************************************************************
@@ -104,11 +104,12 @@ CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint32 MsgId, uin
 
 		case CANTP_FRAME_TYPE_CF:
 			CanTp_Debug_OutputInfo(_T("CanTp Recv CF...\n"));
+			CanTp_RxIndicationFunctionCF(ChNo, MsgId, ptr_Data, Dlc);
 			break;
 
 		case CANTP_FRAME_TYPE_FC:
 			CanTp_Debug_OutputInfo(_T("CanTp Recv FC...\n"));
-
+			CanTp_RxIndicationFunctionFC(ChNo, MsgId, ptr_Data, Dlc);
 			break;
 	}
 
@@ -242,25 +243,169 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint32 MsgId, ui
 		CanTp_RecvPduCtrInfo.ReqMsgType = CANTP_MSG_TYPE_REQ_FUNC;
 	}
 
-	/*check diagnostic message data length*/
+	/*Get the message length*/
 	DataLength = (uint16) ( ((ptr_Data[0] & 0x0F) << 8 ) | (ptr_Data[1]) );
+	/*check diagnostic message data length*/
 	if(DataLength > 7)
 	{
+		CanTp_RecvPduCtrInfo.SN = 0x01;
 		CanTp_RecvPduCtrInfo.TotalDataLength = DataLength;
 		CanTp_RecvPduCtrInfo.RecvDataLength = 6;
 		memcpy(CanTp_RecvPduCtrInfo.ReqData, &ptr_Data[2], CanTp_RecvPduCtrInfo.RecvDataLength);
 		ret = E_OK;
-		/*Send flow control frame */
+
+		/*
+		 * Send flow control frame
+		 *
+		 * add code
+		 * */
 
 	}
 	else
 	{
-		ret = E_PARAM_INVALID;
+		CanTp_RecvPduCtrInfo.RecvLockFlag = 0x00;
+		ret = E_MSG_FORMAT_ERROR;
 	}
 
 	return ret;
 }
 
+/****************************************************************************
+ * @function	CanTp_RxIndicationFunctionCF
+ * @brief  		Indication the can transport to receive can message with consecutive frame
+ * @param  		ChNo: input parameters,CAN channel index.
+ *				MsgId : input parameters,the can message id
+ *				ptr_Data : input parameters,the can message data
+ *				Dlc : input parameters,the can message data length
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionCF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc)
+{
+	uint8 ret = E_NOT_OK;
+	uint16 DataLength = 0x00;
+	uint8 SequenceNumber = 0x00;
+
+	/*Dlc Check. this is not ISO 15765 Mandatory rule*/
+	if(Dlc < 8)
+	{
+		return ret;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*Set the frame type flag*/
+	CanTp_RecvPduCtrInfo.FrameType = CANTP_FRAME_TYPE_CF;
+
+	/*Check the diagnostic message id*/
+	/*if the consecutive frame id is not equal the first frame,ignore the message*/
+	if(CanTp_RecvPduCtrInfo.MsgId != MsgId)
+	{
+		CanTp_RecvPduCtrInfo.RecvLockFlag = 0x00;
+		ret = E_MSG_TYPE_ERROR;
+		return ret;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*Get Sequence Number*/
+	SequenceNumber = ptr_Data[0] & 0x0F;
+	/*Check SN,and SN error handling*/
+	if(SequenceNumber != CanTp_RecvPduCtrInfo.SN)
+	{
+		ret = E_WRONG_SN;
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*SN Control*/
+	CanTp_RecvPduCtrInfo.SN++;
+	if(CanTp_RecvPduCtrInfo.SN > 0x0F)
+	{
+		CanTp_RecvPduCtrInfo.SN = 0x00;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check the SN Range*/
+	if(CanTp_RecvPduCtrInfo.SN == CanTp_ProtocolControlUnit.BS)
+	{
+		/*Send FC*/
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*check diagnostic message data length*/
+	if((CanTp_RecvPduCtrInfo.RecvDataLength + 7) >= CanTp_RecvPduCtrInfo.TotalDataLength)/*this frame is last frame message*/
+	{
+		memcpy((CanTp_RecvPduCtrInfo.ReqData + CanTp_RecvPduCtrInfo.RecvDataLength), \
+				&ptr_Data[1], \
+				(CanTp_RecvPduCtrInfo.TotalDataLength - CanTp_RecvPduCtrInfo.RecvDataLength));
+		CanTp_RecvPduCtrInfo.RecvDataLength = CanTp_RecvPduCtrInfo.TotalDataLength;
+		ret = E_OK;
+	}
+	else
+	{
+		memcpy((CanTp_RecvPduCtrInfo.ReqData + CanTp_RecvPduCtrInfo.RecvDataLength), \
+					&ptr_Data[1], (0x07));
+		CanTp_RecvPduCtrInfo.RecvDataLength = CanTp_RecvPduCtrInfo.RecvDataLength + 7;
+		ret = E_OK;
+	}
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanTp_RxIndicationFunctionFC
+ * @brief  		Indication the can transport to receive can message with Flow control frame
+ * @param  		ChNo: input parameters,CAN channel index.
+ *				MsgId : input parameters,the can message id
+ *				ptr_Data : input parameters,the can message data
+ *				Dlc : input parameters,the can message data length
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFC(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc)
+{
+	uint8 ret = E_NOT_OK;
+	uint16 DataLength = 0x00;
+
+	/*Dlc Check. this is not ISO 15765 Mandatory rule*/
+	if(Dlc < 8)
+	{
+		return ret;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*Set the frame type flag*/
+	CanTp_RecvPduCtrInfo.FrameType = CANTP_FRAME_TYPE_FC;
+
+	/*Check the diagnostic message id*/
+	CanTp_ProtocolControlUnit.FS = ptr_Data[0] & 0X0F;
+	CanTp_ProtocolControlUnit.BS = ptr_Data[1];
+	CanTp_ProtocolControlUnit.STmin = ptr_Data[2];
+
+	/*
+	 * add code
+	 *
+	 * control strategy
+	 * */
+
+}
 
 /****************************************************************************
  * @function	CanTp_WriteRecvBuffer
