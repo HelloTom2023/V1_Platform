@@ -1,4 +1,13 @@
-﻿Version : V0.1.2
+﻿Version : V0.1.3
+ChangeLog :
+1.CanTp : add some function : implements diagnostic message send function
+2.CanTp_VFB : mapping tx message function with CanIf 
+3.CanTp : Removed conditional compilation of functions
+4.CanTp : Add main function and CanTp_TxManagementFunction.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.11.29
+/*********************************************************************************************************************/
+Version : V0.1.2
 ChangeLog :
 1.CanTp : add some function : CanTp_RxIndicationFunctionCF and CanTp_RxIndicationFunctionFC
 2.CanTp : create CanTp_ProtocolControlUnitStruct_Type and modify CanTp_RecvPduControlInformation_Type

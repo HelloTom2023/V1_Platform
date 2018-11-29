@@ -55,6 +55,24 @@ uint8 CanTp_RecvPudBuffer[CANTP_RXDIAGPDUBUFFER_SIZE];
 CAN_TP_EXTERN_API void CanTp_InitFunction(void);
 
 /****************************************************************************
+ * @function	CanTp_MainFunction
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_TP_EXTERN_API void CanTp_MainFunction(void);
+
+/****************************************************************************
+ * @function	CanTp_TxManagementFunction
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void);
+
+/****************************************************************************
  * @function	CanTp_RxIndicationFunction
  * @brief  		Indication the can to receive can message
  * @param  		ChNo: input parameters,CAN channel index.
@@ -64,11 +82,7 @@ CAN_TP_EXTERN_API void CanTp_InitFunction(void);
  * @retval 		ret : function execute result
  * @attention   Use this API send message to Can Transport Layer
 ****************************************************************************/
-#if (CANTP_CANMESSAGEIDTYPE == STANDARD)
-CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint MsgId, uint8* ptr_Data, uint8 Dlc);
-#else
 CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
-#endif
 
 /****************************************************************************
  * @function	CanTp_RxIndicationFunctionSF
@@ -80,11 +94,7 @@ CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint32 MsgId, uin
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-#if (CANTP_CANMESSAGEIDTYPE == STANDARD)
-CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint16 MsgId, uint8* ptr_Data, uint8 Dlc);
-#else
 CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
-#endif
 
 /****************************************************************************
  * @function	CanTp_RxIndicationFunctionFF
@@ -96,11 +106,7 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, ui
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-#if (CANTP_CANMESSAGEIDTYPE == STANDARD)
-CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint16 MsgId, uint8* ptr_Data, uint8 Dlc);
-#else
 CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
-#endif
 
 /****************************************************************************
  * @function	CanTp_RxIndicationFunctionCF
@@ -126,6 +132,55 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionCF(uint8 ChNo, uint32 MsgId, ui
 ****************************************************************************/
 CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFC(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc);
 
+/****************************************************************************
+ * @function	CanTp_TxCanFrame
+ * @brief  		Send diagnostic message function
+ * @param  		ChNo: input parameters,CAN channel index.
+ *				MsgId : input parameters,the can message id
+  *				Dlc : input parameters,the can message data length
+*				ptr_Data : input parameters,the can message data
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxCanFrame(uint8 ChNo, uint32 MsgId, uint8 Dlc, uint8* ptr_Data);
+
+/****************************************************************************
+ * @function	CanTp_TxDiagMsgSF
+ * @brief  		Send diagnostic message function of single frame
+ * @param  		ResponsePDU : input parameters, response protocol data unit
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgSF(CanTp_ProtocolDataUnitStruct_Type ResponsePDU);
+
+/****************************************************************************
+ * @function	CanTp_TxDiagMsgFF
+ * @brief  		Send diagnostic message function of first frame
+ * @param  		ResponsePDU : input parameters, response protocol data unit
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFF(CanTp_ProtocolDataUnitStruct_Type ResponsePDU);
+
+/****************************************************************************
+ * @function	CanTp_TxDiagMsgCF
+ * @brief  		Send diagnostic message function of consecutive frame
+ * @param  		SN : input parameters,
+ * 				ResponsePDU : input parameters, response protocol data unit
+ * 				DataOffset : input parameters, show start offset address of response PDU
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgCF(uint8 SN,CanTp_ProtocolDataUnitStruct_Type ResponsePDU,uint8 DataOffset);
+
+/****************************************************************************
+ * @function	CanTp_TxDiagMsgCF
+ * @brief  		Send diagnostic message function of flow control frame
+ * @param  		FlowStatus : input parameters
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFC(uint8 FlowStatus);
 
 #endif /*_CAN_TP_H*/
 /*********************************File End*********************************/

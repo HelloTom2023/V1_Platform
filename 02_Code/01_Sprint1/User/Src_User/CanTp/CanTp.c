@@ -39,7 +39,31 @@ static CanTp_ProtocolControlUnitStruct_Type CanTp_ProtocolControlUnit;
 CAN_TP_EXTERN_API void CanTp_InitFunction(void)
 {
 	/*Init CanTp_RecvPduCtrInfo*/
-	CanTp_RecvPduCtrInfo.ReqData = CanTp_RecvPudBuffer;
+	CanTp_RecvPduCtrInfo.Data = CanTp_RecvPudBuffer;
+}
+
+/****************************************************************************
+ * @function	CanTp_MainFunction
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_TP_EXTERN_API void CanTp_MainFunction(void)
+{
+	CanTp_TxManagementFunction();
+}
+
+/****************************************************************************
+ * @function	CanTp_TxManagementFunction
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
+{
+
 }
 
 /****************************************************************************
@@ -52,11 +76,7 @@ CAN_TP_EXTERN_API void CanTp_InitFunction(void)
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-#if (CANTP_CANMESSAGEIDTYPE == STANDARD)
-CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint16 MsgId, uint8* ptr_Data, uint8 Dlc)
-#else
 CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc)
-#endif
 {
 	uint8 ret = E_NOT_OK;
 	uint8 ret_subfunc = E_OK;
@@ -126,11 +146,7 @@ CAN_TP_EXTERN_API uint8 CanTp_RxIndicationFunction(uint8 ChNo, uint32 MsgId, uin
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-#if (CANTP_CANMESSAGEIDTYPE == STANDARD)
-CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint16 MsgId, uint8* ptr_Data, uint8 Dlc)
-#else
 CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc)
-#endif
 {
 	uint8 ret = E_NOT_OK;
 	uint8 DataLength = 0x00;
@@ -168,23 +184,23 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, ui
 		uint8 ReqDataArray[7];
 		uint8 i = 0x00;
 
-		CanTp_DcmPdu.ReqData = ReqDataArray;
+		CanTp_DcmPdu.Data = ReqDataArray;
 
 		CanTp_RecvPduCtrInfo.TotalDataLength = DataLength;
 		CanTp_RecvPduCtrInfo.RecvDataLength = DataLength;
-		memcpy(CanTp_RecvPduCtrInfo.ReqData, &ptr_Data[1], CanTp_RecvPduCtrInfo.RecvDataLength);
+		memcpy(CanTp_RecvPduCtrInfo.Data, &ptr_Data[1], CanTp_RecvPduCtrInfo.RecvDataLength);
 
 		CanTp_DcmPdu.BusChannel = ChNo;
 		CanTp_DcmPdu.PduType = 0x00;
 		CanTp_DcmPdu.ReqType = CanTp_RecvPduCtrInfo.ReqMsgType;
 		CanTp_DcmPdu.DataLength = CanTp_RecvPduCtrInfo.TotalDataLength;
-		memcpy(CanTp_DcmPdu.ReqData, CanTp_RecvPduCtrInfo.ReqData, CanTp_DcmPdu.DataLength);
+		memcpy(CanTp_DcmPdu.Data, CanTp_RecvPduCtrInfo.Data, CanTp_DcmPdu.DataLength);
 
 		CanTp_Debug_OutputInfo(_T("Diag Info:BusChannel = %d,PduType = 0x%d,ReqType = 0x%x,DataLength = %d,ReqData : [",\
 				CanTp_DcmPdu.BusChannel,CanTp_DcmPdu.PduType,CanTp_DcmPdu.ReqType,CanTp_DcmPdu.DataLength));
 		for(i = 0x00; i<DataLength; i++)
 		{
-			CanTp_Debug_OutputInfo(_T("0x%x ",CanTp_DcmPdu.ReqData[i]));
+			CanTp_Debug_OutputInfo(_T("0x%x ",CanTp_DcmPdu.Data[i]));
 		}
 		CanTp_Debug_OutputInfo(_T("]\n"));
 
@@ -210,11 +226,7 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, ui
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-#if (CANTP_CANMESSAGEIDTYPE == STANDARD)
-CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint16 MsgId, uint8* ptr_Data, uint8 Dlc)
-#else
 CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint32 MsgId, uint8* ptr_Data, uint8 Dlc)
-#endif
 {
 	uint8 ret = E_NOT_OK;
 	uint16 DataLength = 0x00;
@@ -251,15 +263,11 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFF(uint8 ChNo, uint32 MsgId, ui
 		CanTp_RecvPduCtrInfo.SN = 0x01;
 		CanTp_RecvPduCtrInfo.TotalDataLength = DataLength;
 		CanTp_RecvPduCtrInfo.RecvDataLength = 6;
-		memcpy(CanTp_RecvPduCtrInfo.ReqData, &ptr_Data[2], CanTp_RecvPduCtrInfo.RecvDataLength);
+		memcpy(CanTp_RecvPduCtrInfo.Data, &ptr_Data[2], CanTp_RecvPduCtrInfo.RecvDataLength);
 		ret = E_OK;
 
-		/*
-		 * Send flow control frame
-		 *
-		 * add code
-		 * */
-
+		/*Send flow control frame*/
+		CanTp_TxDiagMsgFC(CANTP_FS_TYPE_CTS);
 	}
 	else
 	{
@@ -339,7 +347,8 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionCF(uint8 ChNo, uint32 MsgId, ui
 	/*Check the SN Range*/
 	if(CanTp_RecvPduCtrInfo.SN == CanTp_ProtocolControlUnit.BS)
 	{
-		/*Send FC*/
+		/*Send flow control frame*/
+		CanTp_TxDiagMsgFC(CANTP_FS_TYPE_CTS);
 	}
 	else
 	{
@@ -349,7 +358,7 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionCF(uint8 ChNo, uint32 MsgId, ui
 	/*check diagnostic message data length*/
 	if((CanTp_RecvPduCtrInfo.RecvDataLength + 7) >= CanTp_RecvPduCtrInfo.TotalDataLength)/*this frame is last frame message*/
 	{
-		memcpy((CanTp_RecvPduCtrInfo.ReqData + CanTp_RecvPduCtrInfo.RecvDataLength), \
+		memcpy((CanTp_RecvPduCtrInfo.Data + CanTp_RecvPduCtrInfo.RecvDataLength), \
 				&ptr_Data[1], \
 				(CanTp_RecvPduCtrInfo.TotalDataLength - CanTp_RecvPduCtrInfo.RecvDataLength));
 		CanTp_RecvPduCtrInfo.RecvDataLength = CanTp_RecvPduCtrInfo.TotalDataLength;
@@ -357,7 +366,7 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionCF(uint8 ChNo, uint32 MsgId, ui
 	}
 	else
 	{
-		memcpy((CanTp_RecvPduCtrInfo.ReqData + CanTp_RecvPduCtrInfo.RecvDataLength), \
+		memcpy((CanTp_RecvPduCtrInfo.Data + CanTp_RecvPduCtrInfo.RecvDataLength), \
 					&ptr_Data[1], (0x07));
 		CanTp_RecvPduCtrInfo.RecvDataLength = CanTp_RecvPduCtrInfo.RecvDataLength + 7;
 		ret = E_OK;
@@ -408,6 +417,147 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFC(uint8 ChNo, uint32 MsgId, ui
 }
 
 /****************************************************************************
+ * @function	CanTp_TxCanFrame
+ * @brief  		Send diagnostic message function
+ * @param  		ChNo: input parameters,CAN channel index.
+ *				MsgId : input parameters,the can message id
+  *				Dlc : input parameters,the can message data length
+*				ptr_Data : input parameters,the can message data
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxCanFrame(uint8 ChNo, uint32 MsgId, uint8 Dlc, uint8* ptr_Data)
+{
+	return CanTp_CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data);
+}
+
+/****************************************************************************
+ * @function	CanTp_TxDiagMsgSF
+ * @brief  		Send diagnostic message function of single frame
+ * @param  		ResponsePDU : input parameters, response protocol data unit
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgSF(CanTp_ProtocolDataUnitStruct_Type ResponsePDU)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 data[8] = {0x00};
+
+	/*Check the PDU data length*/
+	if(ResponsePDU.DataLength > 0x08)
+	{
+		ret = E_MSG_FORMAT_ERROR;
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	memset(data, CANTP_PADDING_BYTE, 0x08);
+
+	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_SF,0x04) | ResponsePDU.DataLength;
+	memcpy(&data[1], ResponsePDU.Data, ResponsePDU.DataLength);
+
+	ret = CanTp_CanIf_UpdateTxListMsgDlcData(ResponsePDU.BusChannel, CANTP_DIAG_RESP_ADDR, 0x08, data);
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanTp_TxDiagMsgFF
+ * @brief  		Send diagnostic message function of first frame
+ * @param  		ResponsePDU : input parameters, response protocol data unit
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFF(CanTp_ProtocolDataUnitStruct_Type ResponsePDU)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 data[8] = {0x00};
+
+	/*Check the PDU data length*/
+	if(ResponsePDU.DataLength <= 0x07)
+	{
+		ret = E_MSG_FORMAT_ERROR;
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_FF,0x04) | (ResponsePDU.DataLength & 0x0F00);
+	data[1] = ResponsePDU.DataLength & 0x00FF;
+
+	memcpy(&data[2], ResponsePDU.Data, 0x06);
+
+	ret = CanTp_CanIf_UpdateTxListMsgDlcData(ResponsePDU.BusChannel, CANTP_DIAG_RESP_ADDR, 0x08, data);
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanTp_TxDiagMsgCF
+ * @brief  		Send diagnostic message function of consecutive frame
+ * @param  		SN : input parameters,
+ * 				ResponsePDU : input parameters, response protocol data unit
+ * 				DataOffset : input parameters, show start offset address of response PDU
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgCF(uint8 SN,CanTp_ProtocolDataUnitStruct_Type ResponsePDU,uint8 DataOffset)
+{
+
+	uint8 ret = E_NOT_OK;
+	uint8 RecvDataLength = 0x00;
+	uint8 data[8] = {0x00};
+
+	memset(data, CANTP_PADDING_BYTE, 0x08);
+
+	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_FF,0x04) | SN;
+
+	if((DataOffset + 0x07) > ResponsePDU.DataLength )
+	{
+		RecvDataLength = ResponsePDU.DataLength - DataOffset;
+	}
+	else
+	{
+		RecvDataLength = 0x07;
+	}
+
+	memcpy(&data[1], ResponsePDU.Data, RecvDataLength);
+
+	ret = CanTp_CanIf_UpdateTxListMsgDlcData(ResponsePDU.BusChannel, CANTP_DIAG_RESP_ADDR, 0x08, data);
+
+	return CommFunc_BitShiftLeft(RecvDataLength, 0x04) | ret;
+}
+
+/****************************************************************************
+ * @function	CanTp_TxDiagMsgFC
+ * @brief  		Send diagnostic message function of flow control frame
+ * @param  		FlowStatus : input parameters
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFC(uint8 FlowStatus)
+{
+	uint8 ret = E_NOT_OK;
+	uint8 data[8] = {0x00};
+
+	memset(data, CANTP_PADDING_BYTE, 0x08);
+
+	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_CF,0x04) | FlowStatus;
+	data[1] = CANTP_PARAM_BS;
+	data[2] = CANTP_PARAM_STMIN;
+
+	/*In this version,can tp only support single channel of can bus*/
+	ret = CanTp_CanIf_UpdateTxListMsgDlcData(0x00, CANTP_DIAG_RESP_ADDR, 0x08, data);
+
+	return ret;
+}
+
+/****************************************************************************
  * @function	CanTp_WriteRecvBuffer
  * @brief  		write can message to cantp buffer
  * @param  		ChNo: input parameters,CAN channel index.
@@ -417,11 +567,7 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFC(uint8 ChNo, uint32 MsgId, ui
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-#if (CANIF_CANMESSAGEIDTYPE == STANDARD)
-CAN_TP_LOCAL_API uint8 CanTp_WriteRecvBuffer(uint8 chno, uint16 MsgId, uint8* ptr_Data, uint8 Dlc)
-#else
 CAN_TP_LOCAL_API uint8 CanTp_WriteRecvBuffer(uint8 chno, uint32 MsgId, uint8* ptr_Data, uint8 Dlc)
-#endif
 {
 	uint8 ret = E_OK;
 
@@ -439,11 +585,7 @@ CAN_TP_LOCAL_API uint8 CanTp_WriteRecvBuffer(uint8 chno, uint32 MsgId, uint8* pt
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-#if (CANIF_CANMESSAGEIDTYPE == STANDARD)
-CAN_TP_LOCAL_API uint8 CanTp_ReadRecvBuffer(uint8* ptr_chno, uint16* ptr_MsgId, uint8* ptr_Data, uint8* ptr_Dlc)
-#else
 CAN_TP_LOCAL_API uint8 CanTp_ReadRecvBuffer(uint8* ptr_chno, uint32* ptr_MsgId, uint8* ptr_Data, uint8* ptr_Dlc)
-#endif
 {
 	uint8 ret = E_OK;
 

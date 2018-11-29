@@ -30,17 +30,9 @@
 typedef struct CanTp_CanMsgStruct_Type_Tag
 {
 	uint8 CanChNo;
-#if(CANTP_CANMESSAGEIDTYPE == STANDARD)
-	uint16 CanMsgId;
-#else
 	uint32 CanMsgId;
-#endif
 	uint8 CanMsgDlc;
-#if (CANTP_CONRTOLLERTYPE == CANFD)
-	uint8 CanData[64];
-#else
 	uint8 CanData[8];
-#endif
 }CanTp_CanMsgStruct_Type;
 
 typedef enum CanTp_FlowStatus_Type_Tag
@@ -57,6 +49,7 @@ typedef enum CanTp_FlowStatus_Type_Tag
  * */
 typedef struct CanTp_ProtocolControlUnitStruct_Type_Tag
 {
+	uint8 BusChannel;
 	uint8 SN;					/*Sequence Number,the parameters located is Consecutive frame.*/
 	CanTp_FlowStatus_Type FS; 	/*Flow Status. 0:ContinueToSend(CTS), 1:Wait(WT), 2:Overflow(OVFLW)*/
 	uint8 BS; 					/*Block Size*/
@@ -69,10 +62,10 @@ typedef struct CanTp_ProtocolControlUnitStruct_Type_Tag
 typedef struct CanTp_ProtocolDataUnitStruct_Type_Tag
 {
 	uint8 BusChannel;
-	uint8 PduType; /*0: request pdu; 1: response pdu*/
-	uint8 ReqType; /*0: physical ; 1: function . when the pdutype is 0x00,this parameter is valid*/
+	uint8 PduType; 		/*0: request pdu; 1: response pdu*/
+	uint8 ReqType; 		/*0: physical ; 1: function . when the pdutype is 0x00,this parameter is valid*/
 	uint8 DataLength;
-	uint8 *ReqData;/*note : if you want to use the data element,you will init the pointer*/
+	uint8 *Data;		/*note : if you want to use the data element,you will init the pointer*/
 }CanTp_ProtocolDataUnitStruct_Type;
 
 /*
@@ -87,17 +80,9 @@ typedef struct CanTp_RecvPduControlInformation_Type_Tag
 	uint8 ReqMsgType;
 	uint8 SN;			/*Sequence Number,the parameters located is Consecutive frame.*/
 	uint32 MsgId;
-#if(CANTP_CONRTOLLERTYPE == CAN)
 	uint8 TotalDataLength;
-#else
-	uint8 TotalDataLength;
-#endif
-#if(CANTP_CONRTOLLERTYPE == CAN)
 	uint8 RecvDataLength;
-#else
-	uint8 RecvDataLength;
-#endif
-	uint8 *ReqData; /*note : if you want to use the data element,you will init the pointer*/
+	uint8 *Data; /*note : if you want to use the data element,you will init the pointer*/
 }CanTp_RecvPduControlInformation_Type;
 
 typedef struct CanTp_BuffControlInformation_Type_Tag

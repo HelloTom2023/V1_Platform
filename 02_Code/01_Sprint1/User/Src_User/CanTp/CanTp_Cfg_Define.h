@@ -19,7 +19,7 @@
 
 /*Include head files AREA*/
 #include "..\Common\Common.h"
-
+#include "CanTp_Type.h"
 
 /*Macro definition AREA*/
 #ifndef CAN
@@ -57,6 +57,16 @@
 #define CANTP_DIAG_PHY_ADDR									(0x706)
 /*Diagnostic function message id*/
 #define CANTP_DIAG_FUNC_ADDR								(0x7DF)
+/*Diagnostic response message id*/
+#define CANTP_DIAG_RESP_ADDR								(0x70E)
+/*Diagnostic padding byte*/
+#define CANTP_PADDING_BYTE									(0x55)
+/*Can Tp timing parameters : FS*/
+#define CANTP_PARAM_FS										(CANTP_FS_TYPE_CTS)
+/*Can Tp timing parameters : BS*/
+#define CANTP_PARAM_BS										(0x08)
+/*Can Tp timing parameters : STmin*/
+#define CANTP_PARAM_STMIN									(0x20)
 
 
 

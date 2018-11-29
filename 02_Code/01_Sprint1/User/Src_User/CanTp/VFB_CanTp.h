@@ -27,6 +27,30 @@
 
 /*Function declaration AREA*/
 /****************************************************************************
+ * @function	CanTp_CanIf_UpdateTxListMsgData
+ * @brief  		update Data to CanIf_CanMsgTxList
+ * @param		ChNo :
+ * 				MsgId :
+ * 				Dlc :
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+#define CanTp_CanIf_UpdateTxListMsgData(ChNo, MsgId, ptr_Data)		CanIf_UpdateTxListMsgData(ChNo, MsgId, ptr_Data)
+
+/****************************************************************************
+ * @function	CanTp_CanIf_UpdateTxListMsgDlcData
+ * @brief  		update Dlc,Data to CanIf_CanMsgTxList
+ * @param		ChNo :
+ * 				MsgId :
+ * 				Dlc :
+ * 				ptr_Data :
+ * @retval		ret : operation return value
+ * @attention   NULL
+****************************************************************************/
+#define CanTp_CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data)		CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data)
+
+/****************************************************************************
  * @function	CanTp_Debug_OutputInfo
  * @brief
  * @param
