@@ -41,8 +41,10 @@
 
 /*Variable Define AREA*/
 //CanTp_CanMsgStruct_Type CanTp_CanRcvMsgBuffer[CANTP_RECEIVEBUFFERNUMBER];
-CanTp_RecvPduControlInformation_Type CanTp_RecvPduCtrInfo;
-uint8 CanTp_RecvPudBuffer[CANTP_RXDIAGPDUBUFFER_SIZE];
+CanTp_RxPduControlInformation_Type CanTp_RxPduCtrInfo;
+CanTp_TxPduControlInformation_Type CanTp_TxPduCtrInfo;
+uint8 CanTp_RxPudBuffer[CANTP_RXDIAGPDUBUFFER_SIZE];
+uint8 CanTp_TxPudBuffer[CANTP_RXDIAGPDUBUFFER_SIZE];
 
 /*Function declaration AREA*/
 /****************************************************************************
@@ -147,31 +149,40 @@ CAN_TP_LOCAL_API uint8 CanTp_TxCanFrame(uint8 ChNo, uint32 MsgId, uint8 Dlc, uin
 /****************************************************************************
  * @function	CanTp_TxDiagMsgSF
  * @brief  		Send diagnostic message function of single frame
- * @param  		ResponsePDU : input parameters, response protocol data unit
+ * @param  		ChNo : input parameters, diagnostic transport channel
+ * 				MsgId : input parameters, diagnostic message id
+ * 				SF_DL : input parameters, diagnostic single frame data length
+ * 				ptr_ResponseData : input parameters, diagnostic response data
  * @retval 		ret : function execute result
  * @attention   null
-****************************************************************************/
-CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgSF(CanTp_ProtocolDataUnitStruct_Type ResponsePDU);
+***************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgSF(uint8 ChNo,uint32 MsgId,uint8 SF_DL,uint8* ptr_ResponseData);
 
 /****************************************************************************
  * @function	CanTp_TxDiagMsgFF
  * @brief  		Send diagnostic message function of first frame
- * @param  		ResponsePDU : input parameters, response protocol data unit
+ * @param  		ChNo : input parameters, diagnostic transport channel
+ * 				MsgId : input parameters, diagnostic message id
+ * 				FF_DL : input parameters, diagnostic first frame data length
+ * 				ptr_ResponseData : input parameters, diagnostic response data
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFF(CanTp_ProtocolDataUnitStruct_Type ResponsePDU);
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFF(uint8 ChNo,uint32 MsgId,uint32 FF_DL,uint8* ptr_ResponseData);
 
 /****************************************************************************
  * @function	CanTp_TxDiagMsgCF
  * @brief  		Send diagnostic message function of consecutive frame
- * @param  		SN : input parameters,
- * 				ResponsePDU : input parameters, response protocol data unit
- * 				DataOffset : input parameters, show start offset address of response PDU
+ * @param  		ChNo : input parameters, diagnostic transport channel
+ * 				MsgId : input parameters, diagnostic message id
+ * 				FF_DL : input parameters, diagnostic first frame data length
+ * 				SN :input parameters, diagnostic CF SN parameters
+ * 				ptr_ResponseData : input parameters, diagnostic response data
+ * 				DataOffset : input parameters, show start offset address of response data
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgCF(uint8 SN,CanTp_ProtocolDataUnitStruct_Type ResponsePDU,uint8 DataOffset);
+CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgCF(uint8 ChNo,uint32 MsgId,uint32 FF_DL,uint8 SN,uint8* ptr_ResponseData,uint8 DataOffset);
 
 /****************************************************************************
  * @function	CanTp_TxDiagMsgCF

@@ -72,18 +72,46 @@ typedef struct CanTp_ProtocolDataUnitStruct_Type_Tag
  * Diagnostic protocol data unit Receive control information structure
  * include :
  * */
-typedef struct CanTp_RecvPduControlInformation_Type_Tag
+typedef struct CanTp_RxPduControlInformation_Type_Tag
 {
-	uint8 RecvLockFlag; /*0:idle, wait receive ,1:Receiving ,2:done,receive complete*/
+	uint8 RxLockFlag; /*0:idle, wait receive ,1:Receiving ,2:done,receive complete*/
 	uint8 BusChannel;
 	uint8 FrameType;
 	uint8 ReqMsgType;
 	uint8 SN;			/*Sequence Number,the parameters located is Consecutive frame.*/
 	uint32 MsgId;
 	uint8 TotalDataLength;
-	uint8 RecvDataLength;
+	uint8 RxDataLength;
 	uint8 *Data; /*note : if you want to use the data element,you will init the pointer*/
-}CanTp_RecvPduControlInformation_Type;
+}CanTp_RxPduControlInformation_Type;
+
+/*Diagnostic Frame type*/
+typedef enum CanTp_TxMachineState_Type_Tag
+{
+	CANTP_TXMS_IDLE = 0,
+	CANTP_TXMS_TX_REQ,
+	CANTP_TXMS_TX_SF ,
+	CANTP_TXMS_TX_FF ,
+	CANTP_TXMS_WT_FC ,
+	CANTP_TXMS_TX_CF,
+	CANTP_TXMS_TX_OVER,
+	CANTP_TXMS_NONE
+}CanTp_TxMachineState_Type;
+
+/*
+ * Diagnostic protocol data unit Send control information structure
+ * include :
+ * */
+typedef struct CanTp_TxPduControlInformation_Type_Tag
+{
+	CanTp_TxMachineState_Type TxMachineState;
+	uint8 BusChannel;
+	uint8 SN;			/*Sequence Number,the parameters located is Consecutive frame.*/
+	uint32 MsgId;
+	uint8 TotalDataLength;
+	uint8 TxDataLength;
+	uint8 *Data; /*note : if you want to use the data element,you will init the pointer*/
+}CanTp_TxPduControlInformation_Type;
 
 typedef struct CanTp_BuffControlInformation_Type_Tag
 {
@@ -91,22 +119,23 @@ typedef struct CanTp_BuffControlInformation_Type_Tag
 	uint8 ReadIndex;
 }CanTp_BuffControlInformation_Type;
 
-
-typedef enum
+/*Diagnostic Frame type*/
+typedef enum CanTp_FrameType_Type_Tag
 {
 	CANTP_FRAME_TYPE_SF = 0,
 	CANTP_FRAME_TYPE_FF = 1,
 	CANTP_FRAME_TYPE_CF = 2,
 	CANTP_FRAME_TYPE_FC = 3,
 	CANTP_FRAME_TYPE_NONE
-};
+}CanTp_FrameType_Type;
 
-typedef enum
+
+typedef enum CanTp_MessageType_Type_Tag
 {
 	CANTP_MSG_TYPE_REQ_PHY	 	= 0,
 	CANTP_MSG_TYPE_REQ_FUNC 	= 1,
 	CANTP_MSG_TYPE_RESPONSE		= 2,
 	CANTP_MSG_TYPE_NONE
-};
+}CanTp_MessageType_Type;
 
 #endif /* CANTP_TYPE_H_ */
