@@ -105,6 +105,32 @@
 #define Debug_CanTp_OutputInfo(x)
 #endif
 
+/****************************************************************************
+ * @function	Debug_Dcm_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#if (DEBUG_DCM == ON)
+#define Debug_Dcm_OutputInfo(x)		(x)
+#else
+#define Debug_Dcm_OutputInfo(x)
+#endif
+
+/****************************************************************************
+ * @function	Debug_Dcm_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#if (DEBUG_DCMUSER == ON)
+#define Debug_DcmUser_OutputInfo(x)		(x)
+#else
+#define Debug_DcmUser_OutputInfo(x)
+#endif
+
 
 #endif /*_DEBUG_H*/
 /*********************************File End*********************************/

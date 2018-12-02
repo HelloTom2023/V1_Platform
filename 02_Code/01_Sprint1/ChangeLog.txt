@@ -1,4 +1,13 @@
-﻿Version : V0.1.5
+﻿Version : V0.1.6
+ChangeLog :
+1.Architecture : delete DiagE,DiagM,DiagS modules and delete the modules files.
+2.Architecture : create Dcm and DcmUser modules.
+3.Debug : add Dcm and DcmUser modules debug information output function
+4.VFB_Dcm, VFB_DcmUser : add debug interface.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.02
+/*********************************************************************************************************************/
+Version : V0.1.5
 ChangeLog :
 1.CanBus : mapping CanTp_MainFunction to CanBus_Task.
 2.CanIf : modify location is CanIf_UpdateTxListMsgDlcData and CanIf_UpdateTxListMsgData.---->fix bug, event message not send.

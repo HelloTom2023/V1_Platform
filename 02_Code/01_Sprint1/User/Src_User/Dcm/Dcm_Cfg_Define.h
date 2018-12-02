@@ -1,40 +1,28 @@
 /****************************************************************************
-* File Name : DiagE.c
+* File Name : Dcm_Cfg_Define.h
 *
-* Modules : Diagnostic Event Layer source file
+* Modules : Diagnostic communication management layer configuration file
 *
-* Summary :
+* Summary :	1.configuration parameters,micro define
 *
 * Reference Documents :
 *
 /****************************************************************************
 * Author : Mingfen XIAO
 * Version : V0.1
-* Date	: 2018-09-25
-* Description : 1.Create the modules
+* Date	: 2018-12-02
+* Description : 1.Create the file.
 * 				2.Initialization Version
 ****************************************************************************/
+#ifndef	_DCM_CFG_DEFINE_H_
+#define	_DCM_CFG_DEFINE_H_
 
 /*Include head files AREA*/
-#include "DiagE.h"
-
-
+#include "..\Common\Common.h"
+#include "Dcm_Type.h"
 
 /*Macro definition AREA*/
-#define _DIAG_E_C
 
 
-
-/*Variable declaration AREA*/
-
-
-/*Function implement AREA*/
-
-
-
-
+#endif /*_DCM_CFG_DEFINE_H_*/
 /*********************************File End*********************************/
-
-
-
-

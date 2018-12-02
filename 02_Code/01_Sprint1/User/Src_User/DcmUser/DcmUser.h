@@ -1,7 +1,7 @@
 /****************************************************************************
-* File Name : DiagS.h
+* File Name : DcmUser.h
 *
-* Modules : Diagnostic Service Layer head file
+* Modules : Diagnostic communication management application Layer head file
 *
 * Summary :
 *
@@ -10,33 +10,40 @@
 /****************************************************************************
 * Author : Mingfen XIAO
 * Version : V0.1
-* Date	: 2018-09-25
+* Date	: 2018-12-02
 * Description : 1.Create the modules
 * 				2.Initialization Version
 ****************************************************************************/
-#ifndef	_DIAG_S_H
-#define	_DIAG_S_H
+#ifndef	_DCM_USER_H_
+#define	_DCM_USER_H_
 
 /*Include head files AREA*/
 #include "..\Common\Common.h"
+#include "DcmUser_Type.h"
+#include "DcmUser_Cfg_Define.h"
+#include "VFB_DcmUser.h"
 
 
 /*Macro definition AREA*/
-#ifndef _DIAG_S_C
-#define DIAG_S_API_CALL
-#define DIAG_S_API_LOCAL
+#define _DCM_USER_C_	/*define use CanTp.c*/
+
+#ifndef _DCM_USER_C_
+#define DCM_USER_EXTERN_API
+#define DCM_USER_LOCAL_API
 #else
-#define DIAG_S_API_CALL extern
-#define DIAG_S_API_LOCAL static
-#endif /*_DIAG_S_C*/
+#define DCM_USER_EXTERN_API extern
+#define DCM_USER_LOCAL_API static
+#endif /*_DCM_USER_C_*/
+
+
+
+
+
+/*Variable Define AREA*/
 
 
 /*Function declaration AREA*/
 
 
-
-
-
-
-#endif /*_DIAG_S_H*/
+#endif /*_DCM_USER_H_*/
 /*********************************File End*********************************/

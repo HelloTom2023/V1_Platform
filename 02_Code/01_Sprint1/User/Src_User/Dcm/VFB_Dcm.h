@@ -1,7 +1,7 @@
 /****************************************************************************
-* File Name : DiagE.h
+* File Name : VFB_Dcm.h
 *
-* Modules : Diagnostic Event Layer head file
+* Modules : Virtual Function Bus base on diagnostic communication management Layer
 *
 * Summary :
 *
@@ -10,33 +10,35 @@
 /****************************************************************************
 * Author : Mingfen XIAO
 * Version : V0.1
-* Date	: 2018-09-25
+* Date	: 2018-12-02
 * Description : 1.Create the modules
 * 				2.Initialization Version
 ****************************************************************************/
-#ifndef	_DIAG_E_H
-#define	_DIAG_E_H
+#ifndef	_VFB_DCM_H_
+#define	_VFB_DCM_H_
 
 /*Include head files AREA*/
 #include "..\Common\Common.h"
-
+#include "..\Debug\Debug.h"
 
 /*Macro definition AREA*/
-#ifndef _DIAG_E_C
-#define DIAG_E_API_CALL
-#define DIAG_E_API_LOCAL
-#else
-#define DIAG_E_API_CALL extern
-#define DIAG_E_API_LOCAL static
-#endif /*_DIAG_E_C*/
+
 
 
 /*Function declaration AREA*/
 
+/****************************************************************************
+ * @function	Debug_Dcm_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#define Dcm_Debug_OutputInfo(x)		Debug_Dcm_OutputInfo(x)
 
 
 
 
 
-#endif /*_DIAG_E_H*/
+#endif /*_VFB_DCM_H_*/
 /*********************************File End*********************************/

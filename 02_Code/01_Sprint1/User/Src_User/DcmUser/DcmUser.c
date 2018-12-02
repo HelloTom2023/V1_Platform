@@ -1,7 +1,7 @@
 /****************************************************************************
-* File Name : DiagS.c
+* File Name : DcmUser.c
 *
-* Modules : Diagnostic Service Layer source file
+* Modules : Diagnostic Communication management application Layer source file
 *
 * Summary :
 *
@@ -10,18 +10,18 @@
 /****************************************************************************
 * Author : Mingfen XIAO
 * Version : V0.1
-* Date	: 2018-09-25
+* Date	: 2018-12-02
 * Description : 1.Create the modules
 * 				2.Initialization Version
 ****************************************************************************/
 
 /*Include head files AREA*/
-#include "DiagS.h"
-
+#include "DcmUser.h"
+#include "DcmUser_Cfg_Table.h" /*The table only used by Dcm.C*/
 
 
 /*Macro definition AREA*/
-#define _DIAG_S_C
+
 
 
 
@@ -32,9 +32,4 @@
 
 
 
-
 /*********************************File End*********************************/
-
-
-
-

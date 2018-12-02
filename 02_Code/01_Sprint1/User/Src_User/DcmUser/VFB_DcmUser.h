@@ -1,7 +1,7 @@
 /****************************************************************************
-* File Name : DiagM.h
+* File Name : VFB_DcmUser.h
 *
-* Modules : Diagnostic Managements Layer head file
+* Modules : Virtual Function Bus base on diagnostic communication management appliaction Layer
 *
 * Summary :
 *
@@ -10,33 +10,35 @@
 /****************************************************************************
 * Author : Mingfen XIAO
 * Version : V0.1
-* Date	: 2018-09-25
+* Date	: 2018-12-02
 * Description : 1.Create the modules
 * 				2.Initialization Version
 ****************************************************************************/
-#ifndef	_DIAG_M_H
-#define	_DIAG_M_H
+#ifndef	_VFB_DCM_USER_H_
+#define	_VFB_DCM_USER_H_
 
 /*Include head files AREA*/
 #include "..\Common\Common.h"
-
+#include "..\Debug\Debug.h"
 
 /*Macro definition AREA*/
-#ifndef _DIAG_M_C
-#define DIAG_M_API_CALL
-#define DIAG_M_API_LOCAL
-#else
-#define DIAG_M_API_CALL extern
-#define DIAG_M_API_LOCAL static
-#endif /*_DIAG_M_C*/
+
 
 
 /*Function declaration AREA*/
 
+/****************************************************************************
+ * @function	DcmUser_Debug_OutputInfo
+ * @brief
+ * @param
+ * @retval
+ * @attention
+****************************************************************************/
+#define DcmUser_Debug_OutputInfo(x)		Debug_DcmUser_OutputInfo(x)
 
 
 
 
 
-#endif /*_DIAG_M_H*/
+#endif /*_VFB_DCM_USER_H_*/
 /*********************************File End*********************************/
