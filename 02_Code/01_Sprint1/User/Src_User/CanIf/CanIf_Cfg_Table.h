@@ -51,6 +51,9 @@ CanIf_CanMsgRxManagementDataBuffer_Type CanIf_CanMsgRxList[] =
  * 1.the CycleTime and CurrentTime is counter
  * 2.the real time is CycleTime or CurrentTime * Task Tick
  *
+ * 3.you must setting TransmissionCounter,it control event message send times.
+ *   if you setting to 0,the message shall be not send.
+ * 4.if you will request event message ,you shall be clear TransmittedCounter
  *
  * */
 CanIf_CanMsgTxManagementDataBuffer_Type CanIf_CanMsgTxList[] =
@@ -60,7 +63,7 @@ CanIf_CanMsgTxManagementDataBuffer_Type CanIf_CanMsgTxList[] =
 		{1,		0,		CANIF_MSG_TYPE_APP,		CANIF_MSG_MODE_PERIODIC,	50,			0,				0,						0,					0x2F9,	8,		{0,0,0,0,5,6,7,8}},
 		{2,		0,		CANIF_MSG_TYPE_APP,		CANIF_MSG_MODE_PERIODIC,	500,		0,				0,						0,					0x500,	8,		{9,0,0,0,0,0,0,0}},
 		{3,		0,		CANIF_MSG_TYPE_APP,		CANIF_MSG_MODE_PERIODIC,	500,		0,				0,						0,					0x501,	8,		{0,0,0,0,0,0,0,0}},
-		{4,		0,		CANIF_MSG_TYPE_DIAG,	CANIF_MSG_MODE_EVENT,		0,			0,				0,						0,					0x70E,	8,		{0,0,0,0,0,0,0,0}},
+		{4,		0,		CANIF_MSG_TYPE_DIAG,	CANIF_MSG_MODE_EVENT,		0,			0,				1,						0,					0x70E,	8,		{0,0,0,0,0,0,0,0}},
 		{10,	0xFF,	CANIF_MSG_TYPE_NONE,	CANIF_MSG_MODE_NONE,		0,			0,				0,						0,					0xffff,	8,		{0,0,0,0,0,0,0,0}}
 };
 

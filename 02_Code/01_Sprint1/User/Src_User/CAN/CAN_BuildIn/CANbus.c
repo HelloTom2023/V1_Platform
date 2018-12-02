@@ -3,6 +3,7 @@
 #include "..\..\CanIf\CanIf.h"
 #include "..\..\Com\Com.h"
 #include "..\..\ComUser\ComUser.h"
+#include "..\..\CanTp\CanTp.h"
 
 #ifdef CAN_MODULE_ENABLE
 
@@ -138,21 +139,21 @@ void CANbus_VehicleVariableReset(void)
 #endif
 
 uint8_t EOLArray[] = {0xF7,0x77,0x76,0x76,0x84,0x04,0x34,0x77,0x34,0x77,0x34,0x77,0x00,0x00,0x74,0x74,0xf7};
-//ͨ����ֵ����ȡ�����е�����.
-//�����������Ԫ����ȵ�ʱ��,ȡǰ���������
+//通锟斤拷锟斤拷值锟斤拷锟斤拷取锟斤拷锟斤拷锟叫碉拷锟斤拷锟斤拷.
+//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟皆拷锟斤拷锟饺碉拷时锟斤拷,取前锟斤拷锟斤拷锟斤拷锟斤拷锟�
 uint8_t Get_ArrayIndex(uint8_t * pData, uint8_t Value, uint8_t len)
 {
 	uint8_t i = 0;
-	for(i = 0;i < len;i++)//˳�����ָ�����ڴ���...
+	for(i = 0;i < len;i++)//顺锟斤拷锟斤拷锟街革拷锟斤拷锟斤拷诖锟斤拷锟�...
 	{
 		if(*(pData+i) == Value)
 		{
 			return i;
 		}
 	}
-	return 0xff;//û�в�ѯ����ȵ�����
+	return 0xff;//没锟叫诧拷询锟斤拷锟斤拷鹊锟斤拷锟斤拷锟�
 }
-//ͨ����������ȡ�����е�ֵ.
+//通锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷取锟斤拷锟斤拷锟叫碉拷值.
 uint8_t Get_ArrayValue(uint8_t *pData,uint8_t Index)
 {
 	return *(pData+Index);
@@ -190,7 +191,7 @@ void CAN_LoadDefaultToEepRam(void)
 		l_tBusData.Phone[cnt]="13800138000"[cnt];
 	} 
 
-	//���Ӷ������������ݵ��ж�,���ڽ���ʹ����һ���ֽ�...
+	//锟斤拷锟接讹拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟捷碉拷锟叫讹拷,锟斤拷锟节斤拷锟斤拷使锟斤拷锟斤拷一锟斤拷锟街斤拷...
 	index = Get_ArrayIndex(EOLArray,l_tBusData.DID_F1FA_DATA[0],sizeof(EOLArray)/sizeof(EOLArray[0]));
 	if((0xff == index) ||
 		 ((0xff != index) && 
@@ -211,7 +212,7 @@ void CAN_LoadDefaultToEepRam(void)
 	CANbus_VehicleVariableReset();
 #endif
 
-	//snake20161017 GPS��Ĭ�ϲ���   Ĭ�϶�λ��ϢΪ�����ð���������´�
+	//snake20161017 GPS锟斤拷默锟较诧拷锟斤拷   默锟较讹拷位锟斤拷息为锟斤拷锟斤拷锟矫帮拷锟斤拷锟斤拷锟斤拷锟斤拷麓锟�
 	GpsInfo.Longitude = 106617119;
 	GpsInfo.Latitude= 29667951;
 	GpsInfo.LatitudeFlag = 0;
@@ -379,7 +380,7 @@ void CAN_EepRead(void)
 #define WR_EEP_NO_REQ  1
 #if 1
 //snake 20160515
-//����0,д��ɹ�;��������,д��ʧ��(���ڿ�����Ϊд��ʧ�ܵĴ������)
+//锟斤拷锟斤拷0,写锟斤拷晒锟�;锟斤拷锟斤拷锟斤拷锟斤拷,写锟斤拷失锟斤拷(锟斤拷锟节匡拷锟斤拷锟斤拷为写锟斤拷失锟杰的达拷锟斤拷锟斤拷锟�)
 uint8_t CAN_EepStore(uint16_t DID, uint8_t *pData, uint8_t len)
 {
 	uint8_t EepStoreStep=WR_EEP_NO_REQ;
@@ -568,7 +569,7 @@ uint8_t CANTask_Init(void)
     SystemStatus.ACC = 3;
     SystemStatus.SpiReady = 0;
 
-	//���ٿ���ACC����BATT��ʱ��,��Ҫ���½��г�ʼ��....
+	//锟斤拷锟劫匡拷锟斤拷ACC锟斤拷锟斤拷BATT锟斤拷时锟斤拷,锟斤拷要锟斤拷锟铰斤拷锟叫筹拷始锟斤拷....
 	Mult_Struct.AccState = 0;//snake20160926
 	Mult_Struct.AccStateBK = 0;
 	Mult_Struct.IllState = 0;
@@ -587,10 +588,10 @@ uint8_t CANTask_Init(void)
     NM_InterfaceInit();
     IL_CanNM_Init();
 	TaskCAN_debug(_T("CANTask_Init......Open NM_ENABLE_MACRO,init NM!!!!\n"));
-#else  //snake2016116 ���������������ܵ�ʱ��,ACC OFF,����BATT,����������˯�ߵ�����
+#else  //snake2016116 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟杰碉拷时锟斤拷,ACC OFF,锟斤拷锟斤拷BATT,锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷睡锟竭碉拷锟斤拷锟斤拷
 	CANbus_DefaultInit(CAN_ID_BODY);		
 	CANbus_StartupHandler(CAN_ID_BODY);
-	//CANUser_StartSendInitMsg(CAN_ID_BODY);//����CAN���ķ���...
+	//CANUser_StartSendInitMsg(CAN_ID_BODY);//锟斤拷锟斤拷CAN锟斤拷锟侥凤拷锟斤拷...
 	//CANUser_TryToSendCANMsg(CAN_ID_BODY);
 	TaskCAN_debug(_T("CANTask_Init......Close NM_ENABLE_MACRO,init canbus!!!!\n"));
 #endif
@@ -1133,7 +1134,7 @@ void CANTask_OtherMsgHandler(tMSG_BUF* Msg)
             if(CanPMState.SysWorkState == 1)
             {
                 //CANTask_SendPMReqest(OP_PM_STATE_WAIT_SLEEP);
-		   PM_EnterMode(PM_MODE_OFF); //bolte ��ѹֱ�ӽ�����ģʽ
+		   PM_EnterMode(PM_MODE_OFF); //bolte 锟斤拷压直锟接斤拷锟斤拷锟斤拷模式
 	
             }
             CanPMState.state = CAN_PM_UNNORMAL;
@@ -1183,7 +1184,7 @@ uint8_t CANTask_GetSysACCState(void)
 {
     if(CANTask_BusConnectFlag())
     	{
-   		 if(1 == CANTask_GetRemoteStartState())		// BOLTE:�Բ�Զ������HU������Զ������Ҫ��HU����˯��
+   		 if(1 == CANTask_GetRemoteStartState())		// BOLTE:锟皆诧拷远锟斤拷锟斤拷锟斤拷HU锟斤拷锟斤拷锟斤拷远锟斤拷锟斤拷锟斤拷要锟斤拷HU锟斤拷锟斤拷睡锟斤拷
        		 return 0;
     	}
     if(CanPMState.LocalACC)		/*local ACC first */
@@ -1285,19 +1286,19 @@ uint8_t CANTask_GetBusSleepState(void)
 		return 1;
     }*/
     #ifdef D_ILL_WAKEUP
-    if((IllState ==1) && (IO_Get(IO_IDX_LOCAL_ACC,PIN_INPUT,TRUE)==0))// С�ƿ���ʱ��,��ACC  snake20160921
+    if((IllState ==1) && (IO_Get(IO_IDX_LOCAL_ACC,PIN_INPUT,TRUE)==0))// 小锟狡匡拷锟斤拷时锟斤拷,锟斤拷ACC  snake20160921
 		return 2;
 	#endif
 	
     if(INH == 0)
     {
-        /*��ACC OFF��ʱ�䳬ʱ�󣬲��ܹ�ȷ��INH = 0;*/
-        /*��ǰʱ��Ϊ6s, ��ACC OFF����OP_PM_STATE_WAIT_SLEEP������
-           ��ʱʱ�䡣��Ҫ���ACC OFF�ܿ��������ߣ�����������
-           ��������⡣ʱ��ֵ�����ں�ACCOFF_TIMEOUT_S������*/
+        /*锟斤拷ACC OFF锟斤拷时锟戒超时锟襟，诧拷锟杰癸拷确锟斤拷INH = 0;*/
+        /*锟斤拷前时锟斤拷为6s, 锟斤拷ACC OFF锟斤拷锟斤拷OP_PM_STATE_WAIT_SLEEP锟斤拷锟斤拷锟斤拷
+           锟斤拷时时锟戒。锟斤拷要锟斤拷锟紸CC OFF锟杰匡拷锟斤拷锟斤拷锟斤拷锟竭ｏ拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷
+           锟斤拷锟斤拷锟斤拷锟斤拷狻Ｊ憋拷锟街碉拷锟斤拷锟斤拷诤锟紸CCOFF_TIMEOUT_S锟斤拷锟斤拷锟斤拷*/
            /*//snake20161019
-           //��Ϊ��ʼ������Ϊ0,�������е�ʱ��,��û�����ü�����CanPMState.ACCOffTimer1S��Դ������žͷ����˱仯,
-           //����,�ػ�ʱ��̫��,û�а�����ʱ�����̽����ӳٹػ�...�����ڽ���ʱʱ����жϱ�־����Ϊ1
+           //锟斤拷为锟斤拷始锟斤拷锟斤拷锟斤拷为0,锟斤拷锟斤拷锟斤拷锟叫碉拷时锟斤拷,锟斤拷没锟斤拷锟斤拷锟矫硷拷锟斤拷锟斤拷CanPMState.ACCOffTimer1S锟斤拷源锟斤拷锟斤拷锟斤拷啪头锟斤拷锟斤拷吮浠�,
+           //锟斤拷锟斤拷,锟截伙拷时锟斤拷太锟斤拷,没锟叫帮拷锟斤拷锟斤拷时锟斤拷锟斤拷锟教斤拷锟斤拷锟接迟关伙拷...锟斤拷锟斤拷锟节斤拷锟斤拷时时锟斤拷锟斤拷卸媳锟街撅拷锟斤拷锟轿�1
            */
         if(CanPMState.ACCOffTimer1S == 1)
         {
@@ -1479,7 +1480,7 @@ void CANTask_PmRoutine(void)
         }
         break;
     case CAN_PM_WAIT_HALFSLEEP:
-#if 0		//��WAIT_SLEEPģʽ�£��������������߹ػ�������2016-5-29 byzwl
+#if 0		//锟斤拷WAIT_SLEEP模式锟铰ｏ拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟竭关伙拷锟斤拷锟斤拷锟斤拷2016-5-29 byzwl
         if(IOStatus == 0)
         {
             CANTask_SendPMReqest(OP_PM_STATE_OFF);
@@ -1527,7 +1528,7 @@ void CANTask_PmRoutine(void)
 	        {
 	            if(CANTask_GetSysACCState() ==0)
 				{
-					if(pData->CarAVMReq == 1) // ��ȫ��ģʽ��ACC���˳�ȫ��ģʽ
+					if(pData->CarAVMReq == 1) // 锟斤拷全锟斤拷模式锟斤拷ACC锟斤拷锟剿筹拷全锟斤拷模式
 					{
 						CANUser_SetAvmOutCmd();
 					}
@@ -1537,7 +1538,7 @@ void CANTask_PmRoutine(void)
 					CanPMState.ACCOffTimer1S = ACCOFF_TIMEOUT_S;/*ACC OFF timer-out = 6S*/
 					CanPMState.Timer10ms = 10;
 				}
-				//��Ҫ������ILL���������,��ACC���߼� snake20160816
+				//锟斤拷要锟斤拷锟斤拷锟斤拷ILL锟斤拷锟斤拷锟斤拷锟斤拷锟�,锟斤拷ACC锟斤拷锟竭硷拷 snake20160816
 				
 	            CanPMState.AccoffNotSleepFlag = 0;
 	        }
@@ -1690,14 +1691,14 @@ void CANTask_PmRoutine(void)
 		}
 		break;
 
-	case CAN_PM_WAIT_HALFSLEEP://��С�Ƶ�ʱ��,�ر�ACC��״̬....���벢ͣ����WAIT_SLEEPģʽ...
-		if(CanPMState.LocalACC) //��ACC,����,����
+	case CAN_PM_WAIT_HALFSLEEP://锟斤拷小锟狡碉拷时锟斤拷,锟截憋拷ACC锟斤拷状态....锟斤拷锟诫并停锟斤拷锟斤拷WAIT_SLEEP模式...
+		if(CanPMState.LocalACC) //锟斤拷ACC,锟斤拷锟斤拷,锟斤拷锟斤拷
 		{
 			CANTask_SendPMReqest(OP_PM_STATE_ON);
 			CanPMState.state = CAN_PM_NORMAL;
 		}
 
-		//if(IO_Get(IO_IDX_ILL_DET,PIN_INPUT,FALSE) == 0)//��ILL
+		//if(IO_Get(IO_IDX_ILL_DET,PIN_INPUT,FALSE) == 0)//锟斤拷ILL
 		if(!SystemStatus.ILL)
 		{
 			if(l_tPwrCB.eMode != PM_MODE_WAIT_SLEEP)
@@ -1753,7 +1754,7 @@ void CANTask_PmRoutine(void)
 			}
 		}
 		break;
-    case CAN_PM_SLEEP://�ر�ACC֮��,������ʱ���״̬....
+    case CAN_PM_SLEEP://锟截憋拷ACC之锟斤拷,锟斤拷锟斤拷锟斤拷时锟斤拷锟阶刺�....
 		/*
 	 if(CanPMState.LocalACC == 1)
 	  {
@@ -1775,10 +1776,10 @@ void CANTask_PmRoutine(void)
 
 		if(IOStatus==2)
 		{
-			CANTask_StartWork();//��CAN����...
+			CANTask_StartWork();//锟斤拷CAN锟斤拷锟斤拷...
 			CANTask_SendPMReqest(OP_PM_STATE_ON);
 			CanPMState.state = CAN_PM_HALFSLEEP;
-			PanelLed_SwitchDeal(ON);//��POWER������
+			PanelLed_SwitchDeal(ON);//锟斤拷POWER锟斤拷锟斤拷锟斤拷
 			TaskCAN_debug(_T("---In Sleep State:ILL ON Wake Up DVD!!!!\n\n"));
 		}
 		else
@@ -1791,12 +1792,12 @@ void CANTask_PmRoutine(void)
 			}
 			else
 			{
-				//���1041��INH����
+				//锟斤拷锟�1041锟斤拷INH锟斤拷锟斤拷
 				if((IO_Get(IO_IDX_ACC_WAKE,PIN_INPUT,TRUE) == 1) && (CanPMState.WaitTimer1S == 0))
 				{
 					HMIStatusFlag.g_tCanbusWakeUpFlag = 1;
 					CANTask_StartWork();
-					//can�����շ� disable
+					//can锟斤拷锟斤拷锟秸凤拷 disable
 					#ifdef UDS_ENABLE_MACRO
 					UdsAppInfo.subControlType = COMM_DSRX_DSTX;
 					UdsAppInfo.CommunicationType = COMM_TYPE_NCM_NWMCM;
@@ -1819,7 +1820,7 @@ void CANTask_PmRoutine(void)
 			}
 		}
 	break;
-	case CAN_PM_HALFSLEEP://С�ƻ��������ĵȴ�״̬....
+	case CAN_PM_HALFSLEEP://小锟狡伙拷锟斤拷锟斤拷锟斤拷锟侥等达拷状态....
 		if(CanPMState.LocalACC == 1)
 		{
 			CANTask_StartWork();
@@ -1917,9 +1918,9 @@ void CANTask_PMMsgHandler(tMSG_BUF* Msg)
     CanPMState.SysPmState =(uint8_t) Msg->iSid;
 
 	/*
-	//����γ����Ϣ,�洢��no_init�����ݿ���,��д�뵽EEPROM��...
-	//snake20161017 �ϵ�֮ǰ,����EEPROM��д��...
-	//ֻ���ڽ���WAIT_SLEEP(�����Ӻ����)��ʱ��,��дEEPROM..��ֹ,�쳣��������������,������д����,��������оƬ�ϵ絼��,д����...
+	//锟斤拷锟斤拷纬锟斤拷锟斤拷息,锟芥储锟斤拷no_init锟斤拷锟斤拷锟捷匡拷锟斤拷,锟斤拷写锟诫到EEPROM锟斤拷...
+	//snake20161017 锟较碉拷之前,锟斤拷锟斤拷EEPROM锟斤拷写锟斤拷...
+	//只锟斤拷锟节斤拷锟斤拷WAIT_SLEEP(锟斤拷锟斤拷锟接猴拷锟斤拷锟�)锟斤拷时锟斤拷,锟斤拷写EEPROM..锟斤拷止,锟届常锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷,锟斤拷锟斤拷锟斤拷写锟斤拷锟斤拷,锟斤拷锟斤拷锟斤拷锟斤拷芯片锟较电导锟斤拷,写锟斤拷锟斤拷...
 	if(Msg->iSid == OP_PM_STATE_WAIT_SLEEP)
 	{
 		uint8_t EepStoreStep=WR_EEP_NO_REQ;
@@ -2241,7 +2242,7 @@ void CANTask_VehicleMsgHandler(uint8_t *pMsg)
 	case OP_CAN_RX_ACR_OPEN_AVM:
 		 index=0x2b;
 		break;		
-/**************������ȫ**************/		
+/**************锟斤拷锟斤拷锟斤拷全**************/
 	case OP_CAN_RX_ACC_OBJ_ENABLE:
 		index = 0x2c;
 		break;
@@ -2344,8 +2345,8 @@ void CANTask_DTVMsgHandler(uint8_t* pMsg)
 void CANTask_EOLMsgHandler(uint8_t *pMsg)
 {
 /*
-  *	 ��������������ǵĻ�������APU���������ã�����ʽ
-  *	��һ���ģ���Ҫ���浽ϵͳ��ȥ��
+  *	 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷堑幕锟斤拷锟斤拷锟斤拷锟紸PU锟斤拷锟斤拷锟斤拷锟斤拷锟矫ｏ拷锟斤拷锟斤拷式
+  *	锟斤拷一锟斤拷锟侥ｏ拷锟斤拷要锟斤拷锟芥到系统锟斤拷去锟斤拷
   */
   	#if (PROJECT_CODE == CHANGAN_S401)
 		UdsFbl_StoreDIDToSystem(DID_ID_F1F8, pMsg, DID_F1F8_LENGTH);
@@ -2353,8 +2354,8 @@ void CANTask_EOLMsgHandler(uint8_t *pMsg)
 		UdsFbl_StoreDIDToSystem(DID_ID_F1FA, pMsg, DID_F1FA_LENGTH);
 	#endif
 /*
-  *	����ȡ������Ҫ���µ�UDS FBL����������ݽṹ�У�
-  *   �Ա��������ִ�ж�ȡ������
+  *	锟斤拷锟斤拷取锟斤拷锟斤拷锟斤拷要锟斤拷锟铰碉拷UDS FBL锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷萁峁癸拷校锟�
+  *   锟皆憋拷锟斤拷锟斤拷锟斤拷锟街达拷卸锟饺★拷锟斤拷锟斤拷锟�
   */
        UdsFbl_LoadSysData(&l_tBusData);
 }
@@ -2563,16 +2564,16 @@ static void CANTask_MsgHandler(tMSG_BUF* Msg)
         CANTask_OtherMsgHandler(Msg);
         break;
 
-    case MS_OTHER_AVM://snake20160808  ä��
+    case MS_OTHER_AVM://snake20160808  盲锟斤拷
     {
 		CarAVMDataStruct *pData = pCAN_GetAVMData();
 
 		/*
-		if(!l_tMediaCB.uDevFlag.field.bUnLocked)//snake20160927 delete ͬ��֮ǰҲ���Խ���ä��...
+		if(!l_tMediaCB.uDevFlag.field.bUnLocked)//snake20160927 delete 同锟斤拷之前也锟斤拷锟皆斤拷锟斤拷盲锟斤拷...
 		{
 			return;
 		}*/
-		if(!HMIStatusFlag.g_tUpdataReverseParameter)//�ڵ�����ʱ��,����Ӧä������...
+		if(!HMIStatusFlag.g_tUpdataReverseParameter)//锟节碉拷锟斤拷锟斤拷时锟斤拷,锟斤拷锟斤拷应盲锟斤拷锟斤拷锟斤拷...
 		if(1==CanPMState.SysWorkState)	
 		{
 			fTw8836.ADI7186OVERLAYDisable = 0;
@@ -2587,7 +2588,7 @@ static void CANTask_MsgHandler(tMSG_BUF* Msg)
 				else if(g_tMcuDevState.uDetect.bits.Blind_Flag == 0)
 				{
 					pData->BlindReq=1;
-					_SendMsgToSRC(MS_INPUT_UI,UICC_STOP_SEEK,NULL);//snake20161007 ����ä����ʱ��ֹͣ����������������
+					_SendMsgToSRC(MS_INPUT_UI,UICC_STOP_SEEK,NULL);//snake20161007 锟斤拷锟斤拷盲锟斤拷锟斤拷时锟斤拷停止锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷
 				}				
 			}
 			else if( Msg->iSid == OP_AVM_RELEASE) 
@@ -2733,7 +2734,7 @@ void CANTask_SetAmpPower(void)
 {
 	uint8_t msg[5];
 	
-	if(CANTask_GetSysACCState() ==1)//acc  ��
+	if(CANTask_GetSysACCState() ==1)//acc  锟斤拷
 	{
 		CanPMState.SetAmpOffCnt=0;
 		CanPMState.SetAmpOnCnt++;
@@ -2743,13 +2744,13 @@ void CANTask_SetAmpPower(void)
 
 		if((CanPMState.SetAmpOnCnt%2)&&(CanPMState.SetAmpOnCnt<10))
 		{
-			//���ù��Ž�����
+			//锟斤拷锟矫癸拷锟脚斤拷锟斤拷锟斤拷
 			CANUser_SetAmpCmd(AMP_TYPE_MUTE, AMP_MUTE_ON);
 		}
 
 		 if((CanPMState.SetAmpOnCnt%2)&&(CanPMState.SetAmpOnCnt>10))
 		{
-	                //���ù��Ž⾲��
+	                //锟斤拷锟矫癸拷锟脚解静锟斤拷
 	                if(l_tMediaCB.uDevFlag.field.bDevConnect==0)
 	                {
 				CANUser_SetAmpCmd(AMP_TYPE_MUTE, AMP_MUTE_ON);
@@ -2773,14 +2774,14 @@ void CANTask_SetAmpPower(void)
 		}
 	}
 	
-	if(CANTask_GetSysACCState() ==0)//acc ��
+	if(CANTask_GetSysACCState() ==0)//acc 锟斤拷
 	{
 		CanPMState.SetAmpOnCnt=0;
 		CanPMState.SetAmpOffCnt++;
 		
 		if(CanPMState.SetAmpOffCnt%2)
 		{
-	                //���ù��Ž�����
+	                //锟斤拷锟矫癸拷锟脚斤拷锟斤拷锟斤拷
 			CANUser_SetAmpCmd(AMP_TYPE_MUTE, AMP_MUTE_ON);
 		}
 		else
@@ -2846,11 +2847,12 @@ void CANbus_Task(EVENT iEvt,eTASK_STATE eState)
 
             CanIf_MainFunction();
             ComUser_MainFunction();
+            CanTp_MainFunction();
 
 #ifdef NM_ENABLE_MACRO
             NM_AppMsgHandler(CAN_ID_BODY);
 #else
-		#ifdef UDS_ENABLE_MACRO //snake20161012 �ر����������,ҲҪ����uds
+		#ifdef UDS_ENABLE_MACRO //snake20161012 锟截憋拷锟斤拷锟斤拷锟斤拷锟斤拷锟�,也要锟斤拷锟斤拷uds
 			Uds_ProtocolStackMain();
 		#endif
 #endif
@@ -2873,7 +2875,7 @@ void CANbus_Task(EVENT iEvt,eTASK_STATE eState)
                 CanPMState.Timer1S++;
 
 				//snake20170418
-				//��ʱ����,��û���ҵ�������ԭ��֮ǰ��ʱ�����ÿ1S�ӷ���һ�η�������.
+				//锟斤拷时锟斤拷锟斤拷,锟斤拷没锟斤拷锟揭碉拷锟斤拷锟斤拷锟斤拷原锟斤拷之前锟斤拷时锟斤拷锟斤拷锟矫�1S锟接凤拷锟斤拷一锟轿凤拷锟斤拷锟斤拷锟斤拷.
 				CANUser_SendMsg500();
 				CANUser_SendMsg501();
 				
@@ -2887,7 +2889,7 @@ void CANbus_Task(EVENT iEvt,eTASK_STATE eState)
             }
 		if(CanPmEnterStandbyFlg)
 		{
-			if(++CanPmRecTimer >= 1250)	// 2ms*1250 = 2.5s �źŶ�ʧ2.5S���Զ�����
+			if(++CanPmRecTimer >= 1250)	// 2ms*1250 = 2.5s 锟脚号讹拷失2.5S锟斤拷锟皆讹拷锟斤拷锟斤拷
 			{
 				CanPmRecTimer = 0;
 				CanPmEnterStandbyFlg = 0;
@@ -2942,7 +2944,7 @@ bool CANbus_TaskCreate(void)
 
     CAN0_LocalWakeup(0,1);
     CANTask_PMInit();
-	BusEepManager.Cnt = 0; //��ȡ�����ĳ�ʼ��....
+	BusEepManager.Cnt = 0; //锟斤拷取锟斤拷锟斤拷锟侥筹拷始锟斤拷....
     l_tBusData.iCheckSum = 0x00;
     if(EEP_DATA_NOERR == EEP_CreateEepDataBlock(&l_tEepBusCB,&lc_tEepBusCB))
     {

@@ -1,4 +1,13 @@
-﻿Version : V0.1.4
+﻿Version : V0.1.5
+ChangeLog :
+1.CanBus : mapping CanTp_MainFunction to CanBus_Task.
+2.CanIf : modify location is CanIf_UpdateTxListMsgDlcData and CanIf_UpdateTxListMsgData.---->fix bug, event message not send.
+3.CanIf_Table : modify event message parameters and add some comments.
+4.CanTp : add some debug information and add some test code.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.02
+/*********************************************************************************************************************/
+Version : V0.1.4
 ChangeLog :
 1.CanTp : implements CanTp_TxManagementFunction function
 2.CanTp : modify some function.

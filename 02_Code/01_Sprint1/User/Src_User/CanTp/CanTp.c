@@ -44,6 +44,7 @@ CAN_TP_EXTERN_API void CanTp_InitFunction(void)
 	/*Init CanTp_TxPduCtrInfo parameters*/
 	CanTp_TxPduCtrInfo.Data = CanTp_TxPudBuffer;
 	CanTp_TxPduCtrInfo.MsgId = CANTP_DIAG_RESP_ADDR;
+	CanTp_TxPduCtrInfo.TxMachineState = CANTP_TXMS_IDLE;
 }
 
 /****************************************************************************
@@ -66,13 +67,28 @@ CAN_TP_EXTERN_API void CanTp_MainFunction(void)
  * @attention   NULL
 ****************************************************************************/
 /*需要考虑一下这个函数的执行周期，因为CANTP的时间参数的实现，需要依赖于主函数的执行情况*/
+uint16 snake_debug_counter = 0x00;
 CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
 {
+	uint8 data[128] = {0x00,0x00,0x00};
+
 	switch(CanTp_TxPduCtrInfo.TxMachineState)
 	{
 		case CANTP_TXMS_IDLE:
 		{
 			/*doing nothing*/
+			/*test code*/
+			snake_debug_counter++;
+			if(snake_debug_counter >= 5000)
+			{
+				snake_debug_counter = 0x00;
+				CanTp_TxPduCtrInfo.BusChannel = 0x00;
+				CanTp_TxPduCtrInfo.Data = data;
+				CanTp_TxPduCtrInfo.MsgId = CANTP_DIAG_RESP_ADDR;
+				CanTp_TxPduCtrInfo.TotalDataLength ++;
+				CanTp_TxPduCtrInfo.TxMachineState = CANTP_TXMS_TX_REQ;
+				CanTp_TxPduCtrInfo.TxDataLength = 0x00;
+			}
 			break;
 		}
 
@@ -96,6 +112,7 @@ CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
 
 		case CANTP_TXMS_TX_SF:
 		{
+			CanTp_Debug_OutputInfo(_T("CanTp Send SF....TotalDataLength = %d\n",CanTp_TxPduCtrInfo.TotalDataLength));
 			CanTp_TxDiagMsgSF(	CanTp_TxPduCtrInfo.BusChannel,	\
 								CanTp_TxPduCtrInfo.MsgId, \
 								CanTp_TxPduCtrInfo.TotalDataLength, \
@@ -106,10 +123,12 @@ CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
 
 		case CANTP_TXMS_TX_FF:
 		{
+			CanTp_Debug_OutputInfo(_T("CanTp Send FF....TotalDataLength = %d\n",CanTp_TxPduCtrInfo.TotalDataLength));
 			CanTp_TxDiagMsgFF(	CanTp_TxPduCtrInfo.BusChannel,	\
 								CanTp_TxPduCtrInfo.MsgId, \
 								CanTp_TxPduCtrInfo.TotalDataLength, \
 								CanTp_TxPduCtrInfo.Data);
+			CanTp_TxPduCtrInfo.TxDataLength = 0x06;
 			CanTp_TxPduCtrInfo.TxMachineState = CANTP_TXMS_WT_FC;
 			break;
 		}
@@ -156,7 +175,6 @@ CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
 			{
 				CanTp_TxPduCtrInfo.SN++;
 				/*SN Control*/
-				CanTp_TxPduCtrInfo.SN++;
 				if(CanTp_TxPduCtrInfo.SN > 0x0F)
 				{
 					CanTp_TxPduCtrInfo.SN = 0x00;
@@ -181,6 +199,12 @@ CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
 					/*Doing nothing*/
 				}
 			}
+			break;
+		}
+
+		case CANTP_TXMS_TX_OVER:
+		{
+			CanTp_TxPduCtrInfo.TxMachineState = CANTP_TXMS_IDLE;
 			break;
 		}
 	}
@@ -552,6 +576,9 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionFC(uint8 ChNo, uint32 MsgId, ui
 ****************************************************************************/
 CAN_TP_LOCAL_API uint8 CanTp_TxCanFrame(uint8 ChNo, uint32 MsgId, uint8 Dlc, uint8* ptr_Data)
 {
+	/*CanTp_Debug_OutputInfo(_T("CanTp_TxCanFrame :\n ChNo = %d,MsgId = 0x%lx Data = [%x %x %x %x %x %x %x %x]\n",\
+				ChNo,MsgId,ptr_Data[0],ptr_Data[1],ptr_Data[2],ptr_Data[3],ptr_Data[4],ptr_Data[5],ptr_Data[6],ptr_Data[7]));
+				*/
 	return CanTp_CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data);
 }
 
@@ -586,7 +613,10 @@ CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgSF(uint8 ChNo,uint32 MsgId,uint8 SF_DL,uin
 	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_SF,0x04) | SF_DL;
 	memcpy(&data[1], ptr_ResponseData, SF_DL);
 
-	ret = CanTp_CanIf_UpdateTxListMsgDlcData(ChNo, MsgId, 0x08, data);
+	CanTp_Debug_OutputInfo(_T("CanTp_TxDiagMsgSF :\n ChNo = %d,MsgId = 0x%lx Data = [%x %x %x %x %x %x %x %x]\n",\
+			ChNo,MsgId,data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]));
+
+	ret = CanTp_TxCanFrame(ChNo, MsgId, 0x08, data);
 
 	return ret;
 }
@@ -622,7 +652,10 @@ CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFF(uint8 ChNo,uint32 MsgId,uint32 FF_DL,ui
 
 	memcpy(&data[2], ptr_ResponseData, 0x06);
 
-	ret = CanTp_CanIf_UpdateTxListMsgDlcData(ChNo, MsgId, 0x08, data);
+	CanTp_Debug_OutputInfo(_T("CanTp_TxDiagMsgFF :\n ChNo = %d,MsgId = 0x%lx Data = [%x %x %x %x %x %x %x %x]\n",\
+				ChNo,MsgId,data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]));
+
+	ret = CanTp_TxCanFrame(ChNo, MsgId, 0x08, data);
 
 	return ret;
 }
@@ -659,7 +692,7 @@ CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgCF(uint8 ChNo,uint32 MsgId,uint32 FF_DL,ui
 
 	memset(data, CANTP_PADDING_BYTE, 0x08);
 
-	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_FF,0x04) | SN;
+	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_CF,0x04) | SN;
 
 	if((DataOffset + 0x07) > FF_DL )
 	{
@@ -672,7 +705,10 @@ CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgCF(uint8 ChNo,uint32 MsgId,uint32 FF_DL,ui
 
 	memcpy(&data[1], (ptr_ResponseData + DataOffset), RxDataLength);
 
-	ret = CanTp_CanIf_UpdateTxListMsgDlcData(ChNo, MsgId, 0x08, data);
+	CanTp_Debug_OutputInfo(_T("CanTp_TxDiagMsgCF :\n ChNo = %d,MsgId = 0x%lx Data = [%x %x %x %x %x %x %x %x]\n",\
+					ChNo,MsgId,data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]));
+
+	ret = CanTp_TxCanFrame(ChNo, MsgId, 0x08, data);
 
 	return CommFunc_BitShiftLeft(RxDataLength, 0x04) | ret;
 }
@@ -691,12 +727,15 @@ CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFC(uint8 FlowStatus)
 
 	memset(data, CANTP_PADDING_BYTE, 0x08);
 
-	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_CF,0x04) | FlowStatus;
+	data[0] = CommFunc_BitShiftLeft(CANTP_FRAME_TYPE_FC,0x04) | FlowStatus;
 	data[1] = CANTP_PARAM_BS;
 	data[2] = CANTP_PARAM_STMIN;
 
+	CanTp_Debug_OutputInfo(_T("CanTp_TxDiagMsgFC :\n Data = [%x %x %x %x %x %x %x %x]\n",\
+						data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]));
+
 	/*In this version,can tp only support single channel of can bus*/
-	ret = CanTp_CanIf_UpdateTxListMsgDlcData(0x00, CANTP_DIAG_RESP_ADDR, 0x08, data);
+	ret = CanTp_TxCanFrame(0x00, CANTP_DIAG_RESP_ADDR, 0x08, data);
 
 	return ret;
 }

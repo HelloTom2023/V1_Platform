@@ -1017,6 +1017,8 @@ CAN_IF_LOCAL_API void CanIf_TxMainFunction(void)
 ****************************************************************************/
 CAN_IF_LOCAL_API void CanIf_TxManagementFunction(void)
 {
+	uint8 ret = 0x00;
+
 	/*Check the can controller hareware buffer is valid*/
 	CanIf_CanControllerTxHardwareBuffIndexVaildCheck(&CanIf_CanTxMsgCtrInfo.HwBufNo);
 
@@ -1041,10 +1043,13 @@ CAN_IF_LOCAL_API void CanIf_TxManagementFunction(void)
 						CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgId,  \
 						CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].Data, \
 						CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].Dlc);
-				/*Request send message*/
-				CanIf_ReqControllerTxMsg(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].ChNo, \
-						CanIf_CanTxMsgCtrInfo.HwBufNo);
 
+				/*Request send message*/
+				ret = CanIf_ReqControllerTxMsg(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].ChNo, \
+						CanIf_CanTxMsgCtrInfo.HwBufNo);
+				/*
+				CanIf_Debug_OutputInfo(_T("Tx PERIODIC Message : id = 0x%lx,ret = %d\n",CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgId, ret));
+				*/
 				/*can controller hardware buffer index control*/
 				CanIf_CanTxMsgCtrInfo.HwBufNo++;
 				/*reset cycle timer*/
@@ -1060,15 +1065,20 @@ CAN_IF_LOCAL_API void CanIf_TxManagementFunction(void)
 							CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgId,  \
 							CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].Data, \
 							CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].Dlc);
+
 					/*Request send message*/
 					CanIf_ReqControllerTxMsg(CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].ChNo, \
 							CanIf_CanTxMsgCtrInfo.HwBufNo);
+					/*
+					CanIf_Debug_OutputInfo(_T("Tx EVENT Message : id = 0x%lx,ret = %d\n",CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].MsgId,ret));
+					*/
 					/*can controller hardware buffer index control*/
 					CanIf_CanTxMsgCtrInfo.HwBufNo++;
 					/*reset cycle timer*/
 					CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].CurrentTime = 0x00;
 					/*transmit times control information update*/
 					CanIf_CanMsgTxList[CanIf_CanTxMsgCtrInfo.TxListIndex].TransmittedCounter++;
+
 				}
 				else
 				{
@@ -1583,6 +1593,17 @@ CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgData(uint8 ChNo,uint32 MsgId, uint8
 		/*Update  data*/
 		CanIf_CanMsgTxList[Index].MsgId = MsgId;
 		memcpy(CanIf_CanMsgTxList[Index].Data, ptr_Data, CanIf_CanMsgTxList[Index].Dlc);
+
+		/*If the message is event,the function shall clear TransmittedCounter parameters */
+		if(CANIF_MSG_MODE_EVENT == CanIf_CanMsgTxList[Index].MsgTxMode)
+		{
+			CanIf_CanMsgTxList[Index].TransmittedCounter = 0x00;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
 		ret = E_OK;
 	}
 	else
@@ -1628,7 +1649,18 @@ CAN_IF_EXTERN_API uint8 CanIf_UpdateTxListMsgDlcData(uint8 ChNo,uint32 MsgId,uin
 		CanIf_CanMsgTxList[Index].MsgId = MsgId;
 		CanIf_CanMsgTxList[Index].Dlc = Dlc;
 		DataLength = Dlc;
-		memcpy(ptr_Data, CanIf_CanMsgTxList[Index].Data, DataLength);
+		memcpy(CanIf_CanMsgTxList[Index].Data, ptr_Data, DataLength);
+
+		/*If the message is event,the function shall clear TransmittedCounter parameters */
+		if(CANIF_MSG_MODE_EVENT == CanIf_CanMsgTxList[Index].MsgTxMode)
+		{
+			CanIf_CanMsgTxList[Index].TransmittedCounter = 0x00;
+		}
+		else
+		{
+			/*Doing nothing*/
+		}
+
 		ret = E_OK;
 	}
 	else
