@@ -20,12 +20,23 @@
 /*Include head files AREA*/
 #include "..\Common\Common.h"
 #include "..\Debug\Debug.h"
+#include "..\CanTp\CanTp.h"
 
 /*Macro definition AREA*/
 
 
 
 /*Function declaration AREA*/
+/****************************************************************************
+ * @function	Dcm_CanTp_SendDiagnosticResponseData
+ * @brief  		receive diagnostic response data from Dcm modules
+ * @param  		ChNo : intput parameters,
+ * 				DatLength : input parameters, diagnostic response data length
+ * 				ptr_Data : input parameters,diagnostic response data
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+#define Dcm_CanTp_SendDiagnosticResponseData(ChNo, DataLength, ptr_Data)		CanTp_ReceiveDiagnosticResponseData(ChNo, DataLength, ptr_Data)
 
 /****************************************************************************
  * @function	Debug_Dcm_OutputInfo

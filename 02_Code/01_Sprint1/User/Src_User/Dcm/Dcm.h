@@ -43,6 +43,37 @@
 
 
 /*Function declaration AREA*/
+/****************************************************************************
+ * @function	Dcm_InitFunction
+ * @brief  		init Dcm parameters
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_EXTERN_API void Dcm_InitFunction(void);
+
+/****************************************************************************
+ * @function	Dcm_RxDiagRequestInfo
+ * @brief  		Receive the diagnostic from Tp layer
+ * @param  		ChNo: input parameters,bus channel index.
+ *				ReqType : input parameters,the diagnostic request message type.
+ *				DataLength : input parameters,the diagnostic request data length
+ *				ptr_Data : input parameters,the diagnostic request data
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+DCM_EXTERN_API uint8 Dcm_RxDiagRequestInfo(uint8 ChNo, uint8 ReqType, uint16 DataLength,uint8* ptr_Data);
+
+/****************************************************************************
+ * @function	Dcm_TxDiagResponseInfo
+ * @brief  		Indication the can to receive can message
+ * @param  		ChNo: input parameters,bus channel index.
+  *				DataLength : input parameters,the diagnostic response data length
+ *				ptr_Data : input parameters,the diagnostic response data
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+DCM_EXTERN_API uint8 Dcm_TxDiagResponseInfo(uint8 ChNo, uint16 DataLength, uint8* ptr_Data);
 
 
 #endif /*_DCM_H_*/

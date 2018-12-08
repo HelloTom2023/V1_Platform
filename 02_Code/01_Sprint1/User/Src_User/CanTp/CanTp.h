@@ -193,5 +193,25 @@ CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgCF(uint8 ChNo,uint32 MsgId,uint32 FF_DL,ui
 ****************************************************************************/
 CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFC(uint8 FlowStatus);
 
+/****************************************************************************
+ * @function	CanTp_NotificationDiagnosticRequestData
+ * @brief  		send diagnostic data to Dcm modules
+ * @param  		DiagReqData : intput parameters,
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_NotificationDiagnosticRequestData(CanTp_RxPduControlInformation_Type DiagReqData);
+
+/****************************************************************************
+ * @function	CanTp_ReceiveDiagnosticResponseData
+ * @brief  		receive diagnostic response data from Dcm modules
+ * @param  		ChNo : intput parameters,
+ * 				DatLength : input parameters, diagnostic response data length
+ * 				ptr_Data : input parameters,diagnostic response data
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_EXTERN_API uint8 CanTp_ReceiveDiagnosticResponseData(uint8 ChNo,uint16 DataLength,uint8* ptr_Data);
+
 #endif /*_CAN_TP_H*/
 /*********************************File End*********************************/

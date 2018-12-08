@@ -20,6 +20,7 @@
 /*Include head files AREA*/
 #include "..\Common\Common.h"
 #include "..\Debug\Debug.h"
+#include "..\Dcm\Dcm.h"
 
 /*Macro definition AREA*/
 
@@ -49,6 +50,18 @@
  * @attention   NULL
 ****************************************************************************/
 #define CanTp_CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data)		CanIf_UpdateTxListMsgDlcData(ChNo,MsgId,Dlc,ptr_Data)
+
+/****************************************************************************
+ * @function	CanTp_NotificationDiagReqInfoToDcm
+ * @brief  		send diagnostic data to Dcm modules
+ * @param  		ChNo: input parameters,bus channel index.
+ *				ReqType : input parameters,the diagnostic request message type.
+ *				DataLength : input parameters,the diagnostic request data length
+ *				ptr_Data : input parameters,the diagnostic request data
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+#define CanTp_NotificationDiagReqInfoToDcm(ChNo,ReqType,DataLength,ptr_Data)	Dcm_RxDiagRequestInfo(ChNo,ReqType,DataLength,ptr_Data)
 
 /****************************************************************************
  * @function	CanTp_Debug_OutputInfo

@@ -1,4 +1,13 @@
-﻿Version : V0.1.6
+﻿Version : V0.1.7
+ChangeLog :
+1.CanTp : add two APIs,function is send and receive pdu with dcm modules.
+2.Dcm  : create Init function,and rx and tx function with CanTp modules.
+       --->implements function:can tp receive diagnostic can notification to dcm,and dcm can send pdu to can tp.
+3.VFB : mapping some api between CanTp and Dcm modules.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.08
+/*********************************************************************************************************************/
+Version : V0.1.6
 ChangeLog :
 1.Architecture : delete DiagE,DiagM,DiagS modules and delete the modules files.
 2.Architecture : create Dcm and DcmUser modules.

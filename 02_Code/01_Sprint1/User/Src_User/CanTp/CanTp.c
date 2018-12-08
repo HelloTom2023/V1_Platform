@@ -42,6 +42,7 @@ CAN_TP_EXTERN_API void CanTp_InitFunction(void)
 	CanTp_RxPduCtrInfo.Data = CanTp_RxPudBuffer;
 
 	/*Init CanTp_TxPduCtrInfo parameters*/
+	CanTp_TxPduCtrInfo.BusChannel = 0x00;
 	CanTp_TxPduCtrInfo.Data = CanTp_TxPudBuffer;
 	CanTp_TxPduCtrInfo.MsgId = CANTP_DIAG_RESP_ADDR;
 	CanTp_TxPduCtrInfo.TxMachineState = CANTP_TXMS_IDLE;
@@ -78,7 +79,7 @@ CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
 		{
 			/*doing nothing*/
 			/*test code*/
-			snake_debug_counter++;
+			/*snake_debug_counter++;
 			if(snake_debug_counter >= 5000)
 			{
 				snake_debug_counter = 0x00;
@@ -88,7 +89,7 @@ CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
 				CanTp_TxPduCtrInfo.TotalDataLength ++;
 				CanTp_TxPduCtrInfo.TxMachineState = CANTP_TXMS_TX_REQ;
 				CanTp_TxPduCtrInfo.TxDataLength = 0x00;
-			}
+			}*/
 			break;
 		}
 
@@ -205,6 +206,12 @@ CAN_TP_LOCAL_API void CanTp_TxManagementFunction(void)
 		case CANTP_TXMS_TX_OVER:
 		{
 			CanTp_TxPduCtrInfo.TxMachineState = CANTP_TXMS_IDLE;
+			break;
+		}
+
+		default:
+		{
+			/*Doing nothing*/
 			break;
 		}
 	}
@@ -324,31 +331,14 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionSF(uint8 ChNo, uint32 MsgId, ui
 	DataLength = (uint8) (ptr_Data[0] & 0x0F);
 	if((DataLength >= 1) && (DataLength <= 7))
 	{
-		CanTp_ProtocolDataUnitStruct_Type CanTp_DcmPdu;
-		uint8 ReqDataArray[7];
 		uint8 i = 0x00;
-
-		CanTp_DcmPdu.Data = ReqDataArray;
 
 		CanTp_RxPduCtrInfo.TotalDataLength = DataLength;
 		CanTp_RxPduCtrInfo.RxDataLength = DataLength;
 		memcpy(CanTp_RxPduCtrInfo.Data, &ptr_Data[1], CanTp_RxPduCtrInfo.RxDataLength);
 
-		CanTp_DcmPdu.BusChannel = ChNo;
-		CanTp_DcmPdu.PduType = 0x00;
-		CanTp_DcmPdu.ReqType = CanTp_RxPduCtrInfo.ReqMsgType;
-		CanTp_DcmPdu.DataLength = CanTp_RxPduCtrInfo.TotalDataLength;
-		memcpy(CanTp_DcmPdu.Data, CanTp_RxPduCtrInfo.Data, CanTp_DcmPdu.DataLength);
-
-		CanTp_Debug_OutputInfo(_T("Diag Info:BusChannel = %d,PduType = 0x%d,ReqType = 0x%x,DataLength = %d,ReqData : [",\
-				CanTp_DcmPdu.BusChannel,CanTp_DcmPdu.PduType,CanTp_DcmPdu.ReqType,CanTp_DcmPdu.DataLength));
-		for(i = 0x00; i<DataLength; i++)
-		{
-			CanTp_Debug_OutputInfo(_T("0x%x ",CanTp_DcmPdu.Data[i]));
-		}
-		CanTp_Debug_OutputInfo(_T("]\n"));
-
 		/*notification to dcm modules*/
+		CanTp_NotificationDiagnosticRequestData(CanTp_RxPduCtrInfo);
 
 		ret = E_OK;
 	}
@@ -510,6 +500,10 @@ CAN_TP_LOCAL_API uint8 CanTp_RxIndicationFunctionCF(uint8 ChNo, uint32 MsgId, ui
 				&ptr_Data[1], \
 				(CanTp_RxPduCtrInfo.TotalDataLength - CanTp_RxPduCtrInfo.RxDataLength));
 		CanTp_RxPduCtrInfo.RxDataLength = CanTp_RxPduCtrInfo.TotalDataLength;
+
+		/*the cantp receives data shall notification to Dcm modules*/
+		CanTp_NotificationDiagnosticRequestData(CanTp_RxPduCtrInfo);
+
 		ret = E_OK;
 	}
 	else
@@ -736,6 +730,97 @@ CAN_TP_LOCAL_API uint8 CanTp_TxDiagMsgFC(uint8 FlowStatus)
 
 	/*In this version,can tp only support single channel of can bus*/
 	ret = CanTp_TxCanFrame(0x00, CANTP_DIAG_RESP_ADDR, 0x08, data);
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanTp_NotificationDiagnosticRequestData
+ * @brief  		send diagnostic data to Dcm modules
+ * @param  		DiagReqData : intput parameters,
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_LOCAL_API uint8 CanTp_NotificationDiagnosticRequestData(CanTp_RxPduControlInformation_Type DiagReqData)
+{
+	uint8 ret = E_NOT_OK;
+
+	if(DiagReqData.TotalDataLength == DiagReqData.RxDataLength)
+	{
+		ret = CanTp_NotificationDiagReqInfoToDcm(	DiagReqData.BusChannel,	\
+													DiagReqData.ReqMsgType,	\
+													DiagReqData.TotalDataLength,	\
+													DiagReqData.Data);
+
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	CanTp_ReceiveDiagnosticResponseData
+ * @brief  		receive diagnostic response data from Dcm modules
+ * @param  		ChNo : intput parameters,
+ * 				DatLength : input parameters, diagnostic response data length
+ * 				ptr_Data : input parameters,diagnostic response data
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+CAN_TP_EXTERN_API uint8 CanTp_ReceiveDiagnosticResponseData(uint8 ChNo,uint16 DataLength,uint8* ptr_Data)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Input parameters check*/
+	if(NULL == ptr_Data)
+	{
+		ret = E_PARAM_NULLPTR;
+		return ret;
+	}
+	else
+	{
+		/*doing nothing*/
+	}
+
+	/*
+	 * clear this parameters : unlock the diagnostic PDU receive flag
+	 * mean the can tp modules can be receive next diagnostic PDU
+	 * */
+	CanTp_RxPduCtrInfo.RxLockFlag = 0x00;
+
+	/*Check the tx machine state*/
+	/*can tp modules have PDU being sending in the time, can tp shall be ignore this PDU*/
+	if(CANTP_TXMS_IDLE != CanTp_TxPduCtrInfo.TxMachineState)
+	{
+		ret = E_STATUS_ERROR;
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Receive the pdu from DCM modules*/
+	/*
+	 * if the data length equal 0.
+	 * mean the dcm modules perform diagnostic request,but not response.
+	 * */
+	if(DataLength > 0x00)
+	{
+		CanTp_TxPduCtrInfo.BusChannel = ChNo;
+		CanTp_TxPduCtrInfo.TotalDataLength = DataLength;
+		memcpy(CanTp_TxPduCtrInfo.Data, ptr_Data,DataLength);
+		CanTp_TxPduCtrInfo.TxMachineState = CANTP_TXMS_TX_REQ;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	ret = E_OK;
 
 	return ret;
 }

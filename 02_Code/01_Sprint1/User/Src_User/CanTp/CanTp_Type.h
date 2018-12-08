@@ -57,7 +57,7 @@ typedef struct CanTp_ProtocolControlUnitStruct_Type_Tag
 }CanTp_ProtocolControlUnitStruct_Type;
 
 /*
- *
+ * the following data shall be notification to Dcm modules
  * */
 typedef struct CanTp_ProtocolDataUnitStruct_Type_Tag
 {

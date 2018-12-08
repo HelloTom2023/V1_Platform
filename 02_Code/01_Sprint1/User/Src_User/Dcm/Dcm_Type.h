@@ -23,5 +23,25 @@
 #include "..\Common\Common.h"
 #include "Dcm_Cfg_Define.h"
 
+/*
+ * the following data from to CanTp modules
+ * */
+typedef struct Dcm_RxDiagRequestStruct_Type_Tag
+{
+	uint8 BusChannel;
+	uint8 ReqType; 		/*0: physical ; 1: function . when the pdutype is 0x00,this parameter is valid*/
+	uint16 DataLength;
+	uint8 *Data;		/*note : if you want to use the data element,you will init the pointer*/
+}Dcm_RxDiagRequestStruct_Type;
+
+/*
+ * the following data send to CanTp modules
+ * */
+typedef struct Dcm_TxDiagResponseStruct_Type_Tag
+{
+	uint8 BusChannel;
+	uint16 DataLength;
+	uint8 *Data;		/*note : if you want to use the data element,you will init the pointer*/
+}Dcm_TxDiagResponseStruct_Type;
 
 #endif /* _DCM_TYPE_H_ */

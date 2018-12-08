@@ -109,6 +109,11 @@
 #define E_WRONG_SN							(13U)
 #endif
 
+#ifndef E_STATUS_ERROR
+#define E_STATUS_ERROR						(14U)
+#endif
+
+
 /*boolean type*/
 #ifndef TRUE
 #define TRUE	(1)
