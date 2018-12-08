@@ -1,4 +1,12 @@
-﻿Version : V0.1.7
+﻿Version : V0.1.8
+ChangeLog :
+1.Dcm : Create Dcm_ServiceProtocol_Implement.h and Dcm_ServiceProtocol_Interface.h, the 2 files used implements uds service protocol function.
+2.Dcm_Type  : define some data type.
+3.Dcm : Dcm_RxDiagRequestInfo function, add diagnostic message convert to PDU handle.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.08
+/*********************************************************************************************************************/
+Version : V0.1.7
 ChangeLog :
 1.CanTp : add two APIs,function is send and receive pdu with dcm modules.
 2.Dcm  : create Init function,and rx and tx function with CanTp modules.

@@ -18,7 +18,8 @@
 /*Include head files AREA*/
 #include "Dcm.h"
 #include "Dcm_Cfg_Table.h" /*The table only used by Dcm.C*/
-
+#include "Dcm_ServiceProtocol_Interface.h"
+#include "Dcm_ServiceProtocol_Implement.h"
 
 /*Macro definition AREA*/
 
@@ -31,12 +32,28 @@
 /*Function implement AREA*/
 /****************************************************************************
  * @function	Dcm_InitFunction
- * @brief  		init Dcm parameters
+ * @brief  		Initiation DCM parameters
  * @param  		NULL
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
 DCM_EXTERN_API void Dcm_InitFunction(void)
+{
+	/*Initiation Dcm_ReqPDU*/
+	Dcm_ReqPDU.Data = ReqDataBuffer;
+
+	/*Initiation Dcm_PosResPDU*/
+	Dcm_PosResPDU.Data = PosResDataBuffer;
+}
+
+/****************************************************************************
+ * @function	Dcm_MainFunction
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_EXTERN_API void Dcm_MainFunction(void)
 {
 
 }
@@ -76,8 +93,27 @@ DCM_EXTERN_API uint8 Dcm_RxDiagRequestInfo(uint8 ChNo, uint8 ReqType, uint16 Dat
 	}
 	Dcm_Debug_OutputInfo(_T("]\n"));
 
-	/*test code*/
-	/*Dcm_TxDiagResponseInfo(ChNo,DataLength,ptr_Data);*/
+	/*
+	 * Convert diagnostic message to request PDU
+	 * The diagnostic message from CanTp modules
+	 * The request PDU used for diagnostic service
+	 * */
+	Dcm_ReqPDU.ChNo = ChNo;
+	Dcm_ReqPDU.ReqType = (Dcm_DiagRequestTpye_Enum_Type) ReqType;
+	Dcm_ReqPDU.SI = ptr_Data[0];
+	Dcm_ReqPDU.SubFunc = ptr_Data[1] & 0x7F;
+	Dcm_ReqPDU.SPRMIB = CommFunc_BitShiftRigth(ptr_Data[1],0x07) & 0x01;
+	Dcm_ReqPDU.DataLength = DataLength;
+	memcpy(Dcm_ReqPDU.Data, ptr_Data, DataLength);
+
+	/*
+	 * Update uds service protocol control information
+	 * */
+	Dcm_UdsServiceCtrInfo.ChNo = Dcm_ReqPDU.ChNo;
+	Dcm_UdsServiceCtrInfo.ReqType = Dcm_ReqPDU.ReqType;
+	Dcm_UdsServiceCtrInfo.SI = Dcm_ReqPDU.SI;
+	Dcm_UdsServiceCtrInfo.SubFunc = Dcm_ReqPDU.SubFunc;
+	Dcm_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_REQ;
 
 	return ret;
 }

@@ -40,7 +40,12 @@
 
 
 /*Variable Define AREA*/
-
+uint8 ReqDataBuffer[128];
+uint8 PosResDataBuffer[128];
+Dcm_RequestPDU_Struct_Type Dcm_ReqPDU;
+Dcm_PositiveResponsePDU_Struct_Type Dcm_PosResPDU;
+Dcm_NegativeResponsePDU_Struct_Type Dcm_NegResPDU;
+Dcm_UdsServiceProtocolCtrInfo_Struct_Type Dcm_UdsServiceCtrInfo;
 
 /*Function declaration AREA*/
 /****************************************************************************
@@ -51,6 +56,15 @@
  * @attention   NULL
 ****************************************************************************/
 DCM_EXTERN_API void Dcm_InitFunction(void);
+
+/****************************************************************************
+ * @function	Dcm_MainFunction
+ * @brief  		init Dcm parameters
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_EXTERN_API void Dcm_MainFunction(void);
 
 /****************************************************************************
  * @function	Dcm_RxDiagRequestInfo
