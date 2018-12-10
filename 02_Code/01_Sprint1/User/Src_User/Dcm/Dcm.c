@@ -18,8 +18,10 @@
 /*Include head files AREA*/
 #include "Dcm.h"
 #include "Dcm_Cfg_Table.h" /*The table only used by Dcm.C*/
-#include "Dcm_ServiceProtocol_Interface.h"
-#include "Dcm_ServiceProtocol_Implement.h"
+#include "Dcm_Dsp_Interface.h"
+#include "Dcm_Dsp_Implement.h"
+#include "Dcm_Dsl_Interface.h"
+#include "Dcm_Dsl_Implement.h"
 
 /*Macro definition AREA*/
 
@@ -44,6 +46,8 @@ DCM_EXTERN_API void Dcm_InitFunction(void)
 
 	/*Initiation Dcm_PosResPDU*/
 	Dcm_PosResPDU.Data = PosResDataBuffer;
+
+	Dsl_InitFunction();
 }
 
 /****************************************************************************
@@ -55,7 +59,7 @@ DCM_EXTERN_API void Dcm_InitFunction(void)
 ****************************************************************************/
 DCM_EXTERN_API void Dcm_MainFunction(void)
 {
-
+	Dsp_MainFunction();
 }
 
 /****************************************************************************
@@ -109,11 +113,30 @@ DCM_EXTERN_API uint8 Dcm_RxDiagRequestInfo(uint8 ChNo, uint8 ReqType, uint16 Dat
 	/*
 	 * Update uds service protocol control information
 	 * */
-	Dcm_UdsServiceCtrInfo.ChNo = Dcm_ReqPDU.ChNo;
-	Dcm_UdsServiceCtrInfo.ReqType = Dcm_ReqPDU.ReqType;
-	Dcm_UdsServiceCtrInfo.SI = Dcm_ReqPDU.SI;
-	Dcm_UdsServiceCtrInfo.SubFunc = Dcm_ReqPDU.SubFunc;
-	Dcm_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_REQ;
+	Dsp_UdsServiceCtrInfo.ChNo = Dcm_ReqPDU.ChNo;
+	Dsp_UdsServiceCtrInfo.ReqType = Dcm_ReqPDU.ReqType;
+	Dsp_UdsServiceCtrInfo.SI = Dcm_ReqPDU.SI;
+	Dsp_UdsServiceCtrInfo.SubFunc = Dcm_ReqPDU.SubFunc;
+
+	/*
+	 * Check the diagnostic service handler machine state
+	 * */
+	if(DCM_SERVICE_STATUS_IDLE == Dsp_UdsServiceCtrInfo.MachineState)
+	{
+		/*Reserved : it will report DET*/
+	}
+	else if(DCM_SERVICE_STATUS_IDLE != Dsp_UdsServiceCtrInfo.MachineState)
+	{
+		/*
+		 * if the MachineState is not IDLE,it mean the dcm is busy. so dcm shall be response NRC21
+		 * */
+		/*Reserved : response NRC21*/
+
+	}
+	else
+	{
+		Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_REQ;
+	}
 
 	return ret;
 }

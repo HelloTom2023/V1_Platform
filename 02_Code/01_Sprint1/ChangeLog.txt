@@ -1,4 +1,15 @@
-﻿Version : V0.1.8
+﻿Version : V0.1.9
+ChangeLog :
+1.Dcm : Dcm_ServiceProtocol_Implement.h and Dcm_ServiceProtocol_Interface.h rename to Dcm_Dsp_Implement.h and Dcm_Dsp_Interface.h
+2.Dcm : define some data type.and create the service list and the sub function list.
+3.Dcm : create Dcm_Dsl_Implement.h and Dcm_Dsl_Interface.h，used for implement diagnostic session layer logic.
+4.Dcm : create Dcm_TypeStack.h,used for define macro of private of DCM modules.
+5.Dcm : create some function and implements its.
+6.Tools : create diagnostic stack configuration tools.xlsx file. used for configured DCM modules parameters.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.10
+/*********************************************************************************************************************/
+Version : V0.1.8
 ChangeLog :
 1.Dcm : Create Dcm_ServiceProtocol_Implement.h and Dcm_ServiceProtocol_Interface.h, the 2 files used implements uds service protocol function.
 2.Dcm_Type  : define some data type.

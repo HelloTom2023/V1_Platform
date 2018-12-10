@@ -22,7 +22,7 @@
 #include "Dcm_Type.h"
 #include "Dcm_Cfg_Define.h"
 #include "VFB_Dcm.h"
-
+#include "Dcm_TypeStack.h"
 
 /*Macro definition AREA*/
 #define _DCM_C_	/*define use CanTp.c*/
@@ -45,7 +45,9 @@ uint8 PosResDataBuffer[128];
 Dcm_RequestPDU_Struct_Type Dcm_ReqPDU;
 Dcm_PositiveResponsePDU_Struct_Type Dcm_PosResPDU;
 Dcm_NegativeResponsePDU_Struct_Type Dcm_NegResPDU;
-Dcm_UdsServiceProtocolCtrInfo_Struct_Type Dcm_UdsServiceCtrInfo;
+Dcm_UdsServiceProtocolCtrInfo_Struct_Type Dsp_UdsServiceCtrInfo;
+Dcm_SessionType_Struct_Type Dsl_SessionType;
+Dcm_SecurityLevel_Struct_Type Dsl_SecurityLevel;
 
 /*Function declaration AREA*/
 /****************************************************************************

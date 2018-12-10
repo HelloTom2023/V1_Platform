@@ -18,6 +18,10 @@
 *.~doc
 *.~vsdx
 *.~vsd
+#*.xls
+#*.xlsx
+~$*.xls
+~$*.xlsx
 
 # Ignore Test Projcet Temporary Files
 *.ini

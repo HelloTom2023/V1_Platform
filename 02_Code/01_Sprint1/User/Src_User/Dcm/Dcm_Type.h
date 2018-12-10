@@ -106,6 +106,7 @@ typedef enum Dcm_DiagServicePerformStatus_Enum_Type_Tag
 	DCM_SERVICE_STATUS_REQ,
 	DCM_SERVICE_STATUS_RUN,
 	DCM_SERVICE_STATUS_COMPLETED,
+	DCM_SERVICE_STATUS_ERROR,
 	DCM_SERVICE_STATUS_NONE
 }Dcm_DiagServicePerformStatus_Enum_Type;
 
@@ -125,6 +126,7 @@ typedef enum Dcm_DiagServiceResponseType_Enum_Type_Tag
  * */
 typedef struct Dcm_UdsServiceProtocolCtrInfo_Struct_Type_Tag
 {
+	uint8 Index;											/*indication the SID in the service list located*/
 	uint8 ChNo;												/*bus channel number*/
 	Dcm_DiagRequestTpye_Enum_Type ReqType;
 	uint8 SI;												/*Service Identifier*/
@@ -133,5 +135,51 @@ typedef struct Dcm_UdsServiceProtocolCtrInfo_Struct_Type_Tag
 	Dcm_DiagServiceResponseType_Enum_Type ResType;			/*diagnostic response PDU type*/
 }Dcm_UdsServiceProtocolCtrInfo_Struct_Type;
 
+/*
+ * UDS diagnostic support service table type
+ *
+ * */
+typedef struct Dcm_SupportServiceList_Struct_Type_Tag
+{
+	uint8 Index;
+	uint8 ChNo;													/* bus channel number*/
+	uint8 SI;													/* Service Identifier*/
+	uint8 SupportSPRMIB;										/* 0x01:support suppressPosRspMsgIndicationBit; 0x00:not support suppressPosRspMsgIndicationBit*/
+	uint8 SupportReqType;										/* 0x01: support this type request; 0x00 : not support this type request
+																 * bit0 : indication Physical request; bit1 : indication functional request
+																*/
+	//uint8 (*ServiceFunction)(Dcm_RequestPDU_Struct_Type);		/* diagnostic service handle function*/
+}Dcm_SupportServiceList_Struct_Type;
+
+/*
+ * UDS diagnostic support sub function table type of diagnostic services
+ *
+ * */
+typedef struct Dcm_SupportSubFunctionList_Struct_Type_Tag
+{
+	uint8 Index;
+	uint8 ChNo;													/* bus channel number*/
+	uint8 SubId;												/* Sub function Identifier*/
+	uint8 SupportSeesion;										/* 0x01:support this session ; 0x00:not support this session*/
+	uint8 SupportSecurityLevel;									/* 0x01: support this security level; 0x00 : not support this security level*/
+}Dcm_SupportSubFunctionList_Struct_Type;
+
+/*
+ * session type structure
+ * */
+typedef struct Dcm_SessionType_Struct_Type_Tag
+{
+	uint8 PreSessionType;
+	uint8 CurrentSessionType;
+}Dcm_SessionType_Struct_Type;
+
+/*
+ * security level structure
+ * */
+typedef struct Dcm_SecurityLevel_Struct_Type_Tag
+{
+	uint8 PreSecurityLevel;
+	uint8 CurrentSecurityLevel;
+}Dcm_SecurityLevel_Struct_Type;
 
 #endif /* _DCM_TYPE_H_ */
