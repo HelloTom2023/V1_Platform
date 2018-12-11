@@ -48,21 +48,42 @@ DCM_LOCAL_API void Dsl_InitFunction(void);
 
 /****************************************************************************
  * @function	Dsl_SetSeesionType
- * @brief  		set seesion type
- * @param  		NULL
+ * @brief  		set session type
+ * @param  		SesType : input parameters , will be setting session type value
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API void Dsl_SetSeesionType(uint8 SesType);
+DCM_LOCAL_API void Dsl_SetSessionType(uint8 SesType);
 
 /****************************************************************************
- * @function	Dsl_SetSeesionType
- * @brief  		set seesion type
- * @param  		NULL
+ * @function	Dsl_GetSeesionType
+ * @brief  		get session type
+ * @param  		SesType : output parameters
+ * @retval 		ret : function error event value
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsl_GetSessionType(uint8* ptr_SesType);
+
+/****************************************************************************
+ * @function	Dsl_SetSecurityLevel
+ * @brief  		set security level
+ * @param  		SecLevel : input parameters,will be setting security level value
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
 DCM_LOCAL_API void Dsl_SetSecurityLevel(uint8 SecLevel);
+
+/****************************************************************************
+ * @function	Dsl_GetSecurityLevel
+ * @brief  		get security type
+ * @param  		ptr_SecLevel : output parameters
+ * @retval 		ret : function error event value
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsl_GetSecurityLevel(uint8* ptr_SecLevel);
+
+
+
 
 #endif /*_DCM_DSL_INTERFACE_H_*/
 /*********************************File End*********************************/

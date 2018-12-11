@@ -148,7 +148,6 @@ typedef struct Dcm_SupportServiceList_Struct_Type_Tag
 	uint8 SupportReqType;										/* 0x01: support this type request; 0x00 : not support this type request
 																 * bit0 : indication Physical request; bit1 : indication functional request
 																*/
-	//uint8 (*ServiceFunction)(Dcm_RequestPDU_Struct_Type);		/* diagnostic service handle function*/
 }Dcm_SupportServiceList_Struct_Type;
 
 /*

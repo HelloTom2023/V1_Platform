@@ -66,4 +66,43 @@
 #define DCM_NRC_VTH				(0x92)  /*voltageTooHigh*/
 #define DCM_NRC_VTL				(0x93)  /*voltageTooLow*/
 
+/*
+ * diagnostic services Identifier definition and values
+ * Reference <<ISO 14229-1 2013>>.
+ * */
+#define DCM_SID_DSC				(0x10)  /*DiagnosticSessionControl*/
+#define DCM_SID_ER				(0x11)	/*ECUReset*/
+#define DCM_SID_CDTCI			(0x14)	/*ClearDiagnosticInformation*/
+#define DCM_SID_RDTCI			(0x19)	/*ReadDTCInformation*/
+#define DCM_SID_RDBI			(0x22)	/*ReadDataByIdentifier*/
+#define DCM_SID_RMBA			(0x23)	/*ReadMemoryByAddress*/
+#define DCM_SID_RSDBI			(0x24)	/*ReadScalingDataByIdentifier*/
+#define DCM_SID_SA				(0x27)	/*SecurityAcces*/
+#define DCM_SID_CC				(0x28)	/*CommunicationControl*/
+#define DCM_SID_RDBPI			(0x2A)	/*ReadDataByPeriodicIdentifier*/
+#define DCM_SID_DDDI			(0x2C)	/*DynamicallyDefineDataIdentifier*/
+#define DCM_SID_WDBI			(0x2E)	/*WriteDataByIdentifier*/
+#define DCM_SID_IOCBI			(0x2F)	/*InputOutputControlByIdentifier*/
+#define DCM_SID_RC				(0x31)	/*RoutineControl*/
+#define DCM_SID_RD				(0x34)	/*RequestDownload*/
+#define DCM_SID_RU				(0x35)	/*RequestUpload*/
+#define DCM_SID_TD				(0x36)	/*TransferData*/
+#define DCM_SID_RTE				(0x37)	/*RequestTransferExit*/
+#define DCM_SID_RFT				(0x38)	/*RequestFileTransfer*/
+#define DCM_SID_WMBA			(0x3D)	/*WriteMemoryByAddress*/
+#define DCM_SID_TP				(0x3E)	/*TesterPresent*/
+#define DCM_SID_ATP				(0x83)	/*AccessTimingParameter*/
+#define DCM_SID_SDT				(0x84)	/*SecuredDataTransmission*/
+#define DCM_SID_CDTCS			(0x85)	/*ControlDTCSetting*/
+#define DCM_SID_ROE				(0x86)	/*ResponseOnEvent*/
+#define DCM_SID_LC				(0x87)	/*LinkControl*/
+
+
+
+
+
+
+
+
+
 #endif /* _DCM_TYPESTACK_H_ */

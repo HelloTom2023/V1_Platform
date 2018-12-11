@@ -51,21 +51,46 @@ DCM_LOCAL_API void Dsl_InitFunction(void)
 
 /****************************************************************************
  * @function	Dsl_SetSeesionType
- * @brief  		set seesion type
- * @param  		NULL
+ * @brief  		set session type
+ * @param  		SesType : input parameters , will be setting session type value
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API void Dsl_SetSeesionType(uint8 SesType)
+DCM_LOCAL_API void Dsl_SetSessionType(uint8 SesType)
 {
 	Dsl_SessionType.PreSessionType = Dsl_SessionType.CurrentSessionType;
 	Dsl_SessionType.CurrentSessionType = SesType;
 }
 
 /****************************************************************************
- * @function	Dsl_SetSeesionType
- * @brief  		set seesion type
- * @param  		NULL
+ * @function	Dsl_GetSeesionType
+ * @brief  		get session type
+ * @param  		SesType : output parameters
+ * @retval 		ret : function error event value
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsl_GetSessionType(uint8* ptr_SesType)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Input parameters check*/
+	if(NULL == ptr_SesType)
+	{
+		ret = E_PARAM_NULLPTR;
+	}
+	else
+	{
+		*ptr_SesType = Dsl_SessionType.CurrentSessionType;
+		ret = E_OK;
+	}
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Dsl_SetSecurityLevel
+ * @brief  		set security level
+ * @param  		SecLevel : input parameters,will be setting security level value
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
@@ -73,6 +98,31 @@ DCM_LOCAL_API void Dsl_SetSecurityLevel(uint8 SecLevel)
 {
 	Dsl_SecurityLevel.PreSecurityLevel = Dsl_SecurityLevel.CurrentSecurityLevel;
 	Dsl_SecurityLevel.CurrentSecurityLevel = SecLevel;
+}
+
+/****************************************************************************
+ * @function	Dsl_GetSecurityLevel
+ * @brief  		get security type
+ * @param  		SecLevel : output parameters
+ * @retval 		ret : function error event value
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsl_GetSecurityLevel(uint8* ptr_SecLevel)
+{
+	uint8 ret = E_NOT_OK;
+
+	/*Input parameters check*/
+	if(NULL == ptr_SecLevel)
+	{
+		ret = E_PARAM_NULLPTR;
+	}
+	else
+	{
+		*ptr_SecLevel = Dsl_SecurityLevel.CurrentSecurityLevel;
+		ret = E_OK;
+	}
+
+	return ret;
 }
 
 #endif /*_DCM_DSL_IMPLEMENT_H_*/

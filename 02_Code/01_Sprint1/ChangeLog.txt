@@ -1,4 +1,16 @@
-﻿Version : V0.1.9
+﻿Version : V0.1.10
+ChangeLog :
+1.Dcm : Dsl add 2 APIs,get session type and security level
+2.Dcm : Dsp add some API:
+		Dsp_GetServicesSessionTypeMask : get session type mask base on service; 
+		Dsp_GetServicesSecurityLevelMask : get security level mask base one service.
+		Dsp_CheckSubFunctionIsSupport : check sub function is support.
+		Dsp_ServicesFunction_Process : handling all diagnostic services
+		Dsp_ServicesFunction_DiagnosticSessionControl : handling $0x10
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.10
+/*********************************************************************************************************************/
+Version : V0.1.9
 ChangeLog :
 1.Dcm : Dcm_ServiceProtocol_Implement.h and Dcm_ServiceProtocol_Interface.h rename to Dcm_Dsp_Implement.h and Dcm_Dsp_Interface.h
 2.Dcm : define some data type.and create the service list and the sub function list.
