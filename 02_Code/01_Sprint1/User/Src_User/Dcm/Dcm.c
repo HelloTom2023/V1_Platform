@@ -18,10 +18,11 @@
 /*Include head files AREA*/
 #include "Dcm.h"
 #include "Dcm_Cfg_Table.h" /*The table only used by Dcm.C*/
-#include "Dcm_Dsp_Interface.h"
-#include "Dcm_Dsp_Implement.h"
 #include "Dcm_Dsl_Interface.h"
 #include "Dcm_Dsl_Implement.h"
+#include "Dcm_Dsp_Interface.h"
+#include "Dcm_Dsp_Implement.h"
+
 
 /*Macro definition AREA*/
 

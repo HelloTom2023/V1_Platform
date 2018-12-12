@@ -27,8 +27,8 @@
 #include "Dcm.h"
 
 /*Macro definition AREA*/
-
-
+#define Dsp_GetSessionP2ServerMax(Index)	DCM_SESSION_P2SM_##Index
+#define Dsp_GetSessionP2_ServerMax(Index)	DCM_SESSION_P2ESM_##Index
 
 
 
@@ -69,6 +69,27 @@ DCM_LOCAL_API uint8 Dsp_CheckServicesIsSupport(uint8 SID);
 DCM_LOCAL_API uint8 Dsp_CheckSubFunctionIsSupport(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList,uint8 SubId);
 
 /****************************************************************************
+ * @function	Dsp_CheckServicesIsSupportInActiveSession
+ * @brief  		NULL
+ * @param  		ptr_Dcm_SubFunctionList : Input parameters
+ * @retval 		E_OK : Check OK
+ * 				E_NOT_OK : Check failure
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_CheckServicesIsSupportInActiveSession(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList);
+
+/****************************************************************************
+ * @function	Dsp_CheckSubFunctionIsSupportInActiveSession
+ * @brief  		NULL
+ * @param  		ptr_Dcm_SubFunctionList : Input parameters
+ * 				SubId : Input parameters
+ * @retval 		E_OK : Check OK
+ * 				E_NOT_OK : Check failure
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_CheckSubFunctionIsSupportInActiveSession(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList,uint8 SubId);
+
+/****************************************************************************
  * @function	Dsp_GetServicesSessionTypeMask
  * @brief  		NULL
  * @param  		ptr_Dcm_SubFunctionList : Input parameters,
@@ -77,6 +98,17 @@ DCM_LOCAL_API uint8 Dsp_CheckSubFunctionIsSupport(Dcm_SupportSubFunctionList_Str
  * @attention   NULL
 ****************************************************************************/
 DCM_LOCAL_API uint8 Dsp_GetServicesSessionTypeMask(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList,uint8* ptr_SesTypeMask);
+
+/****************************************************************************
+ * @function	Dsp_GetSubFunctionSessionTypeMask
+ * @brief  		NULL
+ * @param  		ptr_Dcm_SubFunctionList : Input parameters,
+ * 				SubId : Input parameters,
+ * 				ptr_SesTypeMask : output parameters,
+ * @retval 		ret : function error event value
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_GetSubFunctionSessionTypeMask(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList,uint8 SubId,uint8* ptr_SesTypeMask);
 
 /****************************************************************************
  * @function	Dsp_GetServicesSecurityLevelMask
@@ -99,12 +131,21 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_Process(void);
 
 /****************************************************************************
  * @function	Dsp_ServicesFunction_DiagnosticSessionControl
- * @brief  		NULL
+ * @brief  		Diagnostic service $10 handling
  * @param  		NULL
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
 DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void);
+
+/****************************************************************************
+ * @function	Dsp_ServicesFunction_ECUReset
+ * @brief  		Diagnostic service $11 handling
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(void);
 
 #endif /*_DCM_DSP_INTERFACE_H_*/
 /*********************************File End*********************************/

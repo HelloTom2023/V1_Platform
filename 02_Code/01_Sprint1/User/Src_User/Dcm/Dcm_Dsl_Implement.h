@@ -63,7 +63,7 @@ DCM_LOCAL_API void Dsl_SetSessionType(uint8 SesType)
 }
 
 /****************************************************************************
- * @function	Dsl_GetSeesionType
+ * @function	Dsl_GetSessionType
  * @brief  		get session type
  * @param  		SesType : output parameters
  * @retval 		ret : function error event value

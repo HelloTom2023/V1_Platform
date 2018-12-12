@@ -1,4 +1,19 @@
-﻿Version : V0.1.10
+﻿Version : V0.1.11
+ChangeLog :
+1.Dcm.c : Adjust the position of the Dsp and Dsl header files.
+2.Dcm_Cfg_Define.h : Define P2Server and P2*Server parameters.
+3.Dsl : Fix spelling mistakes in words.
+4.Dsp : coding for Dsp_ServicesFunction_DiagnosticSessionControl;
+        create some APIs and implements its : 
+        Dsp_CheckServicesIsSupportInActiveSession :
+        Dsp_CheckServicesIsSupportInActiveSession :
+        Dsp_GetSubFunctionSessionTypeMask :
+        Dsp_ServicesFunction_ECUReset : 
+5.Tools : modified some attributes.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.12
+/*********************************************************************************************************************/
+Version : V0.1.10
 ChangeLog :
 1.Dcm : Dsl add 2 APIs,get session type and security level
 2.Dcm : Dsp add some API:

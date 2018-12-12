@@ -115,9 +115,11 @@ typedef enum Dcm_DiagServicePerformStatus_Enum_Type_Tag
  * */
 typedef enum Dcm_DiagServiceResponseType_Enum_Type_Tag
 {
-	DCM_RESPONSE_TYPE_POSITIVE,
-	DCM_RESPONSE_TYPE_NEGATIVE,
-	DCM_RESPONSE_TYPE_NONE
+	DCM_RESPONSE_TYPE_INIT,		/*Initiation Status,If process services function will setting to this status*/
+	DCM_RESPONSE_TYPE_POSITIVE, /*Positive Response status.If process service function complete and shall response positive pud */
+	DCM_RESPONSE_TYPE_NEGATIVE, /*Negative Response status.If process service function complete and shall response negative pud*/
+	DCM_RESPONSE_TYPE_NOTTXNRC,	/*not be transmitted Negative Response status.If process service function complete,the ECU generated NRC but shall be not response negative pud*/
+	DCM_RESPONSE_TYPE_MAX
 }Dcm_DiagServiceResponseType_Enum_Type;
 
 /*
