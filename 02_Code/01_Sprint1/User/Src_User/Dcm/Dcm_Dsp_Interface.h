@@ -48,6 +48,15 @@
 DCM_LOCAL_API void Dsp_MainFunction(void);
 
 /****************************************************************************
+ * @function	Dsp_TxDiagResponsePositivePDU
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+DCM_EXTERN_API uint8 Dsp_TxDiagResponsePositivePDU(void);
+
+/****************************************************************************
  * @function	Dsp_CheckServicesIsSupport
  * @brief  		NULL
  * @param  		SID : Input parameters, diagnostic services id

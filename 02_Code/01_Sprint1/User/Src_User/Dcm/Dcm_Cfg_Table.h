@@ -46,6 +46,8 @@ const Dcm_SupportServiceList_Struct_Type Dsp_SupportServiceList[] =
 
 /*
  * 0x10 service support sub function list
+ *
+ * Note : the list Index range is 0x00~0x07
  * */
 Dcm_SupportSubFunctionList_Struct_Type Dsp_Services_0x10_SupportFunctionList[] =
 {

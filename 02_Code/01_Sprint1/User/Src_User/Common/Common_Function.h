@@ -35,10 +35,10 @@
 
 /****************************************************************************
  * @function	CommFunc_GetBitMask
- * @brief
+ * @brief		NULL
  * @param  		n : input parameters,
  * @retval 		NULL
- * @attention   NULL
+ * @attention   the function start bit is 1.
 ****************************************************************************/
 #define CommFunc_GetBitMask(n)		( ( 1<<(n) ) - 1)
 

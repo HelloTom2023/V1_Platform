@@ -1,4 +1,18 @@
-﻿Version : V0.1.11
+﻿Version : V0.1.12
+ChangeLog :
+1.CANbus : mapping Dcm_MainFunction to CANbus_Task.
+2.Common : add some comments in CommFunc_GetBitMask function.
+3.Dcm : Fix Bug,initiation Dsp_UdsServiceCtrInfo parameters in Dcm_InitFunction function.
+4.Dcm : add some debug code in Dcm_MainFunction function.
+5.Dcm_Table :add some comments in Dsp_Services_0x10_SupportFunctionList array.
+6.Dcm_Dsp : create Dsp_TxDiagResponsePositivePDU function,used for response positive PDU.
+7.Dcm_Dsp : fix some bug in the some APIs.
+8.Dcm : Fix Bug,diagnostic service handler machine state check logic error in Dcm_RxDiagRequestInfo function. 
+9.Test : add diagnostic cdd test configuration.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.15
+/*********************************************************************************************************************/
+Version : V0.1.11
 ChangeLog :
 1.Dcm.c : Adjust the position of the Dsp and Dsl header files.
 2.Dcm_Cfg_Define.h : Define P2Server and P2*Server parameters.

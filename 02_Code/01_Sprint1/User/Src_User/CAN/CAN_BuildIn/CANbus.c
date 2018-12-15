@@ -4,6 +4,7 @@
 #include "..\..\Com\Com.h"
 #include "..\..\ComUser\ComUser.h"
 #include "..\..\CanTp\CanTp.h"
+#include "..\..\Dcm\Dcm.h"
 
 #ifdef CAN_MODULE_ENABLE
 
@@ -2848,6 +2849,7 @@ void CANbus_Task(EVENT iEvt,eTASK_STATE eState)
             CanIf_MainFunction();
             ComUser_MainFunction();
             CanTp_MainFunction();
+            Dcm_MainFunction();
 
 #ifdef NM_ENABLE_MACRO
             NM_AppMsgHandler(CAN_ID_BODY);

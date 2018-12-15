@@ -48,6 +48,9 @@ DCM_EXTERN_API void Dcm_InitFunction(void)
 	/*Initiation Dcm_PosResPDU*/
 	Dcm_PosResPDU.Data = PosResDataBuffer;
 
+	/*Initiation Dsp_UdsServiceCtrInfo*/
+	Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_IDLE;
+
 	Dsl_InitFunction();
 }
 
@@ -58,8 +61,14 @@ DCM_EXTERN_API void Dcm_InitFunction(void)
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
+uint8 Dcm_Init_Flag = 0x00;/*only used for debug*/
 DCM_EXTERN_API void Dcm_MainFunction(void)
 {
+	if(Dcm_Init_Flag == 0x00)
+	{
+		Dcm_Init_Flag = 0x01;
+		Dcm_InitFunction();
+	}
 	Dsp_MainFunction();
 }
 
@@ -122,9 +131,10 @@ DCM_EXTERN_API uint8 Dcm_RxDiagRequestInfo(uint8 ChNo, uint8 ReqType, uint16 Dat
 	/*
 	 * Check the diagnostic service handler machine state
 	 * */
-	if(DCM_SERVICE_STATUS_IDLE == Dsp_UdsServiceCtrInfo.MachineState)
+	if(DCM_SERVICE_STATUS_INIT == Dsp_UdsServiceCtrInfo.MachineState)
 	{
 		/*Reserved : it will report DET*/
+		/*If the DCM in this status,mean the Dcm module initiation not complete.*/
 	}
 	else if(DCM_SERVICE_STATUS_IDLE != Dsp_UdsServiceCtrInfo.MachineState)
 	{
@@ -180,5 +190,6 @@ DCM_EXTERN_API uint8 Dcm_TxDiagResponseInfo(uint8 ChNo, uint16 DataLength, uint8
 
 	return ret;
 }
+
 
 /*********************************File End*********************************/

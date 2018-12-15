@@ -51,6 +51,7 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 
 		case DCM_SERVICE_STATUS_REQ:
 		{
+			Dcm_Debug_OutputInfo(_T("Dsp received Request PDU,SID = 0x%x\n",Dsp_UdsServiceCtrInfo.SI));
 			/*Check the service id is define in this version*/
 			Dsp_UdsServiceCtrInfo.Index = Dsp_CheckServicesIsSupport(Dsp_UdsServiceCtrInfo.SI);
 			if(0xFF == Dsp_UdsServiceCtrInfo.Index)
@@ -61,6 +62,7 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 			{
 				/*notification DCM PDU to application layer and check the notification result*/
 				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_RUN;
+				Dcm_Debug_OutputInfo(_T("SID check OK,will perform diagnostic services...\n\n"));
 			}
 			break;
 		}
@@ -69,17 +71,50 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 		{
 			uint8 ret = E_NOT_OK;
 
+			Dcm_Debug_OutputInfo(_T("Perform diagnostic services in the time....SID = 0x%x\n\n",Dsp_UdsServiceCtrInfo.SI));
+
 			/*Call Services handler function*/
 			ret = Dsp_ServicesFunction_Process();
+			/*Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_POSITIVE;
+			Dcm_PosResPDU.SI = Dcm_ReqPDU.SI;
+			Dcm_PosResPDU.SubFunc = Dcm_ReqPDU.SubFunc;
+			Dcm_PosResPDU.DataLength = 0x04;
+			Dcm_PosResPDU.Data[0] =	0x31;
+			Dcm_PosResPDU.Data[1] =	0x32;
+			Dcm_PosResPDU.Data[2] =	0x33;
+			Dcm_PosResPDU.Data[3] =	0x34;*/
 
 			/*Check the diagnostic services process return value*/
-
+			if((E_OK == ret) || (E_NOT_OK == ret))
+			{
+				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_COMPLETED;
+			}
+			else
+			{
+				/*Doing nothing*/
+			}
 			break;
 		}
 
 		case DCM_SERVICE_STATUS_COMPLETED:
 		{
-			/*update response PDU,and request send frame*/
+			Dcm_Debug_OutputInfo(_T("DCM_SERVICE_STATUS_COMPLETED....SID = 0x%x\n\n",Dsp_UdsServiceCtrInfo.SI));
+			/*Check the response type*/
+			if(DCM_RESPONSE_TYPE_POSITIVE == Dsp_UdsServiceCtrInfo.ResType)
+			{
+				/*update response PDU,and request send frame*/
+				Dsp_TxDiagResponsePositivePDU();
+				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_IDLE;
+			}
+			else if(DCM_RESPONSE_TYPE_NEGATIVE == Dsp_UdsServiceCtrInfo.ResType)
+			{
+				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_IDLE;
+			}
+			else if(DCM_RESPONSE_TYPE_NOTTXNRC == Dsp_UdsServiceCtrInfo.ResType)
+			{
+				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_IDLE;
+			}
+
 			break;
 		}
 
@@ -98,6 +133,24 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 }
 
 /****************************************************************************
+ * @function	Dsp_TxDiagResponsePositivePDU
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+DCM_EXTERN_API uint8 Dsp_TxDiagResponsePositivePDU(void)
+{
+	uint8 Data[128]= {0x00};
+
+	Data[0] = Dcm_PosResPDU.SI + 0x40;
+	Data[1] = Dcm_PosResPDU.SubFunc;
+	memcpy(&Data[2],Dcm_PosResPDU.Data,Dcm_PosResPDU.DataLength);
+
+	Dcm_TxDiagResponseInfo(0x00, Dcm_PosResPDU.DataLength+2, Data);
+}
+
+/****************************************************************************
  * @function	Dsp_CheckServicesIsSupport
  * @brief  		NULL
  * @param  		SID : Input parameters, diagnostic services id
@@ -109,7 +162,7 @@ DCM_LOCAL_API uint8 Dsp_CheckServicesIsSupport(uint8 SID)
 {
 	uint8 i = 0x00;
 
-	for(i = 0x00; ; )
+	for(i = 0x00; ; i++)
 	{
 		/*Check if the list ends*/
 		if(Dsp_SupportServiceList[i].Index == 0xFF)
@@ -130,19 +183,6 @@ DCM_LOCAL_API uint8 Dsp_CheckServicesIsSupport(uint8 SID)
 		{
 			/*Doing nothing*/
 		}
-
-		/*Check the list length*/
-		if(i >= (sizeof(Dsp_SupportServiceList) / sizeof(Dcm_SupportServiceList_Struct_Type)) )
-		{
-			return 0xff;
-		}
-		else
-		{
-			/*Doing nothing*/
-		}
-
-		/*Loop control*/
-		i++;
 	}
 }
 
@@ -159,7 +199,7 @@ DCM_LOCAL_API uint8 Dsp_CheckSubFunctionIsSupport(Dcm_SupportSubFunctionList_Str
 {
 	uint8 i = 0x00;
 
-	for(i = 0x00; ; )
+	for(i = 0x00; ; i++)
 	{
 		/*Check if the list ends*/
 		if(ptr_Dcm_SubFunctionList[i].Index == 0xFF)
@@ -180,19 +220,6 @@ DCM_LOCAL_API uint8 Dsp_CheckSubFunctionIsSupport(Dcm_SupportSubFunctionList_Str
 		{
 			/*Doing nothing*/
 		}
-
-		/*Check the list length*/
-		if(i >= (sizeof(ptr_Dcm_SubFunctionList) / sizeof(Dcm_SupportSubFunctionList_Struct_Type)) )
-		{
-			return 0xff;
-		}
-		else
-		{
-			/*Doing nothing*/
-		}
-
-		/*Loop control*/
-		i++;
 	}
 }
 
@@ -216,11 +243,19 @@ DCM_LOCAL_API uint8 Dsp_CheckServicesIsSupportInActiveSession(Dcm_SupportSubFunc
 
 	/*Get the index of the current session, have determined the location of the current session in the mask */
 	Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,CurrentSesType);
+	/*Check the Index Range: the Index range is 0x00 ~ 0x07*/
+	/*
+	 * Reserved : Add Code
+	 * */
+
 	/*get services session types mask*/
 	Dsp_GetServicesSessionTypeMask(ptr_Dcm_SubFunctionList,&ServiceSesTypeMask);
 
+	Dcm_Debug_OutputInfo(_T("Dsp_CheckServicesIsSupportInActiveSession: CurrentSesType = 0x%x,Index = %d,ServiceSesTypeMask = 0x%x,current = 0x%x\n",	\
+			CurrentSesType,Index,ServiceSesTypeMask,CommFunc_BitShiftLeft(0x01,(0x07-Index))));
+
 	/*Check ths SID support in active session,NRC7F Check*/
-	if(0x00 == (CommFunc_GetBitMask(Index) & ServiceSesTypeMask))
+	if(0x00 == (CommFunc_BitShiftLeft(0x01,(0x07-Index)) & ServiceSesTypeMask))
 	{
 		/*the service not support this session,shall be response NRC7F*/
 		/*Response NRC7F*/
@@ -255,14 +290,22 @@ DCM_LOCAL_API uint8 Dsp_CheckSubFunctionIsSupportInActiveSession(Dcm_SupportSubF
 
 	/*Get the index of the current session, have determined the location of the current session in the mask */
 	Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,CurrentSesType);
+	/*Check the Index Range: the Index range is 0x00 ~ 0x07*/
+	/*
+	 * Reserved : Add Code
+	 * */
+
 	/*get sub function session types mask*/
 	Dsp_GetSubFunctionSessionTypeMask(ptr_Dcm_SubFunctionList,SubId,&SubFunctionSesTypeMask);
 
-	/*Check ths SID support in active session,NRC7F Check*/
-	if(0x00 == (CommFunc_GetBitMask(Index) & SubFunctionSesTypeMask))
+	Dcm_Debug_OutputInfo(_T("Dsp_CheckSubFunctionIsSupportInActiveSession: CurrentSesType = 0x%x,Index = %d,SubFunctionSesTypeMask = 0x%x,current = 0x%x\n",	\
+				CurrentSesType,Index,SubFunctionSesTypeMask,CommFunc_BitShiftLeft(0x01,(0x07-Index))));
+
+	/*Check ths sub function support in active session,NRC7E Check*/
+	if(0x00 == (CommFunc_BitShiftLeft(0x01,(0x07-Index)) & SubFunctionSesTypeMask))
 	{
-		/*the service not support this session,shall be response NRC7F*/
-		/*Response NRC7F*/
+		/*the sub function not support this session,shall be response NRC7E*/
+		/*Response NRC7E*/
 		ret = E_NOT_OK;
 	}
 	else
@@ -297,34 +340,23 @@ DCM_LOCAL_API uint8 Dsp_GetServicesSessionTypeMask(Dcm_SupportSubFunctionList_St
 		/*Doing nothing*/
 	}
 
-	for(i = 0x00; ; )
+	for(i = 0x00; ; i++)
 	{
 		/*Check if the list ends*/
 		if(ptr_Dcm_SubFunctionList[i].Index == 0xFF)
 		{
 			ret = E_OK;
+			return ret;
 		}
 		else
 		{
-			/*Doing nothing*/
-		}
-
-		/*Check the list length*/
-		if(i >= (sizeof(ptr_Dcm_SubFunctionList) / sizeof(Dcm_SupportSubFunctionList_Struct_Type)) )
-		{
+			/*Get MASK*/
+			*ptr_SesTypeMask |= ptr_Dcm_SubFunctionList[i].SupportSeesion;
 			ret = E_OK;
+			Dcm_Debug_OutputInfo(_T("Dsp_GetServicesSessionTypeMask: i = %d,SupportSeesion = 0x%x\n",i,ptr_Dcm_SubFunctionList[i].SupportSeesion));
 		}
-		else
-		{
-			/*Doing nothing*/
-		}
-
-		/*Get MASK*/
-		*ptr_SesTypeMask |= ptr_Dcm_SubFunctionList[i].SupportSeesion;
-
-		/*Loop control*/
-		i++;
 	}
+	return ret;
 }
 
 /****************************************************************************
@@ -399,24 +431,10 @@ DCM_LOCAL_API uint8 Dsp_GetServicesSecurityLevelMask(Dcm_SupportSubFunctionList_
 		}
 		else
 		{
-			/*Doing nothing*/
-		}
-
-		/*Check the list length*/
-		if(i >= (sizeof(ptr_Dcm_SubFunctionList) / sizeof(Dcm_SupportSubFunctionList_Struct_Type)) )
-		{
+			/*Get MASK*/
+			*ptr_SecLevelMask |= ptr_Dcm_SubFunctionList[i].SupportSecurityLevel;
 			ret = E_OK;
 		}
-		else
-		{
-			/*Doing nothing*/
-		}
-
-		/*Get MASK*/
-		*ptr_SecLevelMask |= ptr_Dcm_SubFunctionList[i].SupportSecurityLevel;
-
-		/*Loop control*/
-		i++;
 	}
 }
 
@@ -435,13 +453,13 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_Process(void)
 	{
 		case DCM_SID_DSC:
 		{
-			Dsp_ServicesFunction_DiagnosticSessionControl();
+			ret = Dsp_ServicesFunction_DiagnosticSessionControl();
 			break;
 		}
 
 		case DCM_SID_ER:
 		{
-			Dsp_ServicesFunction_ECUReset();
+			ret = Dsp_ServicesFunction_ECUReset();
 			break;
 		}
 
@@ -469,6 +487,8 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 	uint16 P2Server = 0x00;
 	uint16 P2_Server = 0x00;
 
+	Dcm_Debug_OutputInfo(_T("Start Run DiagnosticSessionControl Service.......SubId = 0x%x\n",Dcm_ReqPDU.SubFunc));
+
 	/*Check the SID support in active session,NRC7F Check*/
 	if(E_NOT_OK == Dsp_CheckServicesIsSupportInActiveSession(Dsp_Services_0x10_SupportFunctionList))
 	{
@@ -483,6 +503,7 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
 			Dcm_NegResPDU.NRC = DCM_NRC_SNSIAS;
 		}
+		Dcm_Debug_OutputInfo(_T("NRC7F\n\n"));
 		return ret;
 	}
 	else
@@ -502,6 +523,7 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 		Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
 		Dcm_NegResPDU.NRC = DCM_NRC_IMLOIF;
 		return ret;
+		Dcm_Debug_OutputInfo(_T("NRC13\n\n"));
 	}
 	else
 	{
@@ -522,7 +544,7 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
 			Dcm_NegResPDU.NRC = DCM_NRC_SFNISAS;
 		}
-
+		Dcm_Debug_OutputInfo(_T("NRC7E\n\n"));
 		return ret;
 	}
 	else
@@ -599,6 +621,7 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 	Dsl_SetSessionType(Dcm_ReqPDU.SubFunc);
 	/*Update Positive Response PDU*/
 	Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_POSITIVE;
+	Dcm_PosResPDU.SI = Dcm_ReqPDU.SI;
 	Dcm_PosResPDU.SubFunc = Dcm_ReqPDU.SubFunc;
 	Dcm_PosResPDU.DataLength = 0x04;
 	Dcm_PosResPDU.Data[0] =	(uint8)CommFunc_BitShiftRigth(P2Server,0x08);
@@ -612,6 +635,8 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 	 * */
 
 	ret = E_OK;
+
+	Dcm_Debug_OutputInfo(_T("DiagnosticSessionControl perform completed.......SubId = 0x%x\n",Dcm_ReqPDU.SubFunc));
 
 	return ret;
 }
@@ -712,6 +737,7 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(void)
 	Dsl_SetSessionType(Dcm_ReqPDU.SubFunc);
 	/*Update Positive Response PDU*/
 	Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_POSITIVE;
+	Dcm_PosResPDU.SI = Dcm_ReqPDU.SI;
 	Dcm_PosResPDU.SubFunc = Dcm_ReqPDU.SubFunc;
 	Dcm_PosResPDU.DataLength  =	0x00;
 
