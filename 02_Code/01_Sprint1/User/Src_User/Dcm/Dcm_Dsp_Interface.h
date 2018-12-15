@@ -109,6 +109,16 @@ DCM_LOCAL_API uint8 Dsp_CheckServicesIsSupportInActiveSession(Dcm_SupportSubFunc
 DCM_LOCAL_API uint8 Dsp_CheckSubFunctionIsSupportInActiveSession(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList,uint8 SubId);
 
 /****************************************************************************
+ * @function	Dsp_ChecksuppressPosRspMsgIndicationBitIsSupport
+ * @brief  		NULL
+ * @param  		SID : Input parameters, diagnostic services id
+ * @retval 		DCM_E_OK : support.
+ *              DCM_E_NOT_OK : not support
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_CheckSuppressPosRspMsgIndicationBitIsSupport(uint8 SID);
+
+/****************************************************************************
  * @function	Dsp_GetServicesSessionTypeMask
  * @brief  		NULL
  * @param  		ptr_Dcm_SubFunctionList : Input parameters,

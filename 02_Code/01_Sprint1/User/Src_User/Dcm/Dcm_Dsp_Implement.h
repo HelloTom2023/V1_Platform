@@ -361,6 +361,40 @@ DCM_LOCAL_API uint8 Dsp_CheckSubFunctionIsSupportInActiveSession(Dcm_SupportSubF
 }
 
 /****************************************************************************
+ * @function	Dsp_CheckSuppressPosRspMsgIndicationBitIsSupport
+ * @brief  		NULL
+ * @param  		SID : Input parameters, diagnostic services id
+ * @retval 		DCM_E_OK : support.
+ *              DCM_E_NOT_OK : not support
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_CheckSuppressPosRspMsgIndicationBitIsSupport(uint8 SID)
+{
+	uint8 ret = DCM_E_NOT_OK;
+	uint8 Index = 0x00;
+
+	Index = Dsp_CheckServicesIsSupport(SID);
+	/*Check the Index valid*/
+	if(Index != 0xff)
+	{
+		if(0x01 == Dsp_SupportServiceList[Index].SupportSPRMIB)
+		{
+			ret = DCM_E_OK;
+		}
+		else
+		{
+			ret = DCM_E_NOT_OK;
+		}
+	}
+	else
+	{
+		ret = DCM_E_NOT_OK;
+	}
+
+	return ret;
+}
+
+/****************************************************************************
  * @function	Dsp_GetServicesSessionTypeMask
  * @brief  		NULL
  * @param  		ptr_Dcm_SubFunctionList : Input parameters,
@@ -397,7 +431,7 @@ DCM_LOCAL_API uint8 Dsp_GetServicesSessionTypeMask(Dcm_SupportSubFunctionList_St
 			/*Get MASK*/
 			*ptr_SesTypeMask |= ptr_Dcm_SubFunctionList[i].SupportSeesion;
 			ret = E_OK;
-			Dcm_Debug_OutputInfo(_T("Dsp_GetServicesSessionTypeMask: i = %d,SupportSeesion = 0x%x\n",i,ptr_Dcm_SubFunctionList[i].SupportSeesion));
+			//Dcm_Debug_OutputInfo(_T("Dsp_GetServicesSessionTypeMask: i = %d,SupportSeesion = 0x%x\n",i,ptr_Dcm_SubFunctionList[i].SupportSeesion));
 		}
 	}
 	return ret;
@@ -601,26 +635,42 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(uint8 ChNo)
 	 * Add code
 	 * */
 
-	/*Get Sub function id in SupportFunctionList index*/
-	Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
-
-	/*Get P2Server and P2_Server parameters*/
-	Dsl_GetSessionP2ServerMax(Index,&P2Server);
-	Dsl_GetSessionP2_ServerMax(Index,&P2_Server);
-
 	/*Perform function*/
 	/*Set session type*/
 	Dsl_SetSessionType(Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
-	/*Update Positive Response PDU*/
-	Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_POSITIVE;
-	Dsp_UdsServiceCtrInfo[ChNo].PosResDL = 0x04;
-	Dsp_UdsServiceCtrInfo[ChNo].PosResData[0] =	(uint8)CommFunc_BitShiftRigth(P2Server,0x08);
-	Dsp_UdsServiceCtrInfo[ChNo].PosResData[1] =	(uint8)P2Server;
-	Dsp_UdsServiceCtrInfo[ChNo].PosResData[2] =	(uint8)CommFunc_BitShiftRigth(P2_Server,0x08);
-	Dsp_UdsServiceCtrInfo[ChNo].PosResData[3] =	(uint8)P2_Server;
+
+	/*Diagnostic services execute successful*/
+	/*Check suppressPosRspMsgIndicationBit */
+	if(	(DCM_E_OK == Dsp_CheckSuppressPosRspMsgIndicationBitIsSupport(Dsp_UdsServiceCtrInfo[ChNo].SI)) &&	\
+			(0x01 == Dsp_UdsServiceCtrInfo[ChNo].SPRMIB) )
+	{
+		Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_SUPPOSRSP;
+		Dsp_UdsServiceCtrInfo[ChNo].PosResDL = 0x00;
+		Dcm_Debug_OutputInfo(_T("Dsp_ServicesFunction_DiagnosticSessionControl : SuppressPosRspMsgIndicationBit is 0x01,so not response.\n"));
+	}
+	else
+	{
+		/*Get Sub function id in SupportFunctionList index*/
+		Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
+
+		/*Get P2Server and P2_Server parameters*/
+		Dsl_GetSessionP2ServerMax(Index,&P2Server);
+		Dsl_GetSessionP2_ServerMax(Index,&P2_Server);
+
+		/*Update Positive Response PDU*/
+		Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_POSITIVE;
+		Dsp_UdsServiceCtrInfo[ChNo].PosResDL = 0x04;
+		Dsp_UdsServiceCtrInfo[ChNo].PosResData[0] =	(uint8)CommFunc_BitShiftRigth(P2Server,0x08);
+		Dsp_UdsServiceCtrInfo[ChNo].PosResData[1] =	(uint8)P2Server;
+		Dsp_UdsServiceCtrInfo[ChNo].PosResData[2] =	(uint8)CommFunc_BitShiftRigth(P2_Server,0x08);
+		Dsp_UdsServiceCtrInfo[ChNo].PosResData[3] =	(uint8)P2_Server;
+
+
+	}
 
 	/*reset dsl parameters*/
 	/*
+	 * because the session change,so the session parameter shall be reset to default values
 	 * add code
 	 * */
 
@@ -722,17 +772,20 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(uint8 ChNo)
 	/*Get Sub function id in SupportFunctionList index*/
 	Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
 
-	/*Perform function*/
-	/*Set session type*/
-	Dsl_SetSessionType(Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
-	/*Update Positive Response PDU*/
-	Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_POSITIVE;;
-	Dsp_UdsServiceCtrInfo[ChNo].PosResDL  =	0x00;
+	if(	(DCM_E_OK == Dsp_CheckSuppressPosRspMsgIndicationBitIsSupport(Dsp_UdsServiceCtrInfo[ChNo].SI)) &&	\
+				(0x01 == Dsp_UdsServiceCtrInfo[ChNo].SPRMIB) )
+	{
+		Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_SUPPOSRSP;
+		Dsp_UdsServiceCtrInfo[ChNo].PosResDL = 0x00;
+	}
+	else
+	{
+		/*Update Positive Response PDU*/
+		Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_POSITIVE;;
+		Dsp_UdsServiceCtrInfo[ChNo].PosResDL  =	0x00;
+	}
 
-	/*reset dsl parameters*/
-	/*
-	 * add code
-	 * */
+	/*Call function perform REST */
 
 	ret = E_OK;
 

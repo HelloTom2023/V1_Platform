@@ -1,4 +1,11 @@
-﻿Version : V0.1.13
+﻿Version : V0.1.14
+ChangeLog :
+1.Dcm ： add Dsp_CheckSuppressPosRspMsgIndicationBitIsSupport function.
+2.Dcm : 10 and 11 services add check of SuppressPosRspMsgIndicationBit function.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.15
+/*********************************************************************************************************************/
+Version : V0.1.13
 ChangeLog :
 1.Dcm_Type : modify Dcm_UdsServiceProtocolCtrInfo_Struct_Type.
 2.Dcm : delete Dcm_ReqPDU,Dcm_PosResPDU,Dcm_NegResPDU.In oeder to save ram.
