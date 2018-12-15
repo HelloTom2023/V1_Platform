@@ -97,8 +97,11 @@
 #define DCM_SID_ROE				(0x86)	/*ResponseOnEvent*/
 #define DCM_SID_LC				(0x87)	/*LinkControl*/
 
-
-
+/*
+ * function Execution result value definition
+ * */
+#define DCM_E_OK					(0x00)
+#define DCM_E_NOT_OK				(0x01)
 
 
 

@@ -27,8 +27,7 @@
 #include "Dcm.h"
 
 /*Macro definition AREA*/
-#define Dsp_GetSessionP2ServerMax(Index)	DCM_SESSION_P2SM_##Index
-#define Dsp_GetSessionP2_ServerMax(Index)	DCM_SESSION_P2ESM_##Index
+
 
 
 
@@ -41,20 +40,31 @@
 /****************************************************************************
  * @function	Dsp_MainFunction
  * @brief  		NULL
- * @param  		NULL
+ * @param  		ChNo : Input parameters, bus channel.
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API void Dsp_MainFunction(void);
+DCM_LOCAL_API void Dsp_MainFunction(uint8 ChNo);
 
 /****************************************************************************
  * @function	Dsp_TxDiagResponsePositivePDU
  * @brief  		NULL
- * @param  		NULL
+ * @param  		ChNo : Input parameters, bus channel
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-DCM_EXTERN_API uint8 Dsp_TxDiagResponsePositivePDU(void);
+DCM_EXTERN_API uint8 Dsp_TxDiagResponsePositivePDU(uint8 ChNo);
+
+/****************************************************************************
+ * @function	Dsp_TxDiagResponseNegativePDU
+ * @brief  		NULL
+ * @param  		ChNo : Input parameters, bus channel
+ * 				SID : input parameters, services identifier.
+ * 				NRC : Input parameters, NRC
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+DCM_EXTERN_API uint8 Dsp_TxDiagResponseNegativePDU(uint8 ChNo,uint8 SID,uint8 NRC);
 
 /****************************************************************************
  * @function	Dsp_CheckServicesIsSupport
@@ -132,29 +142,29 @@ DCM_LOCAL_API uint8 Dsp_GetServicesSecurityLevelMask(Dcm_SupportSubFunctionList_
 /****************************************************************************
  * @function	Dsp_ServicesFunction_Process
  * @brief  		process the diagnostic services
- * @param  		NULL
+ * @param  		ChNo : Input parameters, bus channel
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API uint8 Dsp_ServicesFunction_Process(void);
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_Process(uint8 ChNo);
 
 /****************************************************************************
  * @function	Dsp_ServicesFunction_DiagnosticSessionControl
  * @brief  		Diagnostic service $10 handling
- * @param  		NULL
+ * @param  		ChNo : Input parameters, Bus channel
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void);
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(uint8 ChNo);
 
 /****************************************************************************
  * @function	Dsp_ServicesFunction_ECUReset
  * @brief  		Diagnostic service $11 handling
- * @param  		NULL
+ * @param  		ChNo : Input parameters,Bus Channel.
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(void);
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(uint8 ChNo);
 
 #endif /*_DCM_DSP_INTERFACE_H_*/
 /*********************************File End*********************************/

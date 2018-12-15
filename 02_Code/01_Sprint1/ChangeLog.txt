@@ -1,4 +1,15 @@
-﻿Version : V0.1.12
+﻿Version : V0.1.13
+ChangeLog :
+1.Dcm_Type : modify Dcm_UdsServiceProtocolCtrInfo_Struct_Type.
+2.Dcm : delete Dcm_ReqPDU,Dcm_PosResPDU,Dcm_NegResPDU.In oeder to save ram.
+3.Dcm : add  multiple bus support. but the feature is not yet mature.
+4.Dcm : get P2Server and P2_Server paramter move to DSL.
+5.Dsp : Create Dsp_TxDiagResponseNegativePDU function ,used for send Negative PDU.
+6.Dcm : fix bug,the Dsp_UdsServiceCtrInfo[ChNo].MachineState check logic error in the Dcm_RxDiagRequestInfo function.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.15
+/*********************************************************************************************************************/
+Version : V0.1.12
 ChangeLog :
 1.CANbus : mapping Dcm_MainFunction to CANbus_Task.
 2.Common : add some comments in CommFunc_GetBitMask function.

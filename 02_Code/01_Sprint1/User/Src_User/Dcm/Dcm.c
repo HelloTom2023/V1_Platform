@@ -42,16 +42,28 @@
 ****************************************************************************/
 DCM_EXTERN_API void Dcm_InitFunction(void)
 {
-	/*Initiation Dcm_ReqPDU*/
-	Dcm_ReqPDU.Data = ReqDataBuffer;
-
-	/*Initiation Dcm_PosResPDU*/
-	Dcm_PosResPDU.Data = PosResDataBuffer;
-
-	/*Initiation Dsp_UdsServiceCtrInfo*/
-	Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_IDLE;
+	uint8 i = 0x00;
 
 	Dsl_InitFunction();
+
+	for(i = 0x00; i < DCM_SUPPORT_BUS_CHNO_MAX;i++)
+	{
+		/*Initiation Dsp_UdsServiceCtrInfo*/
+		Dsp_UdsServiceCtrInfo[i].ChNo = i;
+		Dsp_UdsServiceCtrInfo[i].Index = 0x00;
+		Dsp_UdsServiceCtrInfo[i].MachineState = DCM_SERVICE_STATUS_IDLE;
+		Dsp_UdsServiceCtrInfo[i].SI = 0x00;
+		Dsp_UdsServiceCtrInfo[i].SubFunc = 0x00;
+		Dsp_UdsServiceCtrInfo[i].ReqType = DCM_REQ_TYPE_NONE;
+		Dsp_UdsServiceCtrInfo[i].SPRMIB = 0x00;
+		Dsp_UdsServiceCtrInfo[i].ReqDL = 0x00;
+		Dsp_UdsServiceCtrInfo[i].ReqData = ReqDataBuffer;
+		Dsp_UdsServiceCtrInfo[i].ResType = DCM_RESPONSE_TYPE_INIT;
+		Dsp_UdsServiceCtrInfo[i].PosResDL = 0x00;
+		Dsp_UdsServiceCtrInfo[i].PosResData = PosResDataBuffer;
+		Dsp_UdsServiceCtrInfo[i].NRC = 0x00;
+	}
+
 }
 
 /****************************************************************************
@@ -64,12 +76,21 @@ DCM_EXTERN_API void Dcm_InitFunction(void)
 uint8 Dcm_Init_Flag = 0x00;/*only used for debug*/
 DCM_EXTERN_API void Dcm_MainFunction(void)
 {
+	uint8 i = 0x00;
+	/*
+	 * Debug code
+	 * */
 	if(Dcm_Init_Flag == 0x00)
 	{
 		Dcm_Init_Flag = 0x01;
 		Dcm_InitFunction();
 	}
-	Dsp_MainFunction();
+
+	for(i = 0x00; i < DCM_SUPPORT_BUS_CHNO_MAX; i++)
+	{
+		Dsp_MainFunction(i);
+	}
+
 }
 
 /****************************************************************************
@@ -108,45 +129,36 @@ DCM_EXTERN_API uint8 Dcm_RxDiagRequestInfo(uint8 ChNo, uint8 ReqType, uint16 Dat
 	Dcm_Debug_OutputInfo(_T("]\n"));
 
 	/*
-	 * Convert diagnostic message to request PDU
-	 * The diagnostic message from CanTp modules
-	 * The request PDU used for diagnostic service
-	 * */
-	Dcm_ReqPDU.ChNo = ChNo;
-	Dcm_ReqPDU.ReqType = (Dcm_DiagRequestTpye_Enum_Type) ReqType;
-	Dcm_ReqPDU.SI = ptr_Data[0];
-	Dcm_ReqPDU.SubFunc = ptr_Data[1] & 0x7F;
-	Dcm_ReqPDU.SPRMIB = CommFunc_BitShiftRigth(ptr_Data[1],0x07) & 0x01;
-	Dcm_ReqPDU.DataLength = DataLength;
-	memcpy(Dcm_ReqPDU.Data, ptr_Data, DataLength);
-
-	/*
-	 * Update uds service protocol control information
-	 * */
-	Dsp_UdsServiceCtrInfo.ChNo = Dcm_ReqPDU.ChNo;
-	Dsp_UdsServiceCtrInfo.ReqType = Dcm_ReqPDU.ReqType;
-	Dsp_UdsServiceCtrInfo.SI = Dcm_ReqPDU.SI;
-	Dsp_UdsServiceCtrInfo.SubFunc = Dcm_ReqPDU.SubFunc;
-
-	/*
 	 * Check the diagnostic service handler machine state
 	 * */
-	if(DCM_SERVICE_STATUS_INIT == Dsp_UdsServiceCtrInfo.MachineState)
+	if(DCM_SERVICE_STATUS_INIT == Dsp_UdsServiceCtrInfo[ChNo].MachineState)
 	{
 		/*Reserved : it will report DET*/
 		/*If the DCM in this status,mean the Dcm module initiation not complete.*/
 	}
-	else if(DCM_SERVICE_STATUS_IDLE != Dsp_UdsServiceCtrInfo.MachineState)
+	else if(DCM_SERVICE_STATUS_IDLE != Dsp_UdsServiceCtrInfo[ChNo].MachineState)
 	{
 		/*
 		 * if the MachineState is not IDLE,it mean the dcm is busy. so dcm shall be response NRC21
 		 * */
-		/*Reserved : response NRC21*/
-
+		Dsp_TxDiagResponseNegativePDU(ChNo,ptr_Data[0],DCM_NRC_BRR);
 	}
 	else
 	{
-		Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_REQ;
+		/*
+		 * Convert diagnostic message to request PDU
+		 * The diagnostic message from CanTp modules
+		 * The request PDU used for diagnostic service
+		 * */
+		Dsp_UdsServiceCtrInfo[ChNo].ChNo = ChNo;
+		Dsp_UdsServiceCtrInfo[ChNo].ReqType = (Dcm_DiagRequestTpye_Enum_Type) ReqType;
+		Dsp_UdsServiceCtrInfo[ChNo].SI = ptr_Data[0];
+		Dsp_UdsServiceCtrInfo[ChNo].SubFunc = ptr_Data[1] & 0x7F;
+		Dsp_UdsServiceCtrInfo[ChNo].SPRMIB = CommFunc_BitShiftRigth(ptr_Data[1],0x07) & 0x01;
+		Dsp_UdsServiceCtrInfo[ChNo].ReqDL = DataLength;
+		memcpy(Dsp_UdsServiceCtrInfo[ChNo].ReqData, ptr_Data, DataLength);
+
+		Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_REQ;
 	}
 
 	return ret;

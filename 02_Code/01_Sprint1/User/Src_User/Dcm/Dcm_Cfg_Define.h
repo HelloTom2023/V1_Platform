@@ -22,6 +22,9 @@
 #include "Dcm_Type.h"
 
 /*Macro definition AREA*/
+#define DCM_SUPPORT_BUS_CHNO_MAX		(1)  /*only set to 1,in the time*/
+#define DCM_REQBUFF_SIZE				(128)
+#define DCM_POSRESBUF_SIZE				(128)
 /*
  * Define P2Server and P2*Server parameters
  * used for diagnostic session control service and NRC78 timer

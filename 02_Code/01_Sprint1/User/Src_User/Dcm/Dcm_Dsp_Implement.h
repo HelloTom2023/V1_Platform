@@ -35,13 +35,13 @@
 /****************************************************************************
  * @function	Dsp_MainFunction
  * @brief  		NULL
- * @param  		NULL
+ * @param  		ChNo : Input parameters, bus channel.
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API void Dsp_MainFunction(void)
+DCM_LOCAL_API void Dsp_MainFunction(uint8 ChNo)
 {
-	switch(Dsp_UdsServiceCtrInfo.MachineState)
+	switch(Dsp_UdsServiceCtrInfo[ChNo].MachineState)
 	{
 		case DCM_SERVICE_STATUS_IDLE:
 		{
@@ -51,17 +51,17 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 
 		case DCM_SERVICE_STATUS_REQ:
 		{
-			Dcm_Debug_OutputInfo(_T("Dsp received Request PDU,SID = 0x%x\n",Dsp_UdsServiceCtrInfo.SI));
+			Dcm_Debug_OutputInfo(_T("Dsp received Request PDU,SID = 0x%x\n",Dsp_UdsServiceCtrInfo[ChNo].SI));
 			/*Check the service id is define in this version*/
-			Dsp_UdsServiceCtrInfo.Index = Dsp_CheckServicesIsSupport(Dsp_UdsServiceCtrInfo.SI);
-			if(0xFF == Dsp_UdsServiceCtrInfo.Index)
+			Dsp_UdsServiceCtrInfo[ChNo].Index = Dsp_CheckServicesIsSupport(Dsp_UdsServiceCtrInfo[ChNo].SI);
+			if(0xFF == Dsp_UdsServiceCtrInfo[ChNo].Index)
 			{
 				/*Response NRC11 serviceNotSupported*/
 			}
 			else
 			{
 				/*notification DCM PDU to application layer and check the notification result*/
-				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_RUN;
+				Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_RUN;
 				Dcm_Debug_OutputInfo(_T("SID check OK,will perform diagnostic services...\n\n"));
 			}
 			break;
@@ -71,23 +71,15 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 		{
 			uint8 ret = E_NOT_OK;
 
-			Dcm_Debug_OutputInfo(_T("Perform diagnostic services in the time....SID = 0x%x\n\n",Dsp_UdsServiceCtrInfo.SI));
+			Dcm_Debug_OutputInfo(_T("Perform diagnostic services in the time....SID = 0x%x\n\n",Dsp_UdsServiceCtrInfo[0].SI));
 
 			/*Call Services handler function*/
-			ret = Dsp_ServicesFunction_Process();
-			/*Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_POSITIVE;
-			Dcm_PosResPDU.SI = Dcm_ReqPDU.SI;
-			Dcm_PosResPDU.SubFunc = Dcm_ReqPDU.SubFunc;
-			Dcm_PosResPDU.DataLength = 0x04;
-			Dcm_PosResPDU.Data[0] =	0x31;
-			Dcm_PosResPDU.Data[1] =	0x32;
-			Dcm_PosResPDU.Data[2] =	0x33;
-			Dcm_PosResPDU.Data[3] =	0x34;*/
+			ret = Dsp_ServicesFunction_Process(ChNo);
 
 			/*Check the diagnostic services process return value*/
 			if((E_OK == ret) || (E_NOT_OK == ret))
 			{
-				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_COMPLETED;
+				Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_COMPLETED;
 			}
 			else
 			{
@@ -98,23 +90,50 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 
 		case DCM_SERVICE_STATUS_COMPLETED:
 		{
-			Dcm_Debug_OutputInfo(_T("DCM_SERVICE_STATUS_COMPLETED....SID = 0x%x\n\n",Dsp_UdsServiceCtrInfo.SI));
+			Dcm_Debug_OutputInfo(_T("DCM_SERVICE_STATUS_COMPLETED....SID = 0x%x\n\n",Dsp_UdsServiceCtrInfo[0].SI));
 			/*Check the response type*/
-			if(DCM_RESPONSE_TYPE_POSITIVE == Dsp_UdsServiceCtrInfo.ResType)
+			if(DCM_RESPONSE_TYPE_POSITIVE == Dsp_UdsServiceCtrInfo[ChNo].ResType)
 			{
 				/*update response PDU,and request send frame*/
-				Dsp_TxDiagResponsePositivePDU();
-				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_IDLE;
+				Dsp_TxDiagResponsePositivePDU(ChNo);
+				Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_INITBUF;
 			}
-			else if(DCM_RESPONSE_TYPE_NEGATIVE == Dsp_UdsServiceCtrInfo.ResType)
+			else if(DCM_RESPONSE_TYPE_SUPPOSRSP == Dsp_UdsServiceCtrInfo[ChNo].ResType)
 			{
-				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_IDLE;
+				/*perform successful,but not send positive response to bus*/
+				Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_INITBUF;
 			}
-			else if(DCM_RESPONSE_TYPE_NOTTXNRC == Dsp_UdsServiceCtrInfo.ResType)
+			else if(DCM_RESPONSE_TYPE_NEGATIVE == Dsp_UdsServiceCtrInfo[ChNo].ResType)
 			{
-				Dsp_UdsServiceCtrInfo.MachineState = DCM_SERVICE_STATUS_IDLE;
+				Dsp_TxDiagResponseNegativePDU(ChNo,		\
+						Dsp_UdsServiceCtrInfo[ChNo].SI,	\
+						Dsp_UdsServiceCtrInfo[ChNo].NRC);
+
+				Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_INITBUF;
+			}
+			else if(DCM_RESPONSE_TYPE_NOTTXNRC == Dsp_UdsServiceCtrInfo[ChNo].ResType)
+			{
+				Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_INITBUF;
 			}
 
+			break;
+		}
+
+		case DCM_SERVICE_STATUS_INITBUF:
+		{
+			Dsp_UdsServiceCtrInfo[ChNo].ChNo = ChNo;
+			Dsp_UdsServiceCtrInfo[ChNo].Index = 0x00;
+			Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_IDLE;
+			Dsp_UdsServiceCtrInfo[ChNo].SI = 0x00;
+			Dsp_UdsServiceCtrInfo[ChNo].SubFunc = 0x00;
+			Dsp_UdsServiceCtrInfo[ChNo].ReqType = DCM_REQ_TYPE_NONE;
+			Dsp_UdsServiceCtrInfo[ChNo].SPRMIB = 0x00;
+			Dsp_UdsServiceCtrInfo[ChNo].ReqDL = 0x00;
+			memset(Dsp_UdsServiceCtrInfo[ChNo].ReqData,0x00,DCM_REQBUFF_SIZE);
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_INIT;
+			Dsp_UdsServiceCtrInfo[ChNo].PosResDL = 0x00;
+			memset(Dsp_UdsServiceCtrInfo[ChNo].PosResData,0x00,DCM_POSRESBUF_SIZE);
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
 			break;
 		}
 
@@ -124,6 +143,7 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 			/*Reserved*/
 			break;
 		}
+
 		default:
 		{
 			/*doing noting*/
@@ -135,19 +155,43 @@ DCM_LOCAL_API void Dsp_MainFunction(void)
 /****************************************************************************
  * @function	Dsp_TxDiagResponsePositivePDU
  * @brief  		NULL
- * @param  		NULL
+ * @param  		ChNo : Input parameters, bus channel
  * @retval 		ret : function execute result
  * @attention   null
 ****************************************************************************/
-DCM_EXTERN_API uint8 Dsp_TxDiagResponsePositivePDU(void)
+DCM_EXTERN_API uint8 Dsp_TxDiagResponsePositivePDU(uint8 ChNo)
 {
-	uint8 Data[128]= {0x00};
+	uint8 ret = DCM_E_NOT_OK;
+	uint8 Data[DCM_REQBUFF_SIZE+0x02]= {0x00};
 
-	Data[0] = Dcm_PosResPDU.SI + 0x40;
-	Data[1] = Dcm_PosResPDU.SubFunc;
-	memcpy(&Data[2],Dcm_PosResPDU.Data,Dcm_PosResPDU.DataLength);
+	Data[0] = Dsp_UdsServiceCtrInfo[ChNo].SI + 0x40;
+	Data[1] = Dsp_UdsServiceCtrInfo[ChNo].SubFunc;
+	memcpy(&Data[2],Dsp_UdsServiceCtrInfo[ChNo].PosResData,Dsp_UdsServiceCtrInfo[ChNo].PosResDL);
 
-	Dcm_TxDiagResponseInfo(0x00, Dcm_PosResPDU.DataLength+2, Data);
+	ret = Dcm_TxDiagResponseInfo(ChNo, Dsp_UdsServiceCtrInfo[ChNo].PosResDL+2, Data);
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Dsp_TxDiagResponseNegativePDU
+ * @brief  		NULL
+ * @param  		ChNo : Input parameters, bus channel
+ * 				SID : input parameters, services identifier.
+ * 				NRC : Input parameters, NRC
+ * @retval 		ret : function execute result
+ * @attention   null
+****************************************************************************/
+DCM_EXTERN_API uint8 Dsp_TxDiagResponseNegativePDU(uint8 ChNo,uint8 SID,uint8 NRC)
+{
+	uint8 ret = DCM_E_NOT_OK;
+	uint8 Data[3]= {0x00};
+
+	Data[0] = 0x7F;
+	Data[1] = SID;
+	Data[2] = NRC;
+
+	ret = Dcm_TxDiagResponseInfo(ChNo, 0X03, Data);
+	return ret;
 }
 
 /****************************************************************************
@@ -441,25 +485,25 @@ DCM_LOCAL_API uint8 Dsp_GetServicesSecurityLevelMask(Dcm_SupportSubFunctionList_
 /****************************************************************************
  * @function	Dsp_ServicesFunction_Process
  * @brief  		process the diagnostic services
- * @param  		NULL
+ * @param  		ChNo : Input parameters, bus channel
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API uint8 Dsp_ServicesFunction_Process(void)
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_Process(uint8 ChNo)
 {
 	uint8 ret = E_NOT_OK;
 
-	switch(Dsp_UdsServiceCtrInfo.SI)
+	switch(Dsp_UdsServiceCtrInfo[ChNo].SI)
 	{
 		case DCM_SID_DSC:
 		{
-			ret = Dsp_ServicesFunction_DiagnosticSessionControl();
+			ret = Dsp_ServicesFunction_DiagnosticSessionControl(ChNo);
 			break;
 		}
 
 		case DCM_SID_ER:
 		{
-			ret = Dsp_ServicesFunction_ECUReset();
+			ret = Dsp_ServicesFunction_ECUReset(ChNo);
 			break;
 		}
 
@@ -476,32 +520,32 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_Process(void)
 /****************************************************************************
  * @function	Dsp_ServicesFunction_DiagnosticSessionControl
  * @brief  		Diagnostic service $10 handling
- * @param  		NULL
+ * @param  		ChNo : Input parameters, Bus channel
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(uint8 ChNo)
 {
 	uint8 ret = E_NOT_OK;
 	uint8 Index = 0x00;
 	uint16 P2Server = 0x00;
 	uint16 P2_Server = 0x00;
 
-	Dcm_Debug_OutputInfo(_T("Start Run DiagnosticSessionControl Service.......SubId = 0x%x\n",Dcm_ReqPDU.SubFunc));
+	Dcm_Debug_OutputInfo(_T("Start Run DiagnosticSessionControl Service.......SubId = 0x%x\n",Dsp_UdsServiceCtrInfo[ChNo].SubFunc));
 
 	/*Check the SID support in active session,NRC7F Check*/
 	if(E_NOT_OK == Dsp_CheckServicesIsSupportInActiveSession(Dsp_Services_0x10_SupportFunctionList))
 	{
 		/*Check the request pdu type*/
-		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo.ReqType)
+		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
 		{
-			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
-			Dcm_NegResPDU.NRC = 0x00;
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
 		}
 		else
 		{
-			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
-			Dcm_NegResPDU.NRC = DCM_NRC_SNSIAS;
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_SNSIAS;
 		}
 		Dcm_Debug_OutputInfo(_T("NRC7F\n\n"));
 		return ret;
@@ -517,11 +561,11 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 	 * */
 
 	/*minimum length check,NRC13 Check*/
-	if(Dcm_ReqPDU.DataLength < 0x02)
+	if(Dsp_UdsServiceCtrInfo[ChNo].ReqDL < 0x02)
 	{
 		/*Response NRC13*/
-		Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
-		Dcm_NegResPDU.NRC = DCM_NRC_IMLOIF;
+		Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+		Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_IMLOIF;
 		return ret;
 		Dcm_Debug_OutputInfo(_T("NRC13\n\n"));
 	}
@@ -531,18 +575,18 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 	}
 
 	/*Check the sub function support in active session,NRC7E Check*/
-	if(E_NOT_OK == Dsp_CheckSubFunctionIsSupportInActiveSession(Dsp_Services_0x10_SupportFunctionList,Dcm_ReqPDU.SubFunc))
+	if(E_NOT_OK == Dsp_CheckSubFunctionIsSupportInActiveSession(Dsp_Services_0x10_SupportFunctionList,Dsp_UdsServiceCtrInfo[0].SubFunc))
 	{
 		/*Check the request pdu type*/
-		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo.ReqType)
+		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
 		{
-			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
-			Dcm_NegResPDU.NRC = 0x00;
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
 		}
 		else
 		{
-			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
-			Dcm_NegResPDU.NRC = DCM_NRC_SFNISAS;
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_SFNISAS;
 		}
 		Dcm_Debug_OutputInfo(_T("NRC7E\n\n"));
 		return ret;
@@ -558,76 +602,22 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 	 * */
 
 	/*Get Sub function id in SupportFunctionList index*/
-	Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,Dcm_ReqPDU.SubFunc);
-	/*Get P2Server and P2*Server parameters*/
-	switch(Index)
-	{
-		case 0x00:
-		{
-			P2Server = Dsp_GetSessionP2ServerMax(0);
-			P2_Server = Dsp_GetSessionP2_ServerMax(0);
-			break;
-		}
-		case 0x01:
-		{
-			P2Server = Dsp_GetSessionP2ServerMax(1);
-			P2_Server = Dsp_GetSessionP2_ServerMax(1);
-			break;
-		}
-		case 0x02:
-		{
-			P2Server = Dsp_GetSessionP2ServerMax(2);
-			P2_Server = Dsp_GetSessionP2_ServerMax(2);
-			break;
-		}
-		case 0x03:
-		{
-			P2Server = Dsp_GetSessionP2ServerMax(3);
-			P2_Server = Dsp_GetSessionP2_ServerMax(3);
-			break;
-		}
-		case 0x04:
-		{
-			P2Server = Dsp_GetSessionP2ServerMax(4);
-			P2_Server = Dsp_GetSessionP2_ServerMax(4);
-			break;
-		}
-		case 0x05:
-		{
-			P2Server = Dsp_GetSessionP2ServerMax(5);
-			P2_Server = Dsp_GetSessionP2_ServerMax(5);
-			break;
-		}
-		case 0x06:
-		{
-			P2Server = Dsp_GetSessionP2ServerMax(6);
-			P2_Server = Dsp_GetSessionP2_ServerMax(6);
-			break;
-		}
-		case 0x07:
-		{
-			P2Server = Dsp_GetSessionP2ServerMax(7);
-			P2_Server = Dsp_GetSessionP2_ServerMax(7);
-			break;
-		}
-		default:
-		{
-			return ret;
-		}
-	}
+	Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
+
+	/*Get P2Server and P2_Server parameters*/
+	Dsl_GetSessionP2ServerMax(Index,&P2Server);
+	Dsl_GetSessionP2_ServerMax(Index,&P2_Server);
 
 	/*Perform function*/
 	/*Set session type*/
-	Dsl_SetSessionType(Dcm_ReqPDU.SubFunc);
+	Dsl_SetSessionType(Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
 	/*Update Positive Response PDU*/
-	Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_POSITIVE;
-	Dcm_PosResPDU.SI = Dcm_ReqPDU.SI;
-	Dcm_PosResPDU.SubFunc = Dcm_ReqPDU.SubFunc;
-	Dcm_PosResPDU.DataLength = 0x04;
-	Dcm_PosResPDU.Data[0] =	(uint8)CommFunc_BitShiftRigth(P2Server,0x08);
-	Dcm_PosResPDU.Data[1] =	(uint8)P2Server;
-	Dcm_PosResPDU.Data[2] =	(uint8)CommFunc_BitShiftRigth(P2_Server,0x08);
-	Dcm_PosResPDU.Data[3] =	(uint8)P2_Server;
+	Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_POSITIVE;
+	Dsp_UdsServiceCtrInfo[ChNo].PosResDL = 0x04;
+	Dsp_UdsServiceCtrInfo[ChNo].PosResData[0] =	(uint8)CommFunc_BitShiftRigth(P2Server,0x08);
+	Dsp_UdsServiceCtrInfo[ChNo].PosResData[1] =	(uint8)P2Server;
+	Dsp_UdsServiceCtrInfo[ChNo].PosResData[2] =	(uint8)CommFunc_BitShiftRigth(P2_Server,0x08);
+	Dsp_UdsServiceCtrInfo[ChNo].PosResData[3] =	(uint8)P2_Server;
 
 	/*reset dsl parameters*/
 	/*
@@ -636,7 +626,7 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 
 	ret = E_OK;
 
-	Dcm_Debug_OutputInfo(_T("DiagnosticSessionControl perform completed.......SubId = 0x%x\n",Dcm_ReqPDU.SubFunc));
+	Dcm_Debug_OutputInfo(_T("DiagnosticSessionControl perform completed.......SubId = 0x%x\n",Dsp_UdsServiceCtrInfo[ChNo].SubFunc));
 
 	return ret;
 }
@@ -644,11 +634,11 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(void)
 /****************************************************************************
  * @function	Dsp_ServicesFunction_ECUReset
  * @brief  		Diagnostic service $11 handling
- * @param  		NULL
+ * @param  		ChNo : Input parameters,Bus Channel.
  * @retval 		NULL
  * @attention   NULL
 ****************************************************************************/
-DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(void)
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(uint8 ChNo)
 {
 	uint8 ret = E_NOT_OK;
 	uint8 Index = 0x00;
@@ -657,15 +647,15 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(void)
 	if(E_NOT_OK == Dsp_CheckServicesIsSupportInActiveSession(Dsp_Services_0x11_SupportFunctionList))
 	{
 		/*Check the request pdu type*/
-		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo.ReqType)
+		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
 		{
-			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
-			Dcm_NegResPDU.NRC = 0x00;
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
 		}
 		else
 		{
-			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
-			Dcm_NegResPDU.NRC = DCM_NRC_SNSIAS;
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_SNSIAS;
 		}
 		return ret;
 	}
@@ -685,11 +675,11 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(void)
 	 * */
 
 	/*minimum length check,NRC13 Check*/
-	if(Dcm_ReqPDU.DataLength < 0x02)
+	if(Dsp_UdsServiceCtrInfo[ChNo].ReqDL < 0x02)
 	{
 		/*Response NRC13*/
-		Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
-		Dcm_NegResPDU.NRC = DCM_NRC_IMLOIF;
+		Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+		Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_IMLOIF;
 		return ret;
 	}
 	else
@@ -698,18 +688,18 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(void)
 	}
 
 	/*Check the sub function support in active session,NRC7E Check*/
-	if(E_NOT_OK == Dsp_CheckSubFunctionIsSupportInActiveSession(Dsp_Services_0x11_SupportFunctionList,Dcm_ReqPDU.SubFunc))
+	if(E_NOT_OK == Dsp_CheckSubFunctionIsSupportInActiveSession(Dsp_Services_0x11_SupportFunctionList,Dsp_UdsServiceCtrInfo[0].SubFunc))
 	{
 		/*Check the request pdu type*/
-		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo.ReqType)
+		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
 		{
-			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
-			Dcm_NegResPDU.NRC = 0x00;
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
 		}
 		else
 		{
-			Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_NEGATIVE;
-			Dcm_NegResPDU.NRC = DCM_NRC_SFNISAS;
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_SFNISAS;
 		}
 
 		return ret;
@@ -730,16 +720,14 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(void)
 	 * */
 
 	/*Get Sub function id in SupportFunctionList index*/
-	Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,Dcm_ReqPDU.SubFunc);
+	Index = Dsp_CheckSubFunctionIsSupport(Dsp_Services_0x10_SupportFunctionList,Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
 
 	/*Perform function*/
 	/*Set session type*/
-	Dsl_SetSessionType(Dcm_ReqPDU.SubFunc);
+	Dsl_SetSessionType(Dsp_UdsServiceCtrInfo[ChNo].SubFunc);
 	/*Update Positive Response PDU*/
-	Dsp_UdsServiceCtrInfo.ResType = DCM_RESPONSE_TYPE_POSITIVE;
-	Dcm_PosResPDU.SI = Dcm_ReqPDU.SI;
-	Dcm_PosResPDU.SubFunc = Dcm_ReqPDU.SubFunc;
-	Dcm_PosResPDU.DataLength  =	0x00;
+	Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_POSITIVE;;
+	Dsp_UdsServiceCtrInfo[ChNo].PosResDL  =	0x00;
 
 	/*reset dsl parameters*/
 	/*

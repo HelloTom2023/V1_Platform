@@ -106,6 +106,7 @@ typedef enum Dcm_DiagServicePerformStatus_Enum_Type_Tag
 	DCM_SERVICE_STATUS_REQ,
 	DCM_SERVICE_STATUS_RUN,
 	DCM_SERVICE_STATUS_COMPLETED,
+	DCM_SERVICE_STATUS_INITBUF,
 	DCM_SERVICE_STATUS_ERROR,
 	DCM_SERVICE_STATUS_NONE
 }Dcm_DiagServicePerformStatus_Enum_Type;
@@ -117,6 +118,7 @@ typedef enum Dcm_DiagServiceResponseType_Enum_Type_Tag
 {
 	DCM_RESPONSE_TYPE_INIT,		/*Initiation Status,If process services function will setting to this status*/
 	DCM_RESPONSE_TYPE_POSITIVE, /*Positive Response status.If process service function complete and shall response positive pud */
+	DCM_RESPONSE_TYPE_SUPPOSRSP,/*Suppress positive response status.If process service function complete and positive, but not response.*/
 	DCM_RESPONSE_TYPE_NEGATIVE, /*Negative Response status.If process service function complete and shall response negative pud*/
 	DCM_RESPONSE_TYPE_NOTTXNRC,	/*not be transmitted Negative Response status.If process service function complete,the ECU generated NRC but shall be not response negative pud*/
 	DCM_RESPONSE_TYPE_MAX
@@ -130,11 +132,17 @@ typedef struct Dcm_UdsServiceProtocolCtrInfo_Struct_Type_Tag
 {
 	uint8 Index;											/*indication the SID in the service list located*/
 	uint8 ChNo;												/*bus channel number*/
-	Dcm_DiagRequestTpye_Enum_Type ReqType;
+	Dcm_DiagServicePerformStatus_Enum_Type MachineState;	/*diagnostic service perform state machine*/
 	uint8 SI;												/*Service Identifier*/
 	uint8 SubFunc;   										/*sub-function parameter value,located : request data byte0 bit0~bit6, and this parameters rang is 0x00~0x7F*/
-	Dcm_DiagServicePerformStatus_Enum_Type MachineState;	/*diagnostic service perform state machine*/
+	Dcm_DiagRequestTpye_Enum_Type ReqType;
+	uint8 SPRMIB;											/*suppressPosRspMsgIndicationBit,located : Dcm_RxDiagRequestStruct_Type.Data[1] bit7*/
+	uint16 ReqDL;											/*Parameter data length,the data length not include the sub function id*/
+	uint8 *ReqData;											/*note : if you want to use the data element,you will init the pointer*/
 	Dcm_DiagServiceResponseType_Enum_Type ResType;			/*diagnostic response PDU type*/
+	uint16 PosResDL;										/*Parameter data length,the data length not include the sub function id. used by */
+	uint8 *PosResData;										/*note : if you want to use the data element,you will init the pointer*/
+	uint8 NRC;												/*negative response codes*/
 }Dcm_UdsServiceProtocolCtrInfo_Struct_Type;
 
 /*

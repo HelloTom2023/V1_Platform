@@ -27,7 +27,8 @@
 #include "Dcm.h"
 
 /*Macro definition AREA*/
-
+#define Dsl_GetSessionP2SM(Index)	DCM_SESSION_P2SM_##Index
+#define Dsl_GetSessionP2ESM(Index)	DCM_SESSION_P2ESM_##Index
 
 
 
@@ -82,7 +83,23 @@ DCM_LOCAL_API void Dsl_SetSecurityLevel(uint8 SecLevel);
 ****************************************************************************/
 DCM_LOCAL_API uint8 Dsl_GetSecurityLevel(uint8* ptr_SecLevel);
 
+/****************************************************************************
+ * @function	Dsl_GetSessionP2ServerMax
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsl_GetSessionP2ServerMax(uint8 Index,uint16* P2ServerMax);
 
+/****************************************************************************
+ * @function	Dsl_GetSessionP2_ServerMax
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsl_GetSessionP2_ServerMax(uint8 Index,uint16* P2_ServerMax);
 
 
 #endif /*_DCM_DSL_INTERFACE_H_*/

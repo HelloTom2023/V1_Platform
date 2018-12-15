@@ -125,5 +125,165 @@ DCM_LOCAL_API uint8 Dsl_GetSecurityLevel(uint8* ptr_SecLevel)
 	return ret;
 }
 
+/****************************************************************************
+ * @function	Dsl_GetSessionP2ServerMax
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsl_GetSessionP2ServerMax(uint8 Index,uint16* P2ServerMax)
+{
+	uint8 ret = DCM_E_NOT_OK;
+
+	/*Check Input parameters*/
+	if(NULL == P2ServerMax)
+	{
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get P2Server and P2*Server parameters*/
+	switch(Index)
+	{
+		case 0x00:
+		{
+			*P2ServerMax = Dsl_GetSessionP2SM(0);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x01:
+		{
+			*P2ServerMax = Dsl_GetSessionP2SM(1);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x02:
+		{
+			*P2ServerMax = Dsl_GetSessionP2SM(2);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x03:
+		{
+			*P2ServerMax = Dsl_GetSessionP2SM(3);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x04:
+		{
+			*P2ServerMax = Dsl_GetSessionP2SM(4);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x05:
+		{
+			*P2ServerMax = Dsl_GetSessionP2SM(5);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x06:
+		{
+			*P2ServerMax = Dsl_GetSessionP2SM(6);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x07:
+		{
+			*P2ServerMax = Dsl_GetSessionP2SM(7);
+			ret = DCM_E_OK;
+			break;
+		}
+		default:
+		{
+			ret = DCM_E_NOT_OK;
+		}
+	}
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Dsl_GetSessionP2_ServerMax
+ * @brief  		NULL
+ * @param  		NULL
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsl_GetSessionP2_ServerMax(uint8 Index,uint16* P2_ServerMax)
+{
+	uint8 ret = DCM_E_NOT_OK;
+
+	/*Check Input parameters*/
+	if(NULL == P2_ServerMax)
+	{
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Get P2Server and P2*Server parameters*/
+	switch(Index)
+	{
+		case 0x00:
+		{
+			*P2_ServerMax = Dsl_GetSessionP2ESM(0);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x01:
+		{
+			*P2_ServerMax = Dsl_GetSessionP2ESM(1);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x02:
+		{
+			*P2_ServerMax = Dsl_GetSessionP2ESM(2);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x03:
+		{
+			*P2_ServerMax = Dsl_GetSessionP2ESM(3);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x04:
+		{
+			*P2_ServerMax = Dsl_GetSessionP2ESM(4);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x05:
+		{
+			*P2_ServerMax = Dsl_GetSessionP2ESM(5);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x06:
+		{
+			*P2_ServerMax = Dsl_GetSessionP2ESM(6);
+			ret = DCM_E_OK;
+			break;
+		}
+		case 0x07:
+		{
+			*P2_ServerMax = Dsl_GetSessionP2ESM(7);
+			ret = DCM_E_OK;
+			break;
+		}
+		default:
+		{
+			ret = DCM_E_NOT_OK;
+		}
+	}
+	return ret;
+}
+
 #endif /*_DCM_DSL_IMPLEMENT_H_*/
 /*********************************File End*********************************/

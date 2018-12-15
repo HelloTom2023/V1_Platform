@@ -40,12 +40,12 @@
 
 
 /*Variable Define AREA*/
-uint8 ReqDataBuffer[128];
-uint8 PosResDataBuffer[128];
-Dcm_RequestPDU_Struct_Type Dcm_ReqPDU;
-Dcm_PositiveResponsePDU_Struct_Type Dcm_PosResPDU;
-Dcm_NegativeResponsePDU_Struct_Type Dcm_NegResPDU;
-Dcm_UdsServiceProtocolCtrInfo_Struct_Type Dsp_UdsServiceCtrInfo;
+uint8 ReqDataBuffer[DCM_REQBUFF_SIZE];
+uint8 PosResDataBuffer[DCM_POSRESBUF_SIZE];
+//Dcm_RequestPDU_Struct_Type Dcm_ReqPDU;
+//Dcm_PositiveResponsePDU_Struct_Type Dcm_PosResPDU;
+//Dcm_NegativeResponsePDU_Struct_Type Dcm_NegResPDU;
+Dcm_UdsServiceProtocolCtrInfo_Struct_Type Dsp_UdsServiceCtrInfo[DCM_SUPPORT_BUS_CHNO_MAX]; /*One set of data for each bus*/
 Dcm_SessionType_Struct_Type Dsl_SessionType;
 Dcm_SecurityLevel_Struct_Type Dsl_SecurityLevel;
 
