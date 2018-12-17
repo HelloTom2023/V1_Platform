@@ -150,15 +150,32 @@ DCM_EXTERN_API uint8 Dcm_RxDiagRequestInfo(uint8 ChNo, uint8 ReqType, uint16 Dat
 		 * The diagnostic message from CanTp modules
 		 * The request PDU used for diagnostic service
 		 * */
-		Dsp_UdsServiceCtrInfo[ChNo].ChNo = ChNo;
-		Dsp_UdsServiceCtrInfo[ChNo].ReqType = (Dcm_DiagRequestTpye_Enum_Type) ReqType;
-		Dsp_UdsServiceCtrInfo[ChNo].SI = ptr_Data[0];
-		Dsp_UdsServiceCtrInfo[ChNo].SubFunc = ptr_Data[1] & 0x7F;
-		Dsp_UdsServiceCtrInfo[ChNo].SPRMIB = CommFunc_BitShiftRigth(ptr_Data[1],0x07) & 0x01;
-		Dsp_UdsServiceCtrInfo[ChNo].ReqDL = DataLength;
-		memcpy(Dsp_UdsServiceCtrInfo[ChNo].ReqData, ptr_Data, DataLength);
+		/*Check if the services supports sub function*/
+		if(DCM_E_OK == Dsp_CheckServicesIsSupportSubFunction(ptr_Data[0]))
+		{
+			Dsp_UdsServiceCtrInfo[ChNo].ChNo = ChNo;
+			Dsp_UdsServiceCtrInfo[ChNo].ReqType = (Dcm_DiagRequestTpye_Enum_Type) ReqType;
+			Dsp_UdsServiceCtrInfo[ChNo].SI = ptr_Data[0];
+			Dsp_UdsServiceCtrInfo[ChNo].SubFunc = ptr_Data[1] & 0x7F;
+			Dsp_UdsServiceCtrInfo[ChNo].SPRMIB = CommFunc_BitShiftRigth(ptr_Data[1],0x07) & 0x01;
+			Dsp_UdsServiceCtrInfo[ChNo].ReqDL = DataLength-2;/*The DataLength will decrease the SID and SubFunction Bytes*/
+			memcpy(Dsp_UdsServiceCtrInfo[ChNo].ReqData, &ptr_Data[2], Dsp_UdsServiceCtrInfo[ChNo].ReqDL);
 
-		Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_REQ;
+			Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_REQ;
+		}
+		else
+		{
+			Dsp_UdsServiceCtrInfo[ChNo].ChNo = ChNo;
+			Dsp_UdsServiceCtrInfo[ChNo].ReqType = (Dcm_DiagRequestTpye_Enum_Type) ReqType;
+			Dsp_UdsServiceCtrInfo[ChNo].SI = ptr_Data[0];
+			Dsp_UdsServiceCtrInfo[ChNo].SubFunc = 0x00; /*Initiation default value*/
+			Dsp_UdsServiceCtrInfo[ChNo].SPRMIB = 0x00;  /*Initiation default value*/
+			Dsp_UdsServiceCtrInfo[ChNo].ReqDL = DataLength-1;/*The DataLength will decrease the SID and SubFunction Bytes*/
+			memcpy(Dsp_UdsServiceCtrInfo[ChNo].ReqData, &ptr_Data[1], Dsp_UdsServiceCtrInfo[ChNo].ReqDL);
+
+			Dsp_UdsServiceCtrInfo[ChNo].MachineState = DCM_SERVICE_STATUS_REQ;
+		}
+
 	}
 
 	return ret;

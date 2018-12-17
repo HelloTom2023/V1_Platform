@@ -1,4 +1,17 @@
-﻿Version : V0.1.14
+﻿Version : V0.1.15
+ChangeLog :
+1.Dcm_TypeStack ： add some definition.
+2.Dcm : fix the bugs,the Dsp_UdsServiceCtrInfo[ChNo].ReqDL write error in Dcm_RxDiagRequestInfo function.
+3.Dcm : in Dcm_RxDiagRequestInfo function add check the services is support sub-function check.
+4.Dsp : add Dsp_CheckServicesIsSupportSubFunction function,used for check the services if support the sub-function.
+5.Dsp : add Dsp_ServicesFunction_ClearDiagnosticInformation function,used implements the $14 server.
+6.Dcm_Table : add Dsp_Services_0x14_SupportFunctionList,used for 14 service configuration parameters----not debug.
+7.Dsp : add Dsp_CheckDTCGroupTypeOfClearDiagnosticInformationIsSupport,used for check the Dtc group is support.
+8.Tools : update 14 service configuration attribute.
+Autor : Mingfen XIAO(mingfen.xiao@qq.com)	
+Data  : 2018.12.17
+/*********************************************************************************************************************/
+Version : V0.1.14
 ChangeLog :
 1.Dcm ： add Dsp_CheckSuppressPosRspMsgIndicationBitIsSupport function.
 2.Dcm : 10 and 11 services add check of SuppressPosRspMsgIndicationBit function.

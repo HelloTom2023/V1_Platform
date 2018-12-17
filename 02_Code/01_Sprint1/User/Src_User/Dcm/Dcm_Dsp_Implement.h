@@ -195,6 +195,41 @@ DCM_EXTERN_API uint8 Dsp_TxDiagResponseNegativePDU(uint8 ChNo,uint8 SID,uint8 NR
 }
 
 /****************************************************************************
+ * @function	Dsp_CheckServicesIsSupportSubFunction
+ * @brief  		NULL
+ * @param  		SID : Input parameters, diagnostic services id
+ * @retval 		DCM_E_NOT_OK : the SID not support sub function.
+ *              DCM_E_OK : the SID support sub function.
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_CheckServicesIsSupportSubFunction(uint8 SID)
+{
+	uint8 ret = DCM_E_NOT_OK;
+
+	if( 	(DCM_SID_DSC == SID) ||	\
+			(DCM_SID_ER == SID) ||	\
+			(DCM_SID_RDTCI == SID) ||	\
+			(DCM_SID_SA == SID) ||	\
+			(DCM_SID_CC == SID) ||	\
+			(DCM_SID_DDDI == SID) ||	\
+			(DCM_SID_RC == SID) ||	\
+			(DCM_SID_TP == SID) ||	\
+			(DCM_SID_ATP == SID) ||	\
+			(DCM_SID_CDTCS == SID) ||	\
+			(DCM_SID_ROE == SID) ||	\
+			(DCM_SID_LC == SID) )
+	{
+		ret = DCM_E_OK;
+	}
+	else
+	{
+		ret = DCM_E_NOT_OK;
+	}
+
+	return ret;
+}
+
+/****************************************************************************
  * @function	Dsp_CheckServicesIsSupport
  * @brief  		NULL
  * @param  		SID : Input parameters, diagnostic services id
@@ -517,6 +552,45 @@ DCM_LOCAL_API uint8 Dsp_GetServicesSecurityLevelMask(Dcm_SupportSubFunctionList_
 }
 
 /****************************************************************************
+ * @function	Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport
+ * @brief  		NULL
+ * @param  		ptr_Dcm_SubFunctionList : Input parameters,
+ * 				DTCGroupTypes : input parameters,
+ * @retval 		DCM_E_OK : support
+ * 				DCM_E_NOT_OK : not support
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList,uint8 DTCGroupTypes)
+{
+	uint8 ret = DCM_E_NOT_OK;
+	uint8 i = 0x00;
+
+	/*Check input parameters*/
+	if(NULL == ptr_Dcm_SubFunctionList)
+	{
+		ret = E_PARAM_NULLPTR;
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*check if the DTCGroupTypes is support*/
+	if(0x00 == (ptr_Dcm_SubFunctionList->SubId & CommFunc_BitShiftLeft(0x1,DTCGroupTypes)))
+	{
+		ret = DCM_E_NOT_OK;
+	}
+	else
+	{
+		ret = DCM_E_OK;
+	}
+
+	return ret;
+}
+
+
+/****************************************************************************
  * @function	Dsp_ServicesFunction_Process
  * @brief  		process the diagnostic services
  * @param  		ChNo : Input parameters, bus channel
@@ -541,6 +615,11 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_Process(uint8 ChNo)
 			break;
 		}
 
+		case DCM_SID_CDTCI:
+		{
+			Dsp_ServicesFunction_ClearDiagnosticInformation(ChNo);
+			break;
+		}
 		default:
 		{
 			/*doing nothing*/
@@ -786,6 +865,236 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(uint8 ChNo)
 	}
 
 	/*Call function perform REST */
+
+	ret = E_OK;
+
+	return ret;
+}
+
+/****************************************************************************
+ * @function	Dsp_ServicesFunction_ClearDiagnosticInformation
+ * @brief  		Diagnostic service $14 handling
+ * @param  		ChNo : Input parameters,Bus Channel.
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_ClearDiagnosticInformation(uint8 ChNo)
+{
+	uint8 ret = DCM_E_NOT_OK;
+	uint8 Index = 0x00;
+	uint32 DTC = (Dsp_UdsServiceCtrInfo[ChNo].ReqData[0] << 16) | \
+			(Dsp_UdsServiceCtrInfo[ChNo].ReqData[1] << 8) | \
+			(Dsp_UdsServiceCtrInfo[ChNo].ReqData[2]);
+
+	/*Check the SID support in active session,NRC7F Check*/
+	if(E_NOT_OK == Dsp_CheckServicesIsSupportInActiveSession(Dsp_Services_0x14_SupportFunctionList))
+	{
+		/*Check the request pdu type*/
+		if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
+		{
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
+		}
+		else
+		{
+			Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+			Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_SNSIAS;
+		}
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check the s perform condition,NRC22*/
+	/*
+	 * Add code
+	 * */
+
+	/*minimum length check,NRC13 Check*/
+	if(Dsp_UdsServiceCtrInfo[ChNo].ReqDL < 0x04)
+	{
+		/*Response NRC13*/
+		Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+		Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_IMLOIF;
+		return ret;
+	}
+	else
+	{
+		/*Doing nothing*/
+	}
+
+	/*Check the DTC range,NRC31*/
+	switch(DTC)
+	{
+		case DCM_DTCGI_EMISSION:
+		{
+			if(DCM_E_NOT_OK == Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport(Dsp_Services_0x14_SupportFunctionList,DCM_DTCGT_EMISSION))
+			{
+				/*Check the request pdu type*/
+				if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
+				}
+				else
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_ROOR;
+				}
+				return ret;
+			}
+			else
+			{
+				/*doing nothing*/
+			}
+			break;
+		}
+
+		case DCM_DTCGI_POWERTRAIN:
+		{
+			if(DCM_E_NOT_OK == Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport(Dsp_Services_0x14_SupportFunctionList,DCM_DTCGT_POWERTRAIN))
+			{
+				/*Check the request pdu type*/
+				if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
+				}
+				else
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_ROOR;
+				}
+				return ret;
+			}
+			else
+			{
+				/*doing nothing*/
+			}
+			break;
+		}
+
+		case DCM_DTCGI_CHASSIS:
+		{
+			if(DCM_E_NOT_OK == Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport(Dsp_Services_0x14_SupportFunctionList,DCM_DTCGT_CHASSIS))
+			{
+				/*Check the request pdu type*/
+				if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
+				}
+				else
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_ROOR;
+				}
+				return ret;
+			}
+			else
+			{
+				/*doing nothing*/
+			}
+			break;
+		}
+
+		case DCM_DTCGI_BODY:
+		{
+			if(DCM_E_NOT_OK == Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport(Dsp_Services_0x14_SupportFunctionList,DCM_DTCGT_BODY))
+			{
+				/*Check the request pdu type*/
+				if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
+				}
+				else
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_ROOR;
+				}
+				return ret;
+			}
+			else
+			{
+				/*doing nothing*/
+			}
+			break;
+		}
+
+		case DCM_DTCGI_NETWORK:
+		{
+			if(DCM_E_NOT_OK == Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport(Dsp_Services_0x14_SupportFunctionList,DCM_DTCGT_NETWORK))
+			{
+				/*Check the request pdu type*/
+				if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
+				}
+				else
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_ROOR;
+				}
+				return ret;
+			}
+			else
+			{
+				/*doing nothing*/
+			}
+			break;
+		}
+
+		case DCM_DTCGI_ALLGROUPS:
+		{
+			if(DCM_E_NOT_OK == Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport(Dsp_Services_0x14_SupportFunctionList,DCM_DTCGT_ALLGROUPS))
+			{
+				/*Check the request pdu type*/
+				if(DCM_REQ_TYPE_FUNC == Dsp_UdsServiceCtrInfo[ChNo].ReqType)
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NOTTXNRC;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = 0x00;
+				}
+				else
+				{
+					Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_NEGATIVE;
+					Dsp_UdsServiceCtrInfo[ChNo].NRC = DCM_NRC_ROOR;
+				}
+				return ret;
+			}
+			else
+			{
+				/*doing nothing*/
+			}
+			break;
+		}
+
+		default:
+		{
+			/*Check the DTC is support of DTC List*/
+			/*
+			 * Add Code
+			 *
+			 * If not support,the ecu shall be response NRC31
+			 * */
+
+			break;
+		}
+	}
+
+	/*Check the sub function perform condition,NRC22*/
+	/*
+	 * Add code
+	 * */
+
+
+	/*Call function perform clear DTC information and response PDU */
+
+	Dsp_UdsServiceCtrInfo[ChNo].ResType = DCM_RESPONSE_TYPE_SUPPOSRSP;
+	Dsp_UdsServiceCtrInfo[ChNo].PosResDL = 0x00;
 
 	ret = E_OK;
 

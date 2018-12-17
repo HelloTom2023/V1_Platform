@@ -162,7 +162,7 @@ typedef struct Dcm_SupportServiceList_Struct_Type_Tag
 
 /*
  * UDS diagnostic support sub function table type of diagnostic services
- *
+ * Note : the type used for have Sub function services
  * */
 typedef struct Dcm_SupportSubFunctionList_Struct_Type_Tag
 {

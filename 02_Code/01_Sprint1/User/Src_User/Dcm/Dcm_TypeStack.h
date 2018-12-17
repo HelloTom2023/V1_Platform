@@ -98,6 +98,43 @@
 #define DCM_SID_LC				(0x87)	/*LinkControl*/
 
 /*
+ * DTC Format Identifier definition
+ * Reference <<ISO 14229-1 2013>>.
+ * */
+/*This parameter value identifies the DTC format reported by the server as defined in ISO 15031-6 specification.*/
+#define DCM_DTCFI_SAE_J2012_DA_00	(0x00)
+/*This parameter value identifies the DTC format reported by the server as defined in this table by the parameter DTCAndStatusRecord.*/
+#define DCM_DTCFI_ISO_14229_1		(0x01)
+/*This parameter value identifies the DTC format reported by the server as defined in SAE J1939-73.*/
+#define DCM_DTCFI_SAE_J1939_73		(0x02)
+/*This parameter value identifies the DTC format reported by the server as defined in ISO 11992-4 specification.*/
+#define DCM_DTCFI_ISO_11992_4		(0x03)
+/*This parameter value identifies the DTC format reported by the server as defined in ISO 27145-2 specification.*/
+#define DCM_DTCFI_SAE_J2012_DA_04	(0x04)
+
+/*
+ * DTC Groups Information Definition
+ * Reference <<ISO 15031-6 2005>>
+ * */
+#define DCM_DTCGI_EMISSION			(0x000000)
+#define DCM_DTCGI_POWERTRAIN		(0x100000)
+#define DCM_DTCGI_CHASSIS			(0x200000)
+#define DCM_DTCGI_BODY				(0x800000)
+#define DCM_DTCGI_NETWORK			(0xC00000)
+#define DCM_DTCGI_ALLGROUPS			(0xFFFFFF)
+
+/*
+ * Dtc Groups Types definition
+ * */
+#define DCM_DTCGT_EMISSION			(0x0)
+#define DCM_DTCGT_POWERTRAIN		(0x1)
+#define DCM_DTCGT_CHASSIS			(0x2)
+#define DCM_DTCGT_BODY				(0x3)
+#define DCM_DTCGT_NETWORK			(0x4)
+#define DCM_DTCGT_ALLGROUPS			(0x5)
+#define DCM_DTCGT_EACHDTCS			(0x6)
+
+/*
  * function Execution result value definition
  * */
 #define DCM_E_OK					(0x00)

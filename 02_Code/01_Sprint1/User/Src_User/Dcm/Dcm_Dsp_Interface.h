@@ -67,6 +67,16 @@ DCM_EXTERN_API uint8 Dsp_TxDiagResponsePositivePDU(uint8 ChNo);
 DCM_EXTERN_API uint8 Dsp_TxDiagResponseNegativePDU(uint8 ChNo,uint8 SID,uint8 NRC);
 
 /****************************************************************************
+ * @function	Dsp_CheckServicesIsSupportSubFunction
+ * @brief  		NULL
+ * @param  		SID : Input parameters, diagnostic services id
+ * @retval 		DCM_E_NOT_OK : the SID not support sub function.
+ *              DCM_E_OK : the SID support sub function.
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_CheckServicesIsSupportSubFunction(uint8 SID);
+
+/****************************************************************************
  * @function	Dsp_CheckServicesIsSupport
  * @brief  		NULL
  * @param  		SID : Input parameters, diagnostic services id
@@ -150,6 +160,17 @@ DCM_LOCAL_API uint8 Dsp_GetSubFunctionSessionTypeMask(Dcm_SupportSubFunctionList
 DCM_LOCAL_API uint8 Dsp_GetServicesSecurityLevelMask(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList,uint8* ptr_SecLevelMask);
 
 /****************************************************************************
+ * @function	Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport
+ * @brief  		NULL
+ * @param  		ptr_Dcm_SubFunctionList : Input parameters,
+ * 				DTCGroupTypes : input parameters,
+ * @retval 		DCM_E_OK : support
+ * 				DCM_E_NOT_OK : not support
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_GetDTCGroupTypeOfClearDiagnosticInformationIsSupport(Dcm_SupportSubFunctionList_Struct_Type* ptr_Dcm_SubFunctionList,uint8 DTCGroupTypes);
+
+/****************************************************************************
  * @function	Dsp_ServicesFunction_Process
  * @brief  		process the diagnostic services
  * @param  		ChNo : Input parameters, bus channel
@@ -175,6 +196,15 @@ DCM_LOCAL_API uint8 Dsp_ServicesFunction_DiagnosticSessionControl(uint8 ChNo);
  * @attention   NULL
 ****************************************************************************/
 DCM_LOCAL_API uint8 Dsp_ServicesFunction_ECUReset(uint8 ChNo);
+
+/****************************************************************************
+ * @function	Dsp_ServicesFunction_ClearDiagnosticInformation
+ * @brief  		Diagnostic service $14 handling
+ * @param  		ChNo : Input parameters,Bus Channel.
+ * @retval 		NULL
+ * @attention   NULL
+****************************************************************************/
+DCM_LOCAL_API uint8 Dsp_ServicesFunction_ClearDiagnosticInformation(uint8 ChNo);
 
 #endif /*_DCM_DSP_INTERFACE_H_*/
 /*********************************File End*********************************/

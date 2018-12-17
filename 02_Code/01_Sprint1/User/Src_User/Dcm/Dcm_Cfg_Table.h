@@ -70,7 +70,16 @@ Dcm_SupportSubFunctionList_Struct_Type Dsp_Services_0x11_SupportFunctionList[] =
 		{0xFF,		0x00,	0x00,	0x00		  , 0x00}
 };
 
-
+/*
+ * 0x14 service support sub function list
+ * the services not support sub function,so the SubId is not indication sub function.
+ * */
+Dcm_SupportSubFunctionList_Struct_Type Dsp_Services_0x14_SupportFunctionList[] =
+{
+		/*Index,	ChNo,	SubId ,	SupportSeesion, SupportSecurityLevel*/
+		{0x00,		0x00,	0x7E,	0xE0		  , 0xE0},
+		{0xFF,		0x00,	0x00,	0x00		  , 0x00}
+};
 
 
 #endif /*_DCM_CFG_TABLE_H_*/
